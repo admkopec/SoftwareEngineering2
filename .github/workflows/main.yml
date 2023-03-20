@@ -6,12 +6,13 @@ on:
   pull_request:
     branches: [ "main" ]
 
-defaults:
-  run:
-    working-directory: flower-shop-frontend/
+
 
 jobs:
   cypress-run:
+    defaults:
+      run:
+        working-directory: ./flower-shop-frontend/
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
