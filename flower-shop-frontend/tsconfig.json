@@ -8,7 +8,7 @@
       "esnext"
     ],
     "baseUrl": ".",
-    "types": ["cypress", "node"],
+    "types": ["cypress", "node", "jest", "@testing-library/jest-dom"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
