@@ -7,6 +7,7 @@
       "dom.iterable",
       "esnext"
     ],
+    "baseUrl": ".",
     "types": ["cypress", "node"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -22,5 +23,8 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["./*.ts"]
+  "include": [
+    "*.ts",
+    "src"
+  ]
 }
