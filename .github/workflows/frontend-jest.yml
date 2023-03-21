@@ -1,0 +1,33 @@
+name: Node.js CI with Jest for React/Typescript
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Git Actions checkout
+      uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - name: Install Node.js in an automated env
+      run: npm ci
+      working-directory: ./flowershop-frontend/
+    - name: Build the project
+      run: npm run build --if-present
+      working-directory: ./flowershop-frontend/
+    - name: Run Jest tests
+      run: npm run test
+      working-directory: ./flowershop-frontend/
+    - name: Check coverage of tests
+      run: npm run coverage
+      working-directory: ./flowershop-frontend/
