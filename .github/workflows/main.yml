@@ -1,4 +1,4 @@
-name: Cypress Tests
+name: Node.js CI with Jest for React/Typescript
 
 on:
   push:
@@ -7,16 +7,22 @@ on:
     branches: [ "main" ]
 
 jobs:
-  cypress-run:
+  build:
+
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x]
+
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      # Install NPM dependencies, cache them correctly
-      # and run all Cypress tests
-    - name: Cypress run
-      uses: cypress-io/github-action@v5
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
       with:
-        build: npm run build
-        start: npm start
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
         working-directory: ./flower-shop-frontend/
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm test
