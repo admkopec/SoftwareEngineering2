@@ -23,6 +23,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+        cache-dependency-path: flowershop-frontend/package-lock.json
     - name: Install Node.js in an automated env
       run: npm ci
       working-directory: flowershop-frontend/
