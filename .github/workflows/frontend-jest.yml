@@ -11,6 +11,10 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: flowershop-frontend/
+
     steps:
     - name: Git Actions checkout
       uses: actions/checkout@v3
@@ -21,13 +25,13 @@ jobs:
         cache: 'npm'
     - name: Install Node.js in an automated env
       run: npm ci
-      working-directory: ./flowershop-frontend/
+      working-directory: flowershop-frontend/
     - name: Build the project
       run: npm run build --if-present
-      working-directory: ./flowershop-frontend/
+      working-directory: flowershop-frontend/
     - name: Run Jest tests
       run: npm run test
-      working-directory: ./flowershop-frontend/
+      working-directory: flowershop-frontend/
     - name: Check coverage of tests
       run: npm run coverage
-      working-directory: ./flowershop-frontend/
+      working-directory: flowershop-frontend/
