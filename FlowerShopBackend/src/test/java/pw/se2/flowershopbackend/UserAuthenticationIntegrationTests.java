@@ -1,16 +1,17 @@
 package pw.se2.flowershopbackend;
 
 import io.jsonwebtoken.ExpiredJwtException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pw.se2.flowershopbackend.dao.UserRepository;
 import pw.se2.flowershopbackend.models.User;
 import pw.se2.flowershopbackend.security.services.JwtTokenService;
@@ -23,7 +24,7 @@ import java.util.Optional;
 import static junit.framework.TestCase.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class UserAuthenticationIntegrationTests {
     @TestConfiguration
     static class UserAuthenticationIntegrationTestsContextConfiguration {
@@ -53,7 +54,7 @@ public class UserAuthenticationIntegrationTests {
     @MockBean
     private UserRepository userRepository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         User user = new User();
         user.setName("Test User");

@@ -1,8 +1,8 @@
 package pw.se2.flowershopbackend;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,7 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import pw.se2.flowershopbackend.dao.UserRepository;
 import pw.se2.flowershopbackend.models.User;
@@ -29,11 +29,12 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @WebMvcTest(JwtAuthenticationController.class)
 @AutoConfigureMockMvc(addFilters = false)
 public class UserAuthenticationApiTests {
@@ -72,7 +73,7 @@ public class UserAuthenticationApiTests {
     @MockBean
     private UserRepository userRepository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         User user = new User();
         user.setName("Test User");
@@ -93,13 +94,19 @@ public class UserAuthenticationApiTests {
                 .andExpect(jsonPath("$.jwttoken").exists());
     }
 
-    @Test(expected = Exception.class)
+    @Test
     public void givenInvalidCredentials_whenLogin_thenReturnError() throws Exception {
-        mvc.perform(post("/api/users/log_in")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\":\"test@shop.com\",\"password\":\"12345\"}")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.jwttoken").doesNotExist());
+        // TODO: Try to add ExceptionHandler to MockMvc, so that we properly throw exception at result instead of at perform
+        try {
+            mvc.perform(post("/api/users/log_in")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{\"username\":\"test@shop.com\",\"password\":\"12345\"}")
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().is4xxClientError())
+                    .andExpect(result -> assertNotNull(result.getResolvedException()))
+                    .andExpect(result -> assertTrue(result.getResolvedException().getMessage().contains("INVALID_CREDENTIALS")));
+        } catch (Exception exception) {
+            assertTrue(exception.getMessage().contains("INVALID_CREDENTIALS"));
+        }
     }
 }
