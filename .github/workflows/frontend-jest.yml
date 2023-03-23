@@ -35,4 +35,4 @@ jobs:
       working-directory: flower-shop-frontend/
     - name: Check coverage of tests
       run: npm run coverage
-      working-directory: flowershop-frontend/
+      working-directory: flower-shop-frontend/
