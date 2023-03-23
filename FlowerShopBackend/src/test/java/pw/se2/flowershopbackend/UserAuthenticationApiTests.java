@@ -109,4 +109,30 @@ public class UserAuthenticationApiTests {
             assertTrue(exception.getMessage().contains("INVALID_CREDENTIALS"));
         }
     }
+
+    @Test
+    public void givenSqlInjection_whenLogin_thenReturnError() throws Exception {
+        try {
+            mvc.perform(post("/api/users/log_in")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{\"username\":\"junk OR 1=1 --\",\"password\":\"12345\"}")
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().is4xxClientError())
+                    .andExpect(result -> assertNotNull(result.getResolvedException()))
+                    .andExpect(result -> assertTrue(result.getResolvedException().getMessage().contains("INVALID_CREDENTIALS")));
+        } catch (Exception exception) {
+            assertTrue(exception.getMessage().contains("INVALID_CREDENTIALS"));
+        }
+        try {
+            mvc.perform(post("/api/users/log_in")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{\"username\":\"junk' OR 1=1 --\",\"password\":\"12345\"}")
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().is4xxClientError())
+                    .andExpect(result -> assertNotNull(result.getResolvedException()))
+                    .andExpect(result -> assertTrue(result.getResolvedException().getMessage().contains("INVALID_CREDENTIALS")));
+        } catch (Exception exception) {
+            assertTrue(exception.getMessage().contains("INVALID_CREDENTIALS"));
+        }
+    }
 }

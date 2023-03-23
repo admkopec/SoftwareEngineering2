@@ -10,21 +10,35 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
 
-// TODO: Do we need anything else in User right now?
 @Entity
 @Table
 public class User implements UserDetails {
+
+    enum Roles
+    {
+        Client,
+        Employee,
+        DeliveryMan
+    }
+
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(columnDefinition = "BINARY(16) DEFAULT (UUID_TO_BIN(UUID()))")
     private UUID id;
-    @Column
+    @Column(nullable = false)
     private String name;
-    @Column
+    @Column(nullable = false)
     private String email;
-    @Column
+    @Column(nullable = false)
     private String password;
+    @Column
+    private String address;
+    @Column(nullable = false)
+    private Roles role;
+    @Lob
+    @Column(columnDefinition = "BLOB")
+    private byte[] profilePicture;
 
     public UUID getId() {
         return id;
@@ -47,6 +61,28 @@ public class User implements UserDetails {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public String getAddress() {
+        return address;
+    }
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public Roles getRole() {
+        return role;
+    }
+    public void setRole(Roles role) {
+        this.role = role;
+    }
+
+    public byte[] getProfilePicture() {
+        return profilePicture;
+    }
+    public void setProfilePicture(byte[] profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
     @Override
     public String getUsername() {
         return email;
