@@ -49,7 +49,7 @@ export const mainTheme = createTheme({
   palette: {
     primary: {
       // light: will be calculated from palette.primary.main,
-      main: '#66c927',
+      main: '#054b65',
       // dark: will be calculated from palette.primary.main,
       // contrastText: will be calculated to contrast with palette.primary.main
     },
@@ -63,27 +63,3 @@ export const mainTheme = createTheme({
     tonalOffset: 0.2,
   },
 });
-
-// const theme = createTheme({
-//   palette: {
-//     primary: {
-//       light?: string;
-//       main: string;
-//       dark?: string;
-//       contrastText?: string;
-//     },
-//     secondary: {
-//       light?: string;
-//       main: string;
-//       dark?: string;
-//       contrastText?: string;
-//     },
-//     success: {
-//       light?: string;
-//       main: string;
-//       dark?: string;
-//       contrastText?: string;
-//     },
-//   },
-// });
-
