@@ -15,19 +15,20 @@ import { useState } from 'react';
 import LoadingButton from '@mui/lab/LoadingButton'
 import delay from '../util/delay';
 import CircularProgress from '@mui/material/CircularProgress';
+import { properties } from '../resources/fetchProperties';
 
 export default function LogIn() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const credentials = new FormData(event.currentTarget);
-    setIsLoading(true);
-    await fetch(`$/api/users/log_in`, {
+    const credentials = Object.fromEntries((new FormData(event.currentTarget)).entries());
+    console.log(credentials);
+    await fetch(`${properties.url}/api/users/log_in`, {
       method: "POST",
       body: JSON.stringify(credentials),
       headers: {
-        'Content-type': 'application/json;charset=UTF-8',
+        'Content-type': 'application/json',
       },
     })
     .then((response) => {
