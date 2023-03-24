@@ -45,6 +45,7 @@ public class UserService {
 
     public void updateNewsletterStatus(boolean isSubscribed, User user) {
         // TODO: Implement
+        //user.setNewsletter(isSubscribed);
         userRepository.save(user);
         log.info("User was saved after update.");
     }

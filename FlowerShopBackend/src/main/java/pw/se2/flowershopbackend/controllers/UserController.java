@@ -51,4 +51,6 @@ public class UserController {
         userService.updateNewsletterStatus(newsletterSubscriptionDto.subscribed(), user);
         return ResponseEntity.status(HttpStatus.OK).body("");
     }
+
+    // TODO: Add the ability to save preferred address
 }
