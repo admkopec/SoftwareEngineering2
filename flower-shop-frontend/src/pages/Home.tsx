@@ -15,9 +15,37 @@ import AdbIcon from '@mui/icons-material/Adb';
 import { ThemeProvider } from '@emotion/react';
 import { mainTheme } from '../components/Themes';
 import LocalFloristIcon from '@mui/icons-material/LocalFlorist';
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+import { Divider, ListItemIcon } from '@mui/material';
+import { SvgIconComponent } from '@mui/icons-material';
+import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
+import FeaturedPlayListRoundedIcon from '@mui/icons-material/FeaturedPlayListRounded';
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import Copyright from '../components/Copyright';
 
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+interface UserSettingsItem {
+  key: string,
+  icon: SvgIconComponent,
+  callback: () => void
+}
+
+const pages = ['Home', 'Products', 'Contact'];
+const profileSettingsUser : UserSettingsItem[] = [{ 
+    key: 'Profile', 
+    icon: AccountCircleRoundedIcon, 
+    callback: () => { }
+  }, {
+    key: 'My Orders',
+    icon: FeaturedPlayListRoundedIcon, 
+    callback: () => { }
+  }, {
+    key: 'Logout',
+    icon: LogoutRoundedIcon,
+    callback: () => { }
+  }];
+const profileSettingsEmployee = ['Profile', 'Orders', 'Logout'];
+const profileSettingsDeliveryMan = ['Profile', 'Deliveries', 'Logout'];
+
 
 function Home() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -26,8 +54,13 @@ function Home() {
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
+
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
+  };
+
+  const handleOpenBasket = (event: React.MouseEvent<HTMLElement>) => {
+    
   };
 
   const handleCloseNavMenu = () => {
@@ -129,9 +162,18 @@ function Home() {
             </Box>
 
             <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Show items in your basket" sx={{ p: 0, mr: 3 }}>
+                <IconButton onClick={handleOpenBasket} sx={{ p: 0, mr: 3 }}>
+                  <ShoppingBagIcon fontSize='large' sx={{ color: 'white' }}></ShoppingBagIcon>
+                </IconButton>
+              </Tooltip>
+            </Box>
+
+            {/* TODO: implement switching between menu and button */}
+            <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Guest User" src="#" />
+                  <Avatar alt="User" src="#" />
                 </IconButton>
               </Tooltip>
               <Menu
@@ -150,9 +192,16 @@ function Home() {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center" color={setting === 'Logout' ? 'error.light' : 'inherit' }>{setting}</Typography>
+                <MenuItem onClick={handleCloseNavMenu}>
+                  <Avatar sx={{ height: 30, width: 30, mr: 1 }}/> Welcome, User
+                </MenuItem>
+                <Divider />
+                {profileSettingsUser.map((setting) => (
+                  <MenuItem key={setting.key} onClick={handleCloseUserMenu}>
+                    <ListItemIcon>
+                      <setting.icon></setting.icon>
+                    </ListItemIcon>
+                    <Typography textAlign="center" color={setting.key === 'Logout' ? 'error.light' : 'inherit' }>{setting.key}</Typography>
                   </MenuItem>
                 ))}
               </Menu>
@@ -160,8 +209,8 @@ function Home() {
           </Toolbar>
         </Container>
       </AppBar>
+      <Copyright></Copyright>
     </ThemeProvider>
-    
   );
 }
 

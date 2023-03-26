@@ -14,8 +14,14 @@ import { mainTheme } from './Themes';
 import { useState } from 'react';
 import LoadingButton from '@mui/lab/LoadingButton'
 import CircularProgress from '@mui/material/CircularProgress';
+import { useNavigate } from 'react-router-dom';
+
+interface JWTToken {
+  jwttoken: string
+}
 
 export default function LogIn() {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -34,12 +40,16 @@ export default function LogIn() {
         throw new Error("ERROR " + response.status);
       }
     })
-    .then(() => {
+    .then((responseJSON : JWTToken) => {
       console.log("Success logging in.");
+      sessionStorage.setItem('loggedIn', 'true');
+      sessionStorage.setItem('jwttoken', responseJSON.jwttoken);
+      navigate('/');
     })
     .catch((e) => {
       console.log("Error when trying to log in: " + e);
     });
+    
     setIsLoading(false);
   };
 

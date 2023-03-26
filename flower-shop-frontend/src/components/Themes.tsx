@@ -1,3 +1,4 @@
+import { createGlobalStyle } from 'styled-components';
 import { createTheme } from '@mui/material/styles';
 
 declare module '@mui/material/styles' {
@@ -63,3 +64,12 @@ export const mainTheme = createTheme({
     tonalOffset: 0.2,
   },
 });
+
+export const GlobalStyle = createGlobalStyle`
+  body {
+    margin: 0;
+    padding: 0;
+    background: white;
+    font-family: Open-Sans, Helvetica, Sans-Serif;
+  }
+`;

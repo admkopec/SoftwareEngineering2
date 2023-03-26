@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import reportWebVitals from './reportWebVitals'
 import router from './pages/Router';
+import { GlobalStyle } from './components/Themes';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -13,6 +14,7 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
+    <GlobalStyle />
     <RouterProvider router={router} fallbackElement={<></>}/>
   </React.StrictMode>
 );
