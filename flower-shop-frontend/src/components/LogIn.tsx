@@ -13,9 +13,7 @@ import Copyright from './Copyright';
 import { mainTheme } from './Themes';
 import { useState } from 'react';
 import LoadingButton from '@mui/lab/LoadingButton'
-import delay from '../util/delay';
 import CircularProgress from '@mui/material/CircularProgress';
-import { properties } from '../resources/fetchProperties';
 
 export default function LogIn() {
   const [isLoading, setIsLoading] = useState(false);
@@ -23,8 +21,7 @@ export default function LogIn() {
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const credentials = Object.fromEntries((new FormData(event.currentTarget)).entries());
-    console.log(credentials);
-    await fetch(`${properties.url}/api/users/log_in`, {
+    await fetch(`/api/users/log_in`, {
       method: "POST",
       body: JSON.stringify(credentials),
       headers: {
@@ -37,13 +34,12 @@ export default function LogIn() {
         throw new Error("ERROR " + response.status);
       }
     })
-    .then((bookings) => {
+    .then(() => {
       console.log("Success logging in.");
     })
     .catch((e) => {
       console.log("Error when trying to log in: " + e);
     });
-    await delay(2000);
     setIsLoading(false);
   };
 

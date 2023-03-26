@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import App from "../App";
+import Home from "../pages/Home";
 import LogIn from "../components/LogIn";
 import SignUp from "../components/SignUp";
 import SignUpSuccess from "../components/SignUpSuccess";
@@ -8,7 +8,7 @@ import ErrorPage from "./ErrorPage";
 export const routes = [
   {
     path: "/",
-    element: <App />,
+    element: <Home />,
     errorElement: <ErrorPage />,
   },
   {
