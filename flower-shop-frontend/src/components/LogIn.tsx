@@ -14,11 +14,6 @@ import { mainTheme } from './Themes';
 import { useState } from 'react';
 import LoadingButton from '@mui/lab/LoadingButton'
 import CircularProgress from '@mui/material/CircularProgress';
-import { useNavigate } from 'react-router-dom';
-
-interface JWTToken {
-  jwttoken: string
-}
 
 export default function LogIn() {
   const navigate = useNavigate();
@@ -31,6 +26,7 @@ export default function LogIn() {
       method: "POST",
       body: JSON.stringify(credentials),
       headers: {
+        'Content-type': 'application/json',
         'Content-type': 'application/json',
       },
     })
