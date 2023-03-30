@@ -20,9 +20,9 @@
 name: Build and deploy JAR app to Azure Web App
 
 env:
-  AZURE_WEBAPP_NAME: pw-flowershop    # set this to the name of your Azure Web App
+  AZURE_WEBAPP_NAME: 'pw-flowershop'  # set this to the name of your Azure Web App
   JAVA_VERSION: '17'                  # set this to the Java version to use
-  DISTRIBUTION: coretto               # set this to the Java distribution
+  DISTRIBUTION: 'corretto'            # set this to the Java distribution
 
 on:
   push:
