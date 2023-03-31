@@ -31,6 +31,8 @@ env:
 
 jobs:
   build:
+    name: Build the app
+    
     runs-on: ubuntu-latest
     
     defaults:
@@ -57,8 +59,8 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: FlowerShop
-        path: flower-shop-frontend/build
-
+        path: flower-shop-frontend/build/
+        
   deploy:
     name: Deploy web app
 
@@ -67,7 +69,7 @@ jobs:
     needs: build
     
     environment:
-      name: 'Development'
+      name: 'production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
@@ -81,6 +83,5 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        slot-name: 'Development'
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_FRONTEND }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
