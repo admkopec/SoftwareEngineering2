@@ -44,8 +44,13 @@ public class UserService {
     }
 
     public void updateNewsletterStatus(boolean isSubscribed, User user) {
-        // TODO: Implement
-        //user.setNewsletter(isSubscribed);
+        user.setNewsletter(isSubscribed);
+        userRepository.save(user);
+        log.info("User was saved after update.");
+    }
+
+    public void updateProfilePicture(byte[] image, User user) {
+        user.setProfilePicture(image);
         userRepository.save(user);
         log.info("User was saved after update.");
     }
