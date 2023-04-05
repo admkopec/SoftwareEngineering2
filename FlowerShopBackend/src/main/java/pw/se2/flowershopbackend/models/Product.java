@@ -21,6 +21,9 @@ public class Product {
     @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false)
+    private double price;
+
     @Lob
     @Column(columnDefinition = "BLOB")
     private byte[] image;
@@ -41,13 +44,13 @@ public class Product {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
-    }
+    public String getDescription() { return description; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public void setDescription(String description) { this.description = description; }
+
+    public double getPrice() { return price; }
+
+    public void setPrice(double price) { this.price = price; }
 
     public byte[] getImage() {
         return image;

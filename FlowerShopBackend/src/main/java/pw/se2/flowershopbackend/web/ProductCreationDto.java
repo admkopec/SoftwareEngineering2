@@ -5,13 +5,13 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
-public record ProductCreationDto(UUID productID, @NotEmpty String name, @NotEmpty String description, @NotNull byte[] image) {
+public record ProductCreationDto(UUID productID, @NotEmpty String name, @NotEmpty String description, @NotNull byte[] image, double price) {
     public Product convertToModel() {
         Product product = new Product(productID != null ? productID : UUID.randomUUID());
         product.setName(this.name());
         product.setDescription(this.description());
         product.setImage(this.image());
-        // TODO: Set other properties
+        product.setPrice(this.price());
         return product;
     }
 }

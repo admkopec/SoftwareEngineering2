@@ -5,8 +5,8 @@ import java.util.UUID;
 
 // TODO: Implement
 
-public record ProductDto(UUID productID, String name, String description, byte[] image) {
+public record ProductDto(UUID productID, String name, String description, byte[] image, double price) {
     public static ProductDto valueFrom(Product product) {
-        return new ProductDto(product.getId(), product.getName(), product.getDescription(), product.getImage());
+        return new ProductDto(product.getId(), product.getName(), product.getDescription(), product.getImage(), product.getPrice());
     }
 }

@@ -7,6 +7,9 @@ import org.springframework.web.server.ResponseStatusException;
 import pw.se2.flowershopbackend.dao.ProductRepository;
 import pw.se2.flowershopbackend.models.Product;
 
+import java.util.List;
+import java.util.UUID;
+
 public class ProductService {
     private static final Logger log = LoggerFactory.getLogger(ProductService.class);
 
@@ -15,13 +18,30 @@ public class ProductService {
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
-    public Product validateAndSave(Product product) {
+    public void validateAndSave(Product product) {
         if (isValidProduct(product)) {
             log.info("Product is valid");
             product = productRepository.save(product);
             log.info("Product was saved.");
         }
-        return product;
+    }
+
+    public Product getProduct(UUID id) {
+        Product product;
+
+        if(productRepository.existsById(id))
+        {
+            product = productRepository.getById(id);
+            return product;
+        }
+        else
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such product");
+        }
+    }
+
+    public List<Product> getAllProducts () {
+        return productRepository.findAll();
     }
 
     private boolean isValidProduct(Product product) {
