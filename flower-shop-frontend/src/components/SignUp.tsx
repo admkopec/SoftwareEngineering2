@@ -11,13 +11,13 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { ThemeProvider } from '@mui/material/styles';
-import Copyright from './Copyright';
-import { mainTheme } from './Themes'
-import delay from '../util/delay';
 import { useNavigate } from 'react-router-dom';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
+import delay from '../util/delay';
+import { mainTheme } from './Themes';
+import Copyright from './Copyright';
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ export default function SignUp() {
     setIsLoading(true);
     console.log({
       email: data.get('email'),
-      password: data.get('password'),
+      password: data.get('password')
     });
     await delay(2000);
     navigate('/signup/success');
@@ -45,7 +45,7 @@ export default function SignUp() {
             marginTop: 8,
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
+            alignItems: 'center'
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
@@ -78,24 +78,10 @@ export default function SignUp() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                />
+                <TextField required fullWidth id="email" label="Email Address" name="email" autoComplete="email" />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="username"
-                  label="Username"
-                  name="username"
-                  autoComplete="username"
-                />
+                <TextField required fullWidth id="username" label="Username" name="username" autoComplete="username" />
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -117,10 +103,10 @@ export default function SignUp() {
             </Grid>
             <LoadingButton
               loading={isLoading}
-              loadingIndicator={<CircularProgress color='primary' size={20} />}
+              loadingIndicator={<CircularProgress color="primary" size={20} />}
               type="submit"
               variant="contained"
-              sx={{ mt: 3, mb: 2, float: 'right'}}
+              sx={{ mt: 3, mb: 2, float: 'right' }}
             >
               Sign Up
             </LoadingButton>

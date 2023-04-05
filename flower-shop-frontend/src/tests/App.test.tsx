@@ -1,12 +1,11 @@
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom'
-import Home from '../pages/Home';
+import '@testing-library/jest-dom';
+import HomePage from '../pages/HomePage';
 
 describe('<App />', () => {
   test('App renders learn react link', () => {
-    render(<Home />);
+    render(<HomePage />);
     const linkElement = screen.getByText(/learn react/i);
     expect(linkElement).toBeInTheDocument();
   });
 });
-
