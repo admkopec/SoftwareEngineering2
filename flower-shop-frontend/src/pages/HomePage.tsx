@@ -11,24 +11,20 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 import { ThemeProvider } from '@emotion/react';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import { Divider, Grid, ListItemIcon } from '@mui/material';
-import { Search, SvgIconComponent } from '@mui/icons-material';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import FeaturedPlayListRoundedIcon from '@mui/icons-material/FeaturedPlayListRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import { NavigateFunction, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Copyright from '../components/Copyright';
-import ProductsPreview from '../components/ProductsPreview';
 import { MenuItemSettings, User } from '../resources/dataTypes';
 import { mainTheme } from '../components/Themes';
 import SplitButton from '../components/SplitButton';
 import LoginRoundedIcon from '@mui/icons-material/Login';
 import AppRegistrationRoundedIcon from '@mui/icons-material/AppRegistrationRounded';
 import Logo from '../components/Logo';
-import SearchBar from '../components/SearchBar';
 
 const pagesLinks = ['Home', 'Products', 'Contact'];
 
@@ -266,10 +262,6 @@ function HomePage() {
         maxWidth="xl"
         sx={{ pr: 4, pl: 4 }}
       >
-        <Grid item>
-          <SearchBar />
-          <ProductsPreview />
-        </Grid>
         <Grid item>
           <Copyright />
         </Grid>
