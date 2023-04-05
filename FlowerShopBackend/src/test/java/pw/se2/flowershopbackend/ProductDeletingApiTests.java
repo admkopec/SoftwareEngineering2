@@ -46,12 +46,6 @@ public class ProductDeletingApiTests {
         public ProductService productService() {
             return new ProductService(productRepository);
         }
-
-        @Bean
-        public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-            // configure AuthenticationManager so that it knows from where to load user for matching credentials
-            return authenticationConfiguration.getAuthenticationManager();
-        }
     }
     @Autowired
     private MockMvc mvc;
