@@ -15,7 +15,7 @@ import java.util.UUID;
 @Table
 public class User implements UserDetails {
 
-    enum Roles
+    public enum Roles
     {
         Client,
         Employee,
