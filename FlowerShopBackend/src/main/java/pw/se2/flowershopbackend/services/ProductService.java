@@ -6,6 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import pw.se2.flowershopbackend.dao.ProductRepository;
 import pw.se2.flowershopbackend.models.Product;
+import pw.se2.flowershopbackend.models.User;
+
+import java.util.UUID;
 
 public class ProductService {
     private static final Logger log = LoggerFactory.getLogger(ProductService.class);
@@ -42,6 +45,18 @@ public class ProductService {
         }
         log.error("Product is null.");
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product is null.");
+    }
+
+    public void deleteProduct(UUID productId) {
+        if (productRepository.existsById(productId)) {
+            productRepository.deleteById(productId);
+        }
+    }
+
+    public void assertEmployee(User user) {
+        if (user.getRole() != User.Roles.Employee) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized to add product");
+        }
     }
 
     // MARK: - Helpers
