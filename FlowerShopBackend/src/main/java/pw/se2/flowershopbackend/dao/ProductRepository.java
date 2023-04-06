@@ -6,4 +6,5 @@ import pw.se2.flowershopbackend.models.Product;
 import java.util.UUID;
 
 public interface ProductRepository extends JpaRepository<Product, UUID> {
+    Product getById(UUID id);
 }

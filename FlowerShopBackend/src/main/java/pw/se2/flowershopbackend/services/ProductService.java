@@ -10,6 +10,9 @@ import pw.se2.flowershopbackend.models.User;
 
 import java.util.UUID;
 
+import java.util.List;
+import java.util.UUID;
+
 public class ProductService {
     private static final Logger log = LoggerFactory.getLogger(ProductService.class);
 
@@ -18,13 +21,30 @@ public class ProductService {
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
-    public Product validateAndSave(Product product) {
+    public void validateAndSave(Product product) {
         if (isValidProduct(product)) {
             log.info("Product is valid");
             product = productRepository.save(product);
             log.info("Product was saved.");
         }
-        return product;
+    }
+
+    public Product getProduct(UUID id) {
+        Product product;
+
+        if(productRepository.existsById(id))
+        {
+            product = productRepository.getById(id);
+            return product;
+        }
+        else
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such product");
+        }
+    }
+
+    public List<Product> getAllProducts () {
+        return productRepository.findAll();
     }
 
     private boolean isValidProduct(Product product) {
@@ -55,7 +75,7 @@ public class ProductService {
 
     public void assertEmployee(User user) {
         if (user.getRole() != User.Roles.Employee) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized to add product");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized to add products");
         }
     }
 

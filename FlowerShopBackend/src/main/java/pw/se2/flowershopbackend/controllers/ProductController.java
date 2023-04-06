@@ -11,6 +11,7 @@ import pw.se2.flowershopbackend.services.ProductService;
 import pw.se2.flowershopbackend.web.ProductCreationDto;
 import pw.se2.flowershopbackend.web.ProductDto;
 
+import java.util.Collection;
 import java.util.UUID;
 
 @RestController
@@ -25,11 +26,23 @@ public class ProductController {
     }
 
     @PostMapping(path = "")
-    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductCreationDto productDto) {
+    public ResponseEntity<String> createProduct(@RequestBody ProductCreationDto productDto) {
         productService.assertEmployee(User.getAuthenticated());
         Product product = productDto.convertToModel();
-        product = productService.validateAndSave(product);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ProductDto.valueFrom(product));
+        productService.validateAndSave(product);
+        return ResponseEntity.status(HttpStatus.CREATED).body("");
+    }
+
+    @GetMapping(path = "")
+    public ResponseEntity<Collection<ProductDto>> fetchProducts() {
+        Collection<Product> products = productService.getAllProducts();
+        return ResponseEntity.status(HttpStatus.OK).body(products.stream().map(ProductDto::valueFrom).toList());
+    }
+
+    @GetMapping(path = "/{productID}")
+    public ResponseEntity<ProductDto> fetchProduct(@PathVariable UUID productID) {
+        Product product = productService.getProduct(productID);
+        return ResponseEntity.status(HttpStatus.OK).body(ProductDto.valueFrom(product));
     }
 
     @DeleteMapping(path = "/{productId}")
