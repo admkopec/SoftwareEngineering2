@@ -1,4 +1,4 @@
-name: Frontend CI pipeline
+name: Flower Shop Frontend Build & Linting CI
 
 on:
   push:
@@ -11,15 +11,15 @@ on:
       - reopened
   workflow_call:
 
+defaults:
+    run:
+      working-directory: flower-shop-frontend/
+
 jobs:
   test:
     name: Code testing
 
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: flower-shop-frontend/
 
     timeout-minutes: 10
 
