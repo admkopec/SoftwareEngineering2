@@ -271,7 +271,6 @@ function HomePage() {
         <Grid item>
           <ProductsPreview/>
         </Grid>
-
       </Grid>
       <Footer/>
     </ThemeProvider>
