@@ -25,6 +25,9 @@ import SplitButton from '../components/SplitButton';
 import LoginRoundedIcon from '@mui/icons-material/Login';
 import AppRegistrationRoundedIcon from '@mui/icons-material/AppRegistrationRounded';
 import Logo from '../components/Logo';
+import SearchBar from "../components/SearchBar";
+import Footer from "../components/Footer";
+import ProductsPreview from "../components/ProductsPreview";
 
 const pagesLinks = ['Home', 'Products', 'Contact'];
 
@@ -255,6 +258,7 @@ function HomePage() {
       </AppBar>
       <Grid
         container
+        display ="flex"
         direction="column"
         alignItems="center"
         justifyContent="center"
@@ -263,9 +267,14 @@ function HomePage() {
         sx={{ pr: 4, pl: 4 }}
       >
         <Grid item>
-          <Copyright />
+          <SearchBar/>
         </Grid>
+        <Grid item>
+          <ProductsPreview/>
+        </Grid>
+
       </Grid>
+      <Footer/>
     </ThemeProvider>
   );
 }
