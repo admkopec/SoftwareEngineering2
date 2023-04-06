@@ -18,8 +18,8 @@ describe('<SplitButton />', () => {
     test('SplitButton has buttons with \'Log In\' and \'Sign Up\'', () => {
         render(<RouterProvider router={router} />);
         const logInElement = screen.getByText('Log In');
-        expect(logInElement).toBeInTheDocument();
         fireEvent.click(logInElement);
+        expect(logInElement).toBeInTheDocument();
         const signUpElement = screen.getByText('Sign Up');
         expect(signUpElement).toBeInTheDocument();
     });    

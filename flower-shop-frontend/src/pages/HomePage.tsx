@@ -265,12 +265,6 @@ function HomePage() {
         sx={{ pr: 4, pl: 4 }}
       >
         <Grid item>
-          <SearchBar />
-        </Grid>
-        <Grid item>
-          <ProductsPreview />
-        </Grid>
-        <Grid item>
           <Copyright />
         </Grid>
       </Grid>
