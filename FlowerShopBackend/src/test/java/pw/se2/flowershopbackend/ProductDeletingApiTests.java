@@ -96,7 +96,7 @@ public class ProductDeletingApiTests {
     @Test
     public void givenValidCredentials_whileDeletingProduct_thenReturnError() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-                employee, null, user.getAuthorities()
+                employee, null, employee.getAuthorities()
         ));
         mvc.perform(delete("/api/products/" + productId))
                 .andExpect(status().is2xxSuccessful());
