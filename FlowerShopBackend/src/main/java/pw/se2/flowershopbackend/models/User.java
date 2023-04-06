@@ -15,7 +15,7 @@ import java.util.UUID;
 @Table
 public class User implements UserDetails {
 
-    enum Roles
+    public enum Roles
     {
         Client,
         Employee,
@@ -37,6 +37,10 @@ public class User implements UserDetails {
     private String address;
     @Column(nullable = false)
     private Roles role;
+
+    @Column(nullable = false)
+    private boolean newsletter;
+
     @Lob
     @Column(columnDefinition = "BLOB")
     private byte[] profilePicture;
@@ -75,6 +79,13 @@ public class User implements UserDetails {
     }
     public void setRole(Roles role) {
         this.role = role;
+    }
+
+    public boolean getNewsletter() {
+        return newsletter;
+    }
+    public void setNewsletter(boolean newsletter) {
+        this.newsletter = newsletter;
     }
 
     public byte[] getProfilePicture() {

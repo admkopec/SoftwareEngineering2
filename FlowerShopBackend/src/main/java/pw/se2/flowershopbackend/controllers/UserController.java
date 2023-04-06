@@ -52,5 +52,18 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body("");
     }
 
+    @PostMapping(path = "/profilePicture")
+    public ResponseEntity<String> updateProfilePicture(@RequestBody byte[] image) {
+        User user = User.getAuthenticated();
+        userService.updateProfilePicture(image, user);
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+
+    @GetMapping(path = "/profilePicture")
+    public ResponseEntity<byte[]> fetchProfilePicture() {
+        User user = User.getAuthenticated();
+        return ResponseEntity.status(HttpStatus.OK).body(user.getProfilePicture());
+    }
+
     // TODO: Add the ability to save preferred address
 }
