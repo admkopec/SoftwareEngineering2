@@ -19,16 +19,18 @@ import FeaturedPlayListRoundedIcon from '@mui/icons-material/FeaturedPlayListRou
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import { useNavigate } from 'react-router-dom';
 import Copyright from '../components/Copyright';
+import ProductsPreview from '../components/ProductsPreview';
 import { MenuItemSettings, User } from '../resources/dataTypes';
 import { mainTheme } from '../components/Themes';
 import SplitButton from '../components/SplitButton';
 import LoginRoundedIcon from '@mui/icons-material/Login';
 import AppRegistrationRoundedIcon from '@mui/icons-material/AppRegistrationRounded';
 import Logo from '../components/Logo';
+import SearchBar from '../components/SearchBar';
 
 const pagesLinks = ['Home', 'Products', 'Contact'];
 
-const authButtons: MenuItemSettings[] = [
+export const authButtons: MenuItemSettings[] = [
   {
     key: 'Log In',
     icon: LoginRoundedIcon,
@@ -262,6 +264,12 @@ function HomePage() {
         maxWidth="xl"
         sx={{ pr: 4, pl: 4 }}
       >
+        <Grid item>
+          <SearchBar />
+        </Grid>
+        <Grid item>
+          <ProductsPreview />
+        </Grid>
         <Grid item>
           <Copyright />
         </Grid>
