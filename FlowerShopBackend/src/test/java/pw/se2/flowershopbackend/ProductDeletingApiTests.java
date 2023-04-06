@@ -82,7 +82,7 @@ public class ProductDeletingApiTests {
     public void givenInvalidCredentials_whileDeletingProduct_thenReturnError() throws Exception {
         try {
             SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-                    user, null, employee.getAuthorities()
+                    user, null, user.getAuthorities()
             ));
             mvc.perform(delete("/api/products/" + productId))
                     .andExpect(status().is4xxClientError())

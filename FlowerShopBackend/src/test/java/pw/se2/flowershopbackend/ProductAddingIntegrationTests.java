@@ -78,7 +78,7 @@ public class ProductAddingIntegrationTests {
     public void givenInvalidCredentials_whileAddingProduct_thenReturnError() throws Exception {
         try {
             SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-                    user, null, employee.getAuthorities()
+                    user, null, user.getAuthorities()
             ));
             mvc.perform(post("/api/products").contentType(MediaType.APPLICATION_JSON)
                             .content("{\"productID\":\"A9007774-CA6F-4D99-9E58-A3913988F1DD\",\"name\":\"Daisy\", \"description\":\"Description\", \"image\":\"\", \"price\":15.0}")
