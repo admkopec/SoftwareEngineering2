@@ -18,20 +18,19 @@ import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import FeaturedPlayListRoundedIcon from '@mui/icons-material/FeaturedPlayListRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import { useNavigate } from 'react-router-dom';
-import Copyright from '../components/Copyright';
 import { MenuItemSettings, User } from '../resources/dataTypes';
 import { mainTheme } from '../components/Themes';
 import SplitButton from '../components/SplitButton';
 import LoginRoundedIcon from '@mui/icons-material/Login';
 import AppRegistrationRoundedIcon from '@mui/icons-material/AppRegistrationRounded';
 import Logo from '../components/Logo';
-import SearchBar from "../components/SearchBar";
+import SearchBar from '../components/SearchBar';
 import Footer from "../components/Footer";
 import ProductsPreview from "../components/ProductsPreview";
 
 const pagesLinks = ['Home', 'Products', 'Contact'];
 
-const authButtons: MenuItemSettings[] = [
+export const authButtons: MenuItemSettings[] = [
   {
     key: 'Log In',
     icon: LoginRoundedIcon,

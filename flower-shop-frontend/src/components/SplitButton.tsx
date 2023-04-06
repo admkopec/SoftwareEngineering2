@@ -44,12 +44,13 @@ export default function SplitButton({ options }: ButtonOptionsProps) {
   return (
     <>
       <ButtonGroup variant="contained" ref={anchorRef} aria-label="split button">
-        <Button onClick={() => options[selectedIndex].callback(navigate)}>{options[selectedIndex].key}</Button>
+        <Button onClick={() => options[selectedIndex].callback(navigate)} aria-label="action auth button" title="action auth button">{options[selectedIndex].key}</Button>
         <Button
           size="small"
           aria-controls={open ? 'split-button-menu' : undefined}
           aria-expanded={open ? 'true' : undefined}
-          aria-label="select merge strategy"
+          aria-label="split button"
+          title="split button"
           aria-haspopup="menu"
           onClick={handleToggle}
         >
