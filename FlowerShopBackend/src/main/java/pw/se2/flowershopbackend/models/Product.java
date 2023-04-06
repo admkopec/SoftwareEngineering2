@@ -2,16 +2,15 @@ package pw.se2.flowershopbackend.models;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Lob;
+import javax.persistence.*;
 import java.util.UUID;
 
+@Entity
+@Table
 public class Product {
     @Id
-    @GeneratedValue(generator = "User")
-    @GenericGenerator(name = "User", strategy = "") // TODO: Make sure this is user provided always
+    //@GeneratedValue(generator = "User")
+    //@GenericGenerator(name = "User", strategy = "") // TODO: Make sure this is user provided always
     @Column(columnDefinition = "BINARY(16) DEFAULT (UUID_TO_BIN(UUID()))")
     private UUID id;
 
@@ -30,6 +29,10 @@ public class Product {
 
     public Product(UUID productId) {
         this.id = productId;
+    }
+
+    public Product() {
+        this.id = UUID.randomUUID();
     }
 
     public UUID getId() {
