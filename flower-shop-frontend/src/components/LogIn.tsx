@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -9,41 +9,46 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { ThemeProvider } from '@mui/material/styles';
-import Copyright from './Copyright';
-import { mainTheme } from './Themes';
 import { useState } from 'react';
-import LoadingButton from '@mui/lab/LoadingButton'
-import delay from '../util/delay';
+import LoadingButton from '@mui/lab/LoadingButton';
 import CircularProgress from '@mui/material/CircularProgress';
-import { properties } from '../resources/fetchProperties';
+import { useNavigate } from 'react-router-dom';
+import { mainTheme } from './Themes';
+import Copyright from './Copyright';
+
+interface JWTToken {
+  jwttoken: string;
+}
 
 export default function LogIn() {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const credentials = Object.fromEntries((new FormData(event.currentTarget)).entries());
-    console.log(credentials);
-    await fetch(`${properties.url}/api/users/log_in`, {
-      method: "POST",
+    const credentials = Object.fromEntries(new FormData(event.currentTarget).entries());
+    await fetch(`/api/users/log_in`, {
+      method: 'POST',
       body: JSON.stringify(credentials),
       headers: {
-        'Content-type': 'application/json',
-      },
-    })
-    .then((response) => {
-      if (response.ok) return response.json();
-      else {
-        throw new Error("ERROR " + response.status);
+        'Content-type': 'application/json'
       }
     })
-    .then((bookings) => {
-      console.log("Success logging in.");
-    })
-    .catch((e) => {
-      console.log("Error when trying to log in: " + e);
-    });
-    await delay(2000);
+      .then((response) => {
+        if (response.ok) return response.json();
+
+        throw new Error(`ERROR ${response.status}`);
+      })
+      .then((responseJSON: JWTToken) => {
+        console.log('Success logging in.');
+        sessionStorage.setItem('loggedIn', 'true');
+        sessionStorage.setItem('jwttoken', responseJSON.jwttoken);
+        console.log(responseJSON.jwttoken);
+        navigate('/');
+      })
+      .catch((e) => {
+        console.log(`Error when trying to log in: ${e}`);
+      });
     setIsLoading(false);
   };
 
@@ -89,19 +94,23 @@ export default function LogIn() {
             />
             <LoadingButton
               loading={isLoading}
-              loadingIndicator={<CircularProgress color='primary' size={20} />}
+              loadingIndicator={<CircularProgress color="primary" size={20} />}
               type="submit"
               variant="contained"
-              sx={{ mt: 3, mb: 2, float: 'right'}}
+              sx={{ mt: 3, mb: 2, float: 'right' }}
             >
               Log In
             </LoadingButton>
             <Grid container>
               <Grid item xs>
-                <Link href="/signup" variant="body2" sx={{
-                float: 'right'
-                }}>
-                  {"Don't have an account? Sign Up"}
+                <Link
+                  href="/signup"
+                  variant="body2"
+                  sx={{
+                    float: 'right'
+                  }}
+                >
+                  Don&apos;t have an account? Sign Up
                 </Link>
               </Grid>
             </Grid>

@@ -1,5 +1,5 @@
-import * as React from 'react'
-import { isRouteErrorResponse, useRouteError } from "react-router-dom";
+import * as React from 'react';
+import { isRouteErrorResponse, useRouteError } from 'react-router-dom';
 
 export default function ErrorPage() {
   const error = useRouteError();
@@ -7,13 +7,15 @@ export default function ErrorPage() {
 
   if (isRouteErrorResponse(error)) {
     return (
-    <div id="error-page">
+      <div id="error-page">
         <h1>Oops!</h1>
         <p>Sorry, an error has occurred.</p>
         <p>
-        <i>{error.status} {error.statusText}</i>
+          <i>
+            {error.status} {error.statusText}
+          </i>
         </p>
-    </div>
+      </div>
     );
   }
 

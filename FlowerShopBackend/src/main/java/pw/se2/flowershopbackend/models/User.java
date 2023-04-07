@@ -4,6 +4,7 @@ import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @Table
 public class User implements UserDetails {
 
-    enum Roles
+    public enum Roles
     {
         Client,
         Employee,
@@ -36,6 +37,10 @@ public class User implements UserDetails {
     private String address;
     @Column(nullable = false)
     private Roles role;
+
+    @Column(nullable = false)
+    private boolean newsletter;
+
     @Lob
     @Column(columnDefinition = "BLOB")
     private byte[] profilePicture;
@@ -74,6 +79,13 @@ public class User implements UserDetails {
     }
     public void setRole(Roles role) {
         this.role = role;
+    }
+
+    public boolean getNewsletter() {
+        return newsletter;
+    }
+    public void setNewsletter(boolean newsletter) {
+        this.newsletter = newsletter;
     }
 
     public byte[] getProfilePicture() {
@@ -121,5 +133,9 @@ public class User implements UserDetails {
     }
     public int hashCode() {
         return this.email.hashCode();
+    }
+
+    public static User getAuthenticated() {
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }
