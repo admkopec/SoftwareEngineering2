@@ -61,6 +61,14 @@ public class ProductService {
                 log.error("Empty product description.");
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Empty product description.");
             }
+            if (product.getPrice() < 0) {
+                log.error("Negative product price.");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Negative product price.");
+            }
+            if (product.getQuantity() < 0) {
+                log.error("Negative product quantity.");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Negative product quantity.");
+            }
             return true;
         }
         log.error("Product is null.");

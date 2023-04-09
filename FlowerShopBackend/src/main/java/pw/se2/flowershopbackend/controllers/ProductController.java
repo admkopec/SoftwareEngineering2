@@ -47,11 +47,8 @@ public class ProductController {
 
     @DeleteMapping(path = "/{productId}")
     public void deleteProduct(@PathVariable UUID productId) {
-        log.info("Entered deleting node");
         productService.assertEmployee(User.getAuthenticated());
-        log.info("Asserted employee");
         productService.deleteProduct(productId);
-        log.info("Deleted product");
     }
 
 }

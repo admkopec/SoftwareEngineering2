@@ -12,21 +12,15 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import pw.se2.flowershopbackend.controllers.ProductController;
 import pw.se2.flowershopbackend.dao.ProductRepository;
 import pw.se2.flowershopbackend.dao.UserRepository;
 import pw.se2.flowershopbackend.models.Product;
-import pw.se2.flowershopbackend.models.User;
 import pw.se2.flowershopbackend.services.ProductService;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -39,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(ProductController.class)
 @AutoConfigureMockMvc(addFilters = false)
-public class ProductFetchingIntegrationTests {
+public class ProductFetchingApiTests {
     @TestConfiguration
     static class ProductFetchingApiTestsContextConfiguration {
         @Autowired
