@@ -23,8 +23,8 @@ export default function SignUpSuccess() {
           <Typography component="h3">You have been successfully signed up!</Typography>
           <Typography component="h3">
             You may{' '}
-            <Link href="/login" variant="body1">
-              log in
+            <Link href="/" variant="body1">
+              start using website
             </Link>{' '}
             now.
           </Typography>
