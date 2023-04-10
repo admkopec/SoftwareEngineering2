@@ -18,7 +18,7 @@ import { useState } from "react";
 import Copyright from "./Copyright";
 
 const FooterBox = styled(Box)(() => ({
-    margin: theme.spacing('20%', 0, 0,0),
+    margin: theme.spacing('20px', 0, 0,0),
     padding: theme.spacing('2%', 0, '2%',0),
     width: '100%',
     height: '30%',
