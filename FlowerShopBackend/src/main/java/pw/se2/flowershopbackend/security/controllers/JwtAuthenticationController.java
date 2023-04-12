@@ -1,6 +1,8 @@
 package pw.se2.flowershopbackend.security.controllers;
 
 //import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -18,7 +20,7 @@ import pw.se2.flowershopbackend.security.web.JwtResponse;
 
 import javax.validation.Valid;
 
-//@Tag(name = "Authentication")
+@Tag(name = "Authentication")
 @RestController
 @RequestMapping(path = "/api/users/log_in")
 public class JwtAuthenticationController {
@@ -33,7 +35,7 @@ public class JwtAuthenticationController {
         this.userDetailsService = userDetailsService;
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<JwtResponse> createAuthenticationToken(@Valid @RequestBody JwtRequest authenticationRequest) throws Exception {
 
         authenticate(authenticationRequest.username(), authenticationRequest.password());

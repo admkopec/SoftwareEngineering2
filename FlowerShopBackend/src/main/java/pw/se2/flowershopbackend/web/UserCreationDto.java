@@ -6,7 +6,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
 // TODO: Maybe add account type, address, etc.?
-public record UserCreationDto(@NotEmpty String name, @Email String email, @NotEmpty String password) {
+public record UserCreationDto(@NotEmpty String name, @NotEmpty @Email String email, @NotEmpty String password) {
     public User convertToModel() {
         User user = new User();
         user.setName(this.name());
