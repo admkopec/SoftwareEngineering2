@@ -15,9 +15,12 @@ import { useNavigate } from 'react-router-dom';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
-import delay from '../util/delay';
-import { mainTheme } from '../resources/themes';
+import { mainTheme } from './Themes';
 import Copyright from './Copyright';
+
+interface JWTToken {
+  jwttoken: string;
+}
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -25,14 +28,40 @@ export default function SignUp() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    const formEntries = Object.fromEntries(new FormData(event.currentTarget).entries());
     setIsLoading(true);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password')
-    });
-    await delay(2000);
-    navigate('/signup/success');
+    if (formEntries.password !== formEntries.verifyPassword) {
+      setIsLoading(false);
+      throw new Error(`Passwords don't match`);
+    }
+    const credentials = {
+      'name': formEntries.firstName + ' ' + formEntries.lastName,
+      'email': formEntries.email,
+      'password': formEntries.password
+    };
+    console.log(JSON.stringify(credentials));
+    await fetch(`/api/users`, {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+      headers: {
+        'Content-type': 'application/json'
+      }
+    })
+        .then((response) => {
+          if (response.ok) return response.json();
+
+          throw new Error(`ERROR ${response.status}`);
+        })
+        .then((responseJSON: JWTToken) => {
+          console.log('Success signing up.');
+          sessionStorage.setItem('loggedIn', 'true');
+          sessionStorage.setItem('jwttoken', responseJSON.jwttoken);
+          console.log(responseJSON.jwttoken);
+          navigate('/signup/success');
+        })
+        .catch((e) => {
+          console.log(`Error when trying to sign up: ${e}`);
+        });
     setIsLoading(false);
   };
 
@@ -58,12 +87,12 @@ export default function SignUp() {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  autoComplete="given-name"
-                  name="firstName"
                   required
                   fullWidth
                   id="firstName"
                   label="First Name"
+                  name="firstName"
+                  autoComplete="given-name"
                   autoFocus
                 />
               </Grid>
@@ -78,10 +107,7 @@ export default function SignUp() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField required fullWidth id="email" label="Email Address" name="email" autoComplete="email" />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField required fullWidth id="username" label="Username" name="username" autoComplete="username" />
+                <TextField required fullWidth id="email" label="Email Address" name="email" type="email" autoComplete="username" />
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -92,6 +118,17 @@ export default function SignUp() {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                    required
+                    fullWidth
+                    name="verifyPassword"
+                    label="Verify Password"
+                    type="password"
+                    id="confirm-password"
+                    autoComplete="new-password"
                 />
               </Grid>
               <Grid item xs={12}>
