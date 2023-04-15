@@ -2,7 +2,9 @@ package pw.se2.flowershopbackend.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import pw.se2.flowershopbackend.dao.OrderRepository;
 import pw.se2.flowershopbackend.dao.UserRepository;
+import pw.se2.flowershopbackend.services.OrderService;
 import pw.se2.flowershopbackend.services.UserService;
 import pw.se2.flowershopbackend.dao.ProductRepository;
 import pw.se2.flowershopbackend.services.ProductService;
@@ -19,4 +21,8 @@ public class MainConfig {
         return new ProductService(productRepository);
     }
 
+    @Bean
+    public OrderService orderService(OrderRepository orderRepository) {
+        return new OrderService(orderRepository);
+    }
 }
