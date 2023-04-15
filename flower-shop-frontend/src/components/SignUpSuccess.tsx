@@ -4,7 +4,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Link from '@mui/material/Link';
 import { ThemeProvider } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import { mainTheme } from './Themes';
+import { mainTheme } from '../resources/themes';
 
 export default function SignUpSuccess() {
   return (

@@ -8,7 +8,7 @@ import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
 import MenuList from '@mui/material/MenuList';
 import { useNavigate } from 'react-router-dom';
-import { MenuItemSettings } from '../resources/dataTypes';
+import { MenuItemSettings } from '../resources/types';
 import MenuItem from '@mui/material/MenuItem';
 
 interface ButtonOptionsProps {

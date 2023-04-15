@@ -13,6 +13,14 @@ export interface User {
   address?: string;
 }
 
+export interface Product {
+  id: string,
+  name: string,
+  image: Blob,
+  description: string,
+  price: number,
+}
+
 export interface MenuItemSettings {
   key: string;
   icon: SvgIconComponent;

@@ -4,6 +4,8 @@ import LogIn from '../components/LogIn';
 import SignUp from '../components/SignUp';
 import SignUpSuccess from '../components/SignUpSuccess';
 import ErrorPage from './ErrorPage';
+import ProductInfo from '../components/ProductInfo';
+import ProductInfoPage from './ProductInfoPage';
 
 enum User {
   Client,
@@ -35,6 +37,11 @@ export const routes = [
   {
     path: '/signup/success',
     element: <SignUpSuccess />,
+    errorElement: <ErrorPage />
+  },
+  {
+    path: '/product/:productId',
+    element: <ProductInfoPage />,
     errorElement: <ErrorPage />
   }
 ];

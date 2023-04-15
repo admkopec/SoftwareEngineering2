@@ -8,7 +8,7 @@ import MenuItem from '@mui/material/MenuItem'
 import SearchIcon from "@mui/icons-material/Search";
 import * as React from "react";
 import {alpha, styled} from "@mui/material/styles";
-import {mainTheme as theme} from "./Themes";
+import {mainTheme as theme} from "../resources/themes";
 import {Divider} from "@mui/material";
 import LocalPhone from '@mui/icons-material/LocalPhone';
 import Email from '@mui/icons-material/Email';

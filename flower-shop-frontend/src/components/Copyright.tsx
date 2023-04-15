@@ -2,7 +2,7 @@ import { SxProps, Theme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import {alpha, styled} from "@mui/material/styles";
-import {mainTheme as theme} from "./Themes";
+import {mainTheme as theme} from "../resources/themes";
 import Grid from "@mui/material/Grid";
 
 

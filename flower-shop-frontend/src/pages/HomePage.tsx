@@ -18,8 +18,8 @@ import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import FeaturedPlayListRoundedIcon from '@mui/icons-material/FeaturedPlayListRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import { useNavigate } from 'react-router-dom';
-import { MenuItemSettings, User } from '../resources/dataTypes';
-import { mainTheme } from '../components/Themes';
+import { MenuItemSettings, User } from '../resources/types';
+import { mainTheme } from '../resources/themes';
 import SplitButton from '../components/SplitButton';
 import LoginRoundedIcon from '@mui/icons-material/Login';
 import AppRegistrationRoundedIcon from '@mui/icons-material/AppRegistrationRounded';
@@ -27,6 +27,7 @@ import Logo from '../components/Logo';
 import SearchBar from '../components/SearchBar';
 import Footer from "../components/Footer";
 import ProductsPreview from "../components/ProductsPreview";
+import { IS_DEV } from '../resources/setup';
 
 const pagesLinks = ['Home', 'Products', 'Contact'];
 
@@ -61,10 +62,10 @@ const profileSettingsUser: MenuItemSettings[] = [
   {
     key: 'Logout',
     icon: LogoutRoundedIcon,
-    callback: (navigate) => {
+    callback: () => {
       sessionStorage.removeItem('jwttoken');
       sessionStorage.setItem('loggedIn', 'false');
-      navigate('/');
+      window.location.reload();
     }
   }
 ];
@@ -100,7 +101,7 @@ function HomePage() {
     await fetch(`/api/users`, {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('jwttoken')}`,
+        'Authorization': `Bearer ${sessionStorage.getItem('jwttoken')}`,
         'Content-type': 'application/json; charset=UTF-8'
       }
     })
@@ -110,13 +111,12 @@ function HomePage() {
         throw new Error(`ERROR ${response.status}`);
       })
       .then((responseJSON: User) => {
-        console.log('Success fetching user data.');
-        console.log(responseJSON);
+        IS_DEV && console.log('Success fetching user data.');
+        IS_DEV && console.log(responseJSON);
         setUserData(responseJSON);
-        return true;
       })
       .catch((e) => {
-        console.log(`Error when trying to fetch user data: ${e}`);
+        IS_DEV && console.log(`Error when trying to fetch user data: ${e}`);
       });
   };
 
@@ -133,7 +133,6 @@ function HomePage() {
       <AppBar position="static">
         <Container maxWidth="xl">
           <Toolbar disableGutters>
-
             <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
               <IconButton
                 size="large"

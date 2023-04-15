@@ -8,7 +8,7 @@ import PaginationItem from '@mui/material/PaginationItem';
 import Typography from '@mui/material/Typography';
 import { CardMedia, Divider, List, ListItem, Slide } from '@mui/material';
 import React from 'react';
-import { mainTheme } from './Themes';
+import { mainTheme } from '../resources/themes';
 
 export default function ProductsPreview() {
     const [currentItemIndex, setCurrentItemIndex] = React.useState(1);

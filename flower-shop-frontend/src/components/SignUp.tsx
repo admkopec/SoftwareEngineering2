@@ -16,7 +16,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import delay from '../util/delay';
-import { mainTheme } from './Themes';
+import { mainTheme } from '../resources/themes';
 import Copyright from './Copyright';
 
 export default function SignUp() {
