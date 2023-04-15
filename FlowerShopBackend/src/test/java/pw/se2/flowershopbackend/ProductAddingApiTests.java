@@ -24,7 +24,6 @@ import pw.se2.flowershopbackend.models.User;
 import pw.se2.flowershopbackend.services.ProductService;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -34,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(ProductController.class)
 @AutoConfigureMockMvc(addFilters = false)
-public class ProductAddingIntegrationTests {
+public class ProductAddingApiTests {
     @TestConfiguration
     static class ProductAddingApiTestsContextConfiguration {
         @Autowired
@@ -81,7 +80,7 @@ public class ProductAddingIntegrationTests {
                     user, null, user.getAuthorities()
             ));
             mvc.perform(post("/api/products").contentType(MediaType.APPLICATION_JSON)
-                            .content("{\"productID\":\"A9007774-CA6F-4D99-9E58-A3913988F1DD\",\"name\":\"Daisy\", \"description\":\"Description\", \"image\":\"\", \"price\":15.0}")
+                            .content("{\"productID\":\"A9007774-CA6F-4D99-9E58-A3913988F1DD\",\"name\":\"Daisy\", \"description\":\"Description\", \"image\":\"\", \"price\":15.0, \"quantity\":100, \"category\":0}")
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().is4xxClientError())
                     .andExpect(result -> assertNotNull(result.getResolvedException()))
@@ -97,7 +96,7 @@ public class ProductAddingIntegrationTests {
                 employee, null, employee.getAuthorities()
         ));
         mvc.perform(post("/api/products").contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"productID\":\"A9007774-CA6F-4D99-9E58-A3913988F1DD\",\"name\":\"Daisy\", \"description\":\"Description\", \"image\":\"\", \"price\":15.0}")
+                        .content("{\"productID\":\"A9007774-CA6F-4D99-9E58-A3913988F1DD\",\"name\":\"Daisy\", \"description\":\"Description\", \"image\":\"\", \"price\":15.0, \"quantity\":100, \"category\":0}")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
     }
