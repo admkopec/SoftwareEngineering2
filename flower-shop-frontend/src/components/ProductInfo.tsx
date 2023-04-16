@@ -12,7 +12,6 @@ interface ProductInfoProps {
 export default function ProductInfo(props: ProductInfoProps){
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
     const [productData, setProductData] = React.useState<Product | null>(null);
-    const [productImage, setProductImage] = React.useState<string>('');
     
     const fetchProduct = async () => {
         setIsLoading(true);
@@ -50,7 +49,6 @@ export default function ProductInfo(props: ProductInfoProps){
             <Typography>{productData?.price}</Typography>
             <Typography>{productData?.quantity}</Typography>
             <Typography>{productData?.category}</Typography>
-            {/* <Image src={''}></Image> */}
         </Container>
     );
 }

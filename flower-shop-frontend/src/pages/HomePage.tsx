@@ -121,10 +121,6 @@ function HomePage() {
       });
   };
 
-
-
-
-
   React.useEffect(() => {
     if (sessionStorage.getItem('loggedIn') === 'true') {
       fetchUserData();
@@ -134,9 +130,9 @@ function HomePage() {
   }, []);
 
   return (
-    <ThemeProvider theme={mainTheme}>
-      <AppBar position="static" >
-        <Container>
+    <>
+      <AppBar position="static" sx={{width: '100%', maxWidth: '100%', zIndex: 1000}}>
+        <Container sx={{width: '100%', maxWidth: '100%'}}>
           <Toolbar disableGutters>
             <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
               <IconButton
@@ -267,7 +263,7 @@ function HomePage() {
         justifyContent="center"
         spacing={2}
         width='100%'
-        sx={{ pr: 4, pl: 4 }}
+        sx={{ pr: 4, pl: 4, zIndex: 1, maxWidth: "100%" }}
       >
         <Grid item>
           <SearchBar/>
@@ -276,8 +272,8 @@ function HomePage() {
           <ProductsPreview tag='Flowers'/>
         </Grid>
       </Grid>
-      <Footer/>
-    </ThemeProvider>
+      <Footer />
+    </>
   );
 }
 

@@ -23,7 +23,7 @@ enum Category {
 export interface Product {
   id: string,
   name: string,
-  image: Blob,
+  image: string,
   description: string,
   price: number,
   quantity: number,

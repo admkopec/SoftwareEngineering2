@@ -58,7 +58,7 @@ export default function SplitButton({ options }: ButtonOptionsProps) {
       </ButtonGroup>
       <Popper
         sx={{
-          zIndex: 1
+          zIndex: 1000
         }}
         open={open}
         anchorEl={anchorRef.current}

@@ -81,7 +81,7 @@ export default function ProductsPreview(props: ProductsPreviewProps) {
   } 
 
   const ProductItem = React.forwardRef((props: ProductItemProps, ref: ForwardedRef<HTMLLIElement>) => (
-    <ListItem sx={{ position: 'absolute', display: 'block',  margin: '0 auto', alignSelf: 'center', width: 'fit-content' }} key={props.productIndex} ref={ref}>
+    <ListItem sx={{ position: 'absolute', margin: '0 auto', alignSelf: 'center', width: 'fit-content' }} key={props.productIndex} ref={ref}>
       <Slide
         direction={props.direction}
         in={currentItemIndex === props.productIndex}
