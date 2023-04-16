@@ -5,13 +5,13 @@ import ProductsPreview from '../components/ProductsPreview';
 describe('<Products Preview />', () => {
 
     test('renders title text', () => {
-      render(<ProductsPreview />);
+      render(<ProductsPreview tag='Flower'/>);
       const textElement = screen.getByText('Classic Bouquets');
       expect(textElement).toBeInTheDocument();
     });
 
     test('renders a list with items', () => {
-      render(<ProductsPreview />);
+      render(<ProductsPreview tag='Flower'/>);
       const listElement = screen.getAllByRole('list');
       expect(listElement[0]).toBeInTheDocument();
       const listItemsArray = screen.getAllByRole('listitem');
