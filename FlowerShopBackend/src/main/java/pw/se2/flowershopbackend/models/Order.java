@@ -23,38 +23,20 @@ public class Order {
     @Column(columnDefinition = "BINARY(16) DEFAULT (UUID_TO_BIN(UUID()))")
     private UUID id;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "client_id", nullable = false, columnDefinition = "BINARY(16) DEFAULT (UUID_TO_BIN(UUID()))")
-    private User client;
-
-    @ManyToOne(optional = true)
-    @JoinColumn(name = "deliveryMan_id", nullable = true, columnDefinition = "BINARY(16) DEFAULT (UUID_TO_BIN(UUID()))")
-    private User deliveryMan;
-
     @Column(nullable = false)
     private String address;
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String Address) {
-        this.address = address;
-    }
-
-
     //optional
-    @Column(nullable = true)
+    @Column
     private Status status;
 
-    public Status getStatus() {
-        return status;
-    }
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "client_id", nullable = false, columnDefinition = "BINARY(16)")
+    private User client;
 
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
+    @ManyToOne
+    @JoinColumn(name = "deliveryMan_id", columnDefinition = "BINARY(16)")
+    private User deliveryMan;
 
     @OneToMany(mappedBy = "order", orphanRemoval = true)
     private Set<OrderProduct> orderProducts = new LinkedHashSet<>();
@@ -81,5 +63,28 @@ public class Order {
 
     public void setDeliveryMan(User deliveryMan) {
         this.deliveryMan = deliveryMan;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String Address) {
+        this.address = address;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

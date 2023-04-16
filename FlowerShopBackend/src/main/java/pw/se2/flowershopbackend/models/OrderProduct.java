@@ -13,16 +13,24 @@ public class OrderProduct {
     @GeneratedValue
     private Long id;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @Column(nullable = false)
+    private Long quantity;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "product_id", nullable = false, columnDefinition = "BINARY(16)")
+    private Product product;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "order_id", nullable = false, columnDefinition = "BINARY(16)")
+    private Order order;
 
     public Long getId() {
         return id;
     }
 
-    @Column(nullable = false)
-    private Long quantity;
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Long getQuantity() {
         return quantity;
@@ -31,14 +39,6 @@ public class OrderProduct {
     public void setQuantity(Long quantity) {
         this.quantity = quantity;
     }
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "product_id", nullable = false, columnDefinition = "BINARY(16) DEFAULT (UUID_TO_BIN(UUID()))")
-    private Product product;
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "order_id", nullable = false, columnDefinition = "BINARY(16) DEFAULT (UUID_TO_BIN(UUID()))")
-    private Order order;
 
     @Override
     public boolean equals(Object o) {
