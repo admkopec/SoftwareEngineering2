@@ -14,6 +14,7 @@ import pw.se2.flowershopbackend.web.ProductCreationDto;
 import pw.se2.flowershopbackend.web.ProductDto;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @Tag(name = "Products")
@@ -36,7 +37,15 @@ public class ProductController {
         productService.validateAndSave(product);
     }
 
-    @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createProducts(@RequestBody List<ProductCreationDto> productDtos) {
+        productService.assertEmployee(User.getAuthenticated());
+        List<Product> products = productDtos.stream().map(ProductCreationDto::convertToModel).toList();
+        productService.validateAndSaveMany(products);
+    }
+
+    @GetMapping(path = "")
     public ResponseEntity<Collection<ProductDto>> fetchProducts() {
         Collection<Product> products = productService.getAllProducts();
         return ResponseEntity.status(HttpStatus.OK).body(products.stream().map(ProductDto::valueFrom).toList());
@@ -50,8 +59,11 @@ public class ProductController {
 
     @DeleteMapping(path = "/{productId}")
     public void deleteProduct(@PathVariable UUID productId) {
+        log.info("Entered deleting node");
         productService.assertEmployee(User.getAuthenticated());
+        log.info("Asserted employee");
         productService.deleteProduct(productId);
+        log.info("Deleted product");
     }
 
 }
