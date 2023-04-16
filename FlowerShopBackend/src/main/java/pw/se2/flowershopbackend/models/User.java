@@ -7,9 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table
@@ -44,6 +42,12 @@ public class User implements UserDetails {
     @Lob
     @Column(columnDefinition = "LONGBLOB")
     private byte[] profilePicture;
+
+    @OneToMany(mappedBy = "client", orphanRemoval = true)
+    private Set<Order> orders = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "deliveryMan", orphanRemoval = true)
+    private Set<Order> ordersToDeliver = new LinkedHashSet<>();
 
     public UUID getId() {
         return id;
@@ -93,6 +97,22 @@ public class User implements UserDetails {
     }
     public void setProfilePicture(byte[] profilePicture) {
         this.profilePicture = profilePicture;
+    }
+
+    public Set<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Set<Order> orders) {
+        this.orders = orders;
+    }
+
+    public Set<Order> getOrdersToDeliver() {
+        return ordersToDeliver;
+    }
+
+    public void setOrdersToDeliver(Set<Order> ordersToDeliver) {
+        this.ordersToDeliver = ordersToDeliver;
     }
 
     @Override
