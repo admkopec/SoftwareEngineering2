@@ -24,9 +24,18 @@ public class ProductService {
     public void validateAndSave(Product product) {
         if (isValidProduct(product)) {
             log.info("Product is valid");
-            product = productRepository.save(product);
+            productRepository.save(product);
             log.info("Product was saved.");
         }
+    }
+    public void validateAndSaveMany(List<Product> products) {
+        products.forEach((product) -> {
+            if (isValidProduct(product)) {
+                log.info("Product is valid");
+                productRepository.save(product);
+                log.info("Product was saved.");
+            }
+        });
     }
 
     public Product getProduct(UUID id) {

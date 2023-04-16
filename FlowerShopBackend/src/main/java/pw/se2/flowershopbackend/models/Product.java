@@ -35,7 +35,7 @@ public class Product {
     private Category category;
 
     @Lob
-    @Column(columnDefinition = "BLOB")
+    @Column(columnDefinition = "LONGBLOB")
     private byte[] image;
 
     public Product(UUID productId) {
