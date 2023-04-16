@@ -14,14 +14,15 @@ interface ProductCardProps{
 
 export default function ProductCard(props: ProductCardProps) {
   return (
-      <Grid item style={{width: '250px'}}>
+      <Grid item style={{width: '400px'}}>
         <Card variant="outlined">
           <CardMedia
             component="img"
-            alt="roses bouquet"
-            height="300"
-            width="400"
-            image={require('../static/imgs/rose-bouquet.jpg')}
+            width="auto"
+            height="400"
+            sx={{objectFit: 'contain', p: 2}}
+            alt="a picture of a flower"
+            image={'data:image/png;base64,' + props.product.image}
           />
           <CardContent>
             <Typography variant="h5" component="div" role='product name'>
