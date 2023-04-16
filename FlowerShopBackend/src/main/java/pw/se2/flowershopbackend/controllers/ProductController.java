@@ -1,5 +1,6 @@
 package pw.se2.flowershopbackend.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Products")
 @RestController
 @RequestMapping(path = "/api/products")
 public class ProductController {
@@ -27,12 +29,12 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping(path = "")
-    public ResponseEntity<String> createProduct(@RequestBody ProductCreationDto productDto) {
+    @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createProduct(@RequestBody ProductCreationDto productDto) {
         productService.assertEmployee(User.getAuthenticated());
         Product product = productDto.convertToModel();
         productService.validateAndSave(product);
-        return ResponseEntity.status(HttpStatus.CREATED).body("");
     }
 
     @PutMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -49,7 +51,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(products.stream().map(ProductDto::valueFrom).toList());
     }
 
-    @GetMapping(path = "/{productID}")
+    @GetMapping(path = "/{productID}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProductDto> fetchProduct(@PathVariable UUID productID) {
         Product product = productService.getProduct(productID);
         return ResponseEntity.status(HttpStatus.OK).body(ProductDto.valueFrom(product));
@@ -57,8 +59,11 @@ public class ProductController {
 
     @DeleteMapping(path = "/{productId}")
     public void deleteProduct(@PathVariable UUID productId) {
+        log.info("Entered deleting node");
         productService.assertEmployee(User.getAuthenticated());
+        log.info("Asserted employee");
         productService.deleteProduct(productId);
+        log.info("Deleted product");
     }
 
 }
