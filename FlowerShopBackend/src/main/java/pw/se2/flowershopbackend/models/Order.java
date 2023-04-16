@@ -23,7 +23,7 @@ public class Order {
     @Column(columnDefinition = "BINARY(16) DEFAULT (UUID_TO_BIN(UUID()))")
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR(2048)")
     private String address;
 
     //optional

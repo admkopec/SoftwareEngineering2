@@ -33,7 +33,7 @@ public class User implements UserDetails {
     private String email;
     @Column(nullable = false)
     private String password;
-    @Column
+    @Column(columnDefinition = "VARCHAR(2048)")
     private String address;
     @Column(nullable = false)
     private Roles role;
@@ -42,7 +42,7 @@ public class User implements UserDetails {
     private boolean newsletter;
 
     @Lob
-    @Column(columnDefinition = "BLOB")
+    @Column(columnDefinition = "LONGBLOB")
     private byte[] profilePicture;
 
     public UUID getId() {

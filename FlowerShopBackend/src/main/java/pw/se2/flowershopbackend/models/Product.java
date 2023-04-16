@@ -22,7 +22,7 @@ public class Product {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR(2048)")
     private String description;
 
     @Column(nullable = false)
