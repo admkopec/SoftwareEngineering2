@@ -6,85 +6,132 @@ import Container from '@mui/material/Container';
 import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
 import Typography from '@mui/material/Typography';
-import { CardMedia, Divider, List, ListItem, Slide } from '@mui/material';
-import React from 'react';
-import { mainTheme } from './Themes';
+import { Box, CardMedia, Divider, List, ListItem, ListSubheader, Slide } from '@mui/material';
+import React, { ForwardedRef, MutableRefObject, useEffect, useState } from 'react';
+import { mainTheme } from '../resources/themes';
 import ProductCard from './ProductCard';
 import Grid from "@mui/material/Grid";
+import { Product } from '../resources/types';
+import { IS_DEV } from '../resources/setup';
 
-export default function ProductsPreview() {
-  const [currentItemIndex, setCurrentItemIndex] = React.useState(1);
+interface ProductsPreviewProps{
+  tag: string
+}
+
+interface ProductItemProps{
+  productIndex: number,
+  product: Product,
+  direction: 'left' | 'right' | 'up' | 'down' | undefined
+}
+
+enum Changes {
+  None = 0,
+  Right = 1,
+  Left = 2
+}
+
+export default function ProductsPreview(props: ProductsPreviewProps) {
+  const [currentItemIndex, setCurrentItemIndex] = React.useState<number>(1);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [productsArray, setProductsArray] = React.useState<Product[]>([]);
+  const currentProductRef = React.useRef<HTMLLIElement>(null);
+  const [lastChange, setLastChange] = useState<Changes>(Changes.None);
+
+  const fetchProducts = async () => {
+    setIsLoading(true);
+    await fetch(`/api/products`, {
+    method: 'GET',
+    headers: {
+        'Content-type': 'application/json'
+    }
+    })
+    .then((response) => {
+        if (response.ok) return response.json();
+        throw new Error(`ERROR ${response.status}`);
+    })
+    .then((responseJSON: Product[]) => {
+        IS_DEV && console.log('Success fetching product.');
+        IS_DEV && console.log(responseJSON);
+        setProductsArray(responseJSON);
+    })
+    .catch((e) => {
+        IS_DEV && console.log(`Error when trying to fetch product: ${e}`);
+    });
+    setIsLoading(false);
+  };    
+
+  const handleDirection = (productIndex: number) => {
+    if (productIndex < currentItemIndex)
+      return Changes.Right;
+    else if (productIndex > currentItemIndex)
+      return Changes.Left;
+    else
+      return Changes.None;
+  }
+
+  function parseChangeToString(direction: Changes) {
+    switch(direction){
+      case Changes.Left:
+        return 'left';
+      case Changes.Right:
+        return 'right';
+      default:
+        return undefined;
+    }
+  } 
+
+  const ProductItem = React.forwardRef((props: ProductItemProps, ref: ForwardedRef<HTMLLIElement>) => (
+    <ListItem sx={{ position: 'absolute', display: 'block',  margin: '0 auto', alignSelf: 'center', width: 'fit-content' }} key={props.productIndex} ref={ref}>
+      <Slide
+        direction={props.direction}
+        in={currentItemIndex === props.productIndex}
+        addEndListener={(event) => {
+        const _ = event;
+        }}
+        easing={{ enter: mainTheme.transitions.easing.easeOut, exit: mainTheme.transitions.easing.easeIn }}
+      >
+        <Grid container spacing={2}>
+          <ProductCard product={props.product}/>
+        </Grid>
+      </Slide>
+    </ListItem>
+  )
+  );
+
+  useEffect(() => {
+    fetchProducts();
+  }, [])
+
+  const renderItems = () => {
+    return <>
+        {productsArray.map((product: Product, productIndex: number) => {
+          return <ProductItem ref={currentProductRef} direction={parseChangeToString(lastChange)} productIndex={productIndex+1} product={product}/>
+        })}
+    </>; 
+  }
 
   return (
-    <Container>
-      <Typography variant="h5">Classic Bouquets</Typography>
-      <Divider />
-      <List sx={{ minHeight: '970px', minWidth: '80vw' }}>
-        <ListItem sx={{ position: 'absolute', display: 'block' }}>
-          <Slide
-            direction={currentItemIndex <= 1 ? 'left' : 'right'}
-            in={currentItemIndex === 1}
-            addEndListener={(event) => {
-              const _ = event;
-            }}
-            easing={{ enter: mainTheme.transitions.easing.easeOut, exit: mainTheme.transitions.easing.easeIn }}
-          >
-              <Grid container spacing={2}>
-                  <ProductCard />
-                  <ProductCard />
-                  <ProductCard />
-                  <ProductCard />
-                  <ProductCard />
-                  <ProductCard />
-              </Grid>
-          </Slide>
-        </ListItem>
-        <ListItem sx={{ position: 'absolute', display: 'block' }}>
-          <Slide
-            direction={currentItemIndex <= 2 ? 'left' : 'right'}
-            in={currentItemIndex === 2}
-            addEndListener={(event) => {
-              const _ = event;
-            }}
-            easing={{ enter: mainTheme.transitions.easing.easeOut, exit: mainTheme.transitions.easing.easeIn }}
-          >
-              <Grid container spacing={2}>
-                  <Grid item style={{width: '250px'}}>
-              <Card variant="outlined">
-              <CardMedia
-                component="img"
-                alt="tulip bouquet"
-                height="300"
-                width="400"
-                image={require('../static/imgs/tulip-bouquet.webp')}
-              />
-              <CardContent>
-                <Typography variant="h5" component="div">
-                  Tulip
-                </Typography>
-                <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                  Bouquet
-                </Typography>
-                <Typography variant="body2">Very beautiful flower as well!</Typography>
-              </CardContent>
-              <CardActions>
-                <Button size="small">Go to Product</Button>
-              </CardActions>
-            </Card>
-                  </Grid>
-              </Grid>
-          </Slide>
-        </ListItem>
-      </List>
-      <div style={{marginLeft: '28vw', width: '350px'}}>
-      <Pagination
-        count={10}
-        renderItem={(item) => <PaginationItem {...item}/>}
-        onChange={(_, indexNumber: number) => {
-          setCurrentItemIndex(indexNumber);
-        }}
-      />
-      </div>
-    </Container>
+    <React.Fragment>
+      <Container sx={{ m: 'auto', display: 'flex', flexFlow: 'column nowrap', justifyContent: 'center', alignItems: 'center'}}>
+        <ListSubheader component="div" sx={{fontSize: 24, width: '100%'}}>
+          {props.tag}
+          <Divider />
+        </ListSubheader>
+        <List sx={{ height: currentProductRef.current?.clientHeight ? currentProductRef.current?.clientHeight + 30 : 200, minWidth: '80vw', display: 'flex', flexFlow: 'row nowrap', justifyContent: 'center', alignItems: 'center'}}>
+          {renderItems()}
+        </List>
+        <Pagination
+          count={productsArray.length}
+          sx={{p: 2}}
+          renderItem={(item) => <PaginationItem {...item}/>}
+          onChange={(_, indexNumber: number) => {
+            console.log('Index to change to: ' + indexNumber);
+            console.log('Index to change from: ' + currentItemIndex);
+            setCurrentItemIndex(indexNumber);
+            setLastChange(handleDirection(indexNumber));
+          }}
+          />
+      </Container>
+    </React.Fragment>
   );
 }
