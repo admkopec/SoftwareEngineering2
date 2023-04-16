@@ -96,6 +96,7 @@ function HomePage() {
     setAnchorElUser(null);
   };
 
+  // Fetching user information
   const fetchUserData = async () => {
     console.log(sessionStorage.getItem('jwttoken'));
     await fetch(`/api/users`, {
@@ -120,6 +121,10 @@ function HomePage() {
       });
   };
 
+
+
+
+
   React.useEffect(() => {
     if (sessionStorage.getItem('loggedIn') === 'true') {
       fetchUserData();
@@ -130,8 +135,8 @@ function HomePage() {
 
   return (
     <ThemeProvider theme={mainTheme}>
-      <AppBar position="static">
-        <Container maxWidth="xl">
+      <AppBar position="static" >
+        <Container>
           <Toolbar disableGutters>
             <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
               <IconButton
@@ -261,14 +266,14 @@ function HomePage() {
         alignItems="center"
         justifyContent="center"
         spacing={2}
-        maxWidth="xl"
+        width='100%'
         sx={{ pr: 4, pl: 4 }}
       >
         <Grid item>
           <SearchBar/>
         </Grid>
         <Grid item>
-          <ProductsPreview/>
+          <ProductsPreview tag='Flowers'/>
         </Grid>
       </Grid>
       <Footer/>
