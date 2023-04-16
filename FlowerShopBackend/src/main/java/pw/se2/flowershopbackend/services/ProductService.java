@@ -24,9 +24,18 @@ public class ProductService {
     public void validateAndSave(Product product) {
         if (isValidProduct(product)) {
             log.info("Product is valid");
-            product = productRepository.save(product);
+            productRepository.save(product);
             log.info("Product was saved.");
         }
+    }
+    public void validateAndSaveMany(List<Product> products) {
+        products.forEach((product) -> {
+            if (isValidProduct(product)) {
+                log.info("Product is valid");
+                productRepository.save(product);
+                log.info("Product was saved.");
+            }
+        });
     }
 
     public Product getProduct(UUID id) {
@@ -60,6 +69,14 @@ public class ProductService {
             if (isInvalid(product.getDescription())) {
                 log.error("Empty product description.");
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Empty product description.");
+            }
+            if (product.getPrice() < 0) {
+                log.error("Negative product price.");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Negative product price.");
+            }
+            if (product.getQuantity() < 0) {
+                log.error("Negative product quantity.");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Negative product quantity.");
             }
             return true;
         }
