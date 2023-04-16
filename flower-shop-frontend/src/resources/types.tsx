@@ -13,12 +13,21 @@ export interface User {
   address?: string;
 }
 
+enum Category {
+  Flower,
+  Bouquet,
+  GroundFlower,
+  Supplement
+}
+
 export interface Product {
   id: string,
   name: string,
   image: Blob,
   description: string,
   price: number,
+  quantity: number,
+  category: Category
 }
 
 export interface MenuItemSettings {

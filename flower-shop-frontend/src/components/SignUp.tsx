@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
-import { mainTheme } from './Themes';
+import { mainTheme } from '../resources/themes';
 import Copyright from './Copyright';
 
 interface JWTToken {
