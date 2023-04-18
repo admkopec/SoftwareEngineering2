@@ -8,7 +8,9 @@ import javax.validation.constraints.PositiveOrZero;
 import java.util.UUID;
 import java.util.Base64;
 
-public record ProductCreationDto(UUID productID, @NotEmpty String name, @NotEmpty String description, @NotNull String image, @Positive double price, @PositiveOrZero int quantity, @NotNull Product.Category category) {
+public record ProductCreationDto(UUID productID, @NotEmpty String name, @NotEmpty String description,
+                                 @NotEmpty String image, @Positive double price, @PositiveOrZero int quantity,
+                                 @NotNull Product.Category category) {
     public Product convertToModel() {
         Product product = new Product(productID != null ? productID : UUID.randomUUID());
         product.setName(this.name());

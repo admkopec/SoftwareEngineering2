@@ -53,7 +53,7 @@ public class ProductController {
 
     @GetMapping(path = "/{productID}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProductDto> fetchProduct(@PathVariable UUID productID) {
-        Product product = productService.getProduct(productID);
+        Product product = productService.getProductById(productID);
         return ResponseEntity.status(HttpStatus.OK).body(ProductDto.valueFrom(product));
     }
 
