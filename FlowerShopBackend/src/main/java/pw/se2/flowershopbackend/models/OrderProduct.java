@@ -1,28 +1,30 @@
 package pw.se2.flowershopbackend.models;
 
 import org.hibernate.Hibernate;
-
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table
+@Table(name = "client_order_product")
 public class OrderProduct {
+    public OrderProduct() {
+
+    }
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
     private Long quantity;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "product_id", nullable = false, columnDefinition = "BINARY(16)")
-    private Product product;
-
-    @ManyToOne(optional = false)
     @JoinColumn(name = "order_id", nullable = false, columnDefinition = "BINARY(16)")
     private Order order;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "product_id", nullable = false, columnDefinition = "BINARY(16)")
+    private Product product;
 
     public Order getOrder() {
         return order;

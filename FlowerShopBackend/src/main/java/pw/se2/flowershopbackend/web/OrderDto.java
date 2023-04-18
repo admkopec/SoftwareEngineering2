@@ -4,11 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import pw.se2.flowershopbackend.models.Order;
-
 import java.io.IOException;
 import java.util.UUID;
 
-public record OrderDto(UUID orderID, AddressDto deliveryAddress, OrderProductDto[] items) {
+public record OrderDto(UUID orderId, AddressDto deliveryAddress, OrderProductDto[] items) {
     public static OrderDto valueFrom(Order order) {
         AddressDto address;
         try {
