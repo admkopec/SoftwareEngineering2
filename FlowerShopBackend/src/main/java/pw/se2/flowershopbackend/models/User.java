@@ -1,12 +1,10 @@
 package pw.se2.flowershopbackend.models;
 
 import javax.persistence.*;
-
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.*;
 
 @Entity
@@ -40,7 +38,7 @@ public class User implements UserDetails {
     private boolean newsletter;
 
     @Lob
-    @Column(columnDefinition = "LONGBLOB")
+    @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] profilePicture;
 
     @OneToMany(mappedBy = "client", orphanRemoval = true)
@@ -152,7 +150,10 @@ public class User implements UserDetails {
         return obj instanceof User && this.email.equals(((User) obj).email);
     }
     public int hashCode() {
-        return this.email.hashCode();
+        if (email != null)
+            return this.email.hashCode();
+        else
+            return 0;
     }
 
     public static User getAuthenticated() {

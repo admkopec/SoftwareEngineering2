@@ -1,25 +1,23 @@
 package pw.se2.flowershopbackend.models;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table
+@Table(name = "client_order")
 public class Order {
     public enum Status {
-      accepted,
-        declined,
-        delivered,
-
+        Accepted,
+        Declined,
+        Delivered
     }
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+//    Excluded auto-generation
+//    @GeneratedValue(generator = "UUID")
+//    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(columnDefinition = "BINARY(16) DEFAULT (UUID_TO_BIN(UUID()))")
     private UUID id;
 
@@ -35,11 +33,19 @@ public class Order {
     private User client;
 
     @ManyToOne
-    @JoinColumn(name = "deliveryMan_id", columnDefinition = "BINARY(16)")
+    @JoinColumn(name = "delivery_man_id", columnDefinition = "BINARY(16)")
     private User deliveryMan;
 
     @OneToMany(mappedBy = "order", orphanRemoval = true)
     private Set<OrderProduct> orderProducts = new LinkedHashSet<>();
+
+    public Order(UUID orderId) {
+        this.id = orderId;
+    }
+
+    public Order() {
+        this.id = UUID.randomUUID();
+    }
 
     public Set<OrderProduct> getOrderProducts() {
         return orderProducts;
@@ -68,6 +74,7 @@ public class Order {
     public UUID getId() {
         return id;
     }
+
     public void setId(UUID id) {
         this.id = id;
     }
@@ -76,7 +83,7 @@ public class Order {
         return address;
     }
 
-    public void setAddress(String Address) {
+    public void setAddress(String address) {
         this.address = address;
     }
 
