@@ -6,14 +6,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pw.se2.flowershopbackend.models.Order;
 import pw.se2.flowershopbackend.models.User;
 import pw.se2.flowershopbackend.services.OrderService;
 import pw.se2.flowershopbackend.web.OrderDto;
+import pw.se2.flowershopbackend.web.OrderStatusChangeDto;
+import pw.se2.flowershopbackend.web.ProductCreationDto;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -42,5 +41,12 @@ public class OrderController {
         User user = User.getAuthenticated();
         Order order = orderService.getOrder(orderId, user);
         return ResponseEntity.status(HttpStatus.OK).body(OrderDto.valueFrom(order));
+    }
+
+    @PostMapping(path = "/{orderId}/change_status", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public void changeOrderStatus(@PathVariable UUID orderId, @RequestBody OrderStatusChangeDto statusChangeDto) {
+        User user = User.getAuthenticated();
+        orderService.changeStatus(orderId, statusChangeDto.orderStatus(), user);
     }
 }

@@ -47,4 +47,35 @@ public class OrderService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No such order");
         }
     }
+
+    public void changeStatus(UUID orderID, Order.Status status, User user) {
+        Optional<Order> optionalOrder = orderRepository.findById(orderID);
+        if (optionalOrder.isPresent()) {
+            Order order = optionalOrder.get();
+            // Verify the user is authorized to fetch this order
+            switch (status) {
+                case accepted, declined:
+                    if (user.getRole() != User.Roles.Employee) {
+                        log.error("User not authorized to perform this action.");
+                        throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to perform this action.");
+                    }
+                    // TODO: Inform client about the change, if status is accepted assign delivery man
+                    break;
+                case delivered:
+                    if (user.getRole() != User.Roles.DeliveryMan) {
+                        log.error("User not authorized to perform this action.");
+                        throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to perform this action.");
+                    }
+                    // TODO: Inform client and archive order
+                    break;
+                default:
+                    log.error("User not authorized to perform this action.");
+                    throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to perform this action.");
+            }
+            order.setStatus(status);
+            orderRepository.save(order);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No such order");
+        }
+    }
 }
