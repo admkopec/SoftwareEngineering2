@@ -1,15 +1,11 @@
 package pw.se2.flowershopbackend.models;
 
 import javax.persistence.*;
-
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table
@@ -33,7 +29,7 @@ public class User implements UserDetails {
     private String email;
     @Column(nullable = false)
     private String password;
-    @Column
+    @Column(columnDefinition = "VARCHAR(2048)")
     private String address;
     @Column(nullable = false)
     private Roles role;
@@ -42,8 +38,14 @@ public class User implements UserDetails {
     private boolean newsletter;
 
     @Lob
-    @Column(columnDefinition = "BLOB")
+    @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] profilePicture;
+
+    @OneToMany(mappedBy = "client", orphanRemoval = true)
+    private Set<Order> orders = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "deliveryMan", orphanRemoval = true)
+    private Set<Order> ordersToDeliver = new LinkedHashSet<>();
 
     public UUID getId() {
         return id;
@@ -95,6 +97,22 @@ public class User implements UserDetails {
         this.profilePicture = profilePicture;
     }
 
+    public Set<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Set<Order> orders) {
+        this.orders = orders;
+    }
+
+    public Set<Order> getOrdersToDeliver() {
+        return ordersToDeliver;
+    }
+
+    public void setOrdersToDeliver(Set<Order> ordersToDeliver) {
+        this.ordersToDeliver = ordersToDeliver;
+    }
+
     @Override
     public String getUsername() {
         return email;
@@ -132,7 +150,10 @@ public class User implements UserDetails {
         return obj instanceof User && this.email.equals(((User) obj).email);
     }
     public int hashCode() {
-        return this.email.hashCode();
+        if (email != null)
+            return this.email.hashCode();
+        else
+            return 0;
     }
 
     public static User getAuthenticated() {

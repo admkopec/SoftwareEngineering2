@@ -1,7 +1,5 @@
 package pw.se2.flowershopbackend.models;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.util.UUID;
 
@@ -15,6 +13,7 @@ public class Product {
         GroundFlower,
         Supplement
     }
+
     @Id
     @Column(columnDefinition = "BINARY(16) DEFAULT (UUID_TO_BIN(UUID()))")
     private UUID id;
@@ -22,7 +21,7 @@ public class Product {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR(2048)")
     private String description;
 
     @Column(nullable = false)
@@ -35,7 +34,7 @@ public class Product {
     private Category category;
 
     @Lob
-    @Column(columnDefinition = "LONGBLOB")
+    @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] image;
 
     public Product(UUID productId) {
