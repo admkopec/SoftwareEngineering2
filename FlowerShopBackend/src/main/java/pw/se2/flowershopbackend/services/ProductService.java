@@ -3,7 +3,7 @@ package pw.se2.flowershopbackend.services;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import pw.se2.flowershopbackend.dao.ProductRepository;
 import pw.se2.flowershopbackend.models.Product;
@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.List;
 
+@Component
 public class ProductService {
     private static final Logger log = LoggerFactory.getLogger(ProductService.class);
 

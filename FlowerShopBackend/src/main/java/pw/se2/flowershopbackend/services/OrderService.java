@@ -2,26 +2,28 @@ package pw.se2.flowershopbackend.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
-import pw.se2.flowershopbackend.dao.OrderProductRepository;
 import pw.se2.flowershopbackend.dao.OrderRepository;
 import pw.se2.flowershopbackend.models.Order;
-import pw.se2.flowershopbackend.models.Product;
 import pw.se2.flowershopbackend.models.User;
 
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
+@Component
 public class OrderService {
     private static final Logger log = LoggerFactory.getLogger(OrderService.class);
     private final OrderRepository orderRepository;
+    private final UserService userService;
+    private final AlgorithmService algorithmService;
 
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository, UserService userService, AlgorithmService algorithmService) {
         this.orderRepository = orderRepository;
+        this.userService = userService;
+        this.algorithmService = algorithmService;
     }
 
     public Collection<Order> getOrdersFor(User user) {
@@ -90,23 +92,31 @@ public class OrderService {
             Order order = optionalOrder.get();
             // Verify the user is authorized to fetch this order
             switch (status) {
-                case Accepted, Declined:
+                case Accepted, Declined -> {
                     if (user.getRole() != User.Roles.Employee) {
                         log.error("User not authorized to perform this action.");
                         throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to perform this action.");
                     }
-                    // TODO: Inform client about the change, if status is accepted assign delivery man
-                    break;
-                case Delivered:
+                    // Inform client about the change
+                    userService.notify(order.getClient(), status);
+                    if (status == Order.Status.Accepted) {
+                        // If status is accepted assign delivery man
+                        algorithmService.assignDeliveryManFor(order);
+                    }
+                }
+                case Delivered -> {
                     if (user.getRole() != User.Roles.DeliveryMan) {
                         log.error("User not authorized to perform this action.");
                         throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to perform this action.");
                     }
-                    // TODO: Inform client and archive order
-                    break;
-                default:
+                    // Inform client about the successful delivery
+                    userService.notify(order.getClient(), status);
+                }
+                // TODO: Archive order
+                default -> {
                     log.error("User not authorized to perform this action.");
                     throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to perform this action.");
+                }
             }
             order.setStatus(status);
             orderRepository.save(order);
