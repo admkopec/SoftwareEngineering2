@@ -1,5 +1,7 @@
 package pw.se2.flowershopbackend.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -9,8 +11,11 @@ import java.util.UUID;
 @Table(name = "client_order")
 public class Order {
     public enum Status {
+        @JsonProperty("accepted")
         Accepted,
+        @JsonProperty("declined")
         Declined,
+        @JsonProperty("delivered")
         Delivered
     }
 

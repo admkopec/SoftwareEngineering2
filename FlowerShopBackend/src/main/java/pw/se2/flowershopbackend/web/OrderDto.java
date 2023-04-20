@@ -16,6 +16,7 @@ public record OrderDto(UUID orderId, AddressDto deliveryAddress, OrderProductDto
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Corrupted data in database.");
         }
+        // FIXME: Here we have a casting error...
         OrderProductDto[] items = (OrderProductDto[]) order.getOrderProducts().stream().map(OrderProductDto::valueFrom).toArray();
         return new OrderDto(order.getId(), address, items);
     }
