@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pw.se2.flowershopbackend.dao.UserRepository;
 import pw.se2.flowershopbackend.models.Order;
@@ -12,7 +13,7 @@ import pw.se2.flowershopbackend.models.User;
 import java.util.Optional;
 import java.util.UUID;
 
-@Component
+@Service
 public class UserService {
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;

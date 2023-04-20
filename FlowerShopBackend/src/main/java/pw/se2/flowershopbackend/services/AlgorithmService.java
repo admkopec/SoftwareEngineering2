@@ -1,10 +1,9 @@
 package pw.se2.flowershopbackend.services;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import pw.se2.flowershopbackend.models.Order;
-import pw.se2.flowershopbackend.models.User;
 
-@Component
+@Service
 public class AlgorithmService {
     public void assignDeliveryManFor(Order order) {
         // TODO: Implement
