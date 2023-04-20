@@ -122,11 +122,11 @@ public class OrderFetchingApiTests {
         order.setClient(user);
         order.setAddress("{\"street\":\"\",\"buildingNo\":\"\",\"houseNo\":\"\",\"city\":\"\",\"postalCode\":\"\",\"country\":\"\"}");
         LinkedHashSet<OrderProduct> orderProducts = new LinkedHashSet<>();
-        //OrderProduct orderProduct = new OrderProduct();
-        //Product product = new Product();
-        //orderProduct.setProduct(product);
-        //orderProduct.setQuantity(1L);
-        //orderProducts.add(orderProduct);
+        OrderProduct orderProduct = new OrderProduct();
+        Product product = new Product();
+        orderProduct.setProduct(product);
+        orderProduct.setQuantity(1L);
+        orderProducts.add(orderProduct);
         order.setOrderProducts(orderProducts);
 
         LinkedHashSet<Order> orders = new LinkedHashSet<>();
@@ -167,6 +167,13 @@ public class OrderFetchingApiTests {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$", hasSize(0)));
+        LinkedHashSet<Order> orders = new LinkedHashSet<>();
+        orders.add(order);
+        deliveryMan.setOrdersToDeliver(orders);
+        mvc.perform(get("/api/orders")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test
@@ -177,7 +184,7 @@ public class OrderFetchingApiTests {
         mvc.perform(get("/api/orders/"+order.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.id").exists());
+                .andExpect(jsonPath("$.orderId").exists());
     }
 
     @Test
@@ -188,7 +195,7 @@ public class OrderFetchingApiTests {
         mvc.perform(get("/api/orders/"+order.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.id").exists());
+                .andExpect(jsonPath("$.orderId").exists());
     }
 
     @Test
@@ -203,6 +210,6 @@ public class OrderFetchingApiTests {
         mvc.perform(get("/api/orders/"+order.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.id").exists());
+                .andExpect(jsonPath("$.orderId").exists());
     }
 }
