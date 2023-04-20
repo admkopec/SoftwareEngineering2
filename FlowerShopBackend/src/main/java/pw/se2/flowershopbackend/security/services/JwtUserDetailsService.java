@@ -9,7 +9,6 @@ import pw.se2.flowershopbackend.models.User;
 
 import java.util.Optional;
 
-@Service
 public class JwtUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
