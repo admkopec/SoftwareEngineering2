@@ -6,7 +6,7 @@ import Container from '@mui/material/Container';
 import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
 import Typography from '@mui/material/Typography';
-import { Box, CardMedia, Divider, List, ListItem, ListSubheader, Slide } from '@mui/material';
+import {Box, CardMedia, CircularProgress, Divider, List, ListItem, ListSubheader, Slide} from '@mui/material';
 import React, { ForwardedRef, MutableRefObject, useEffect, useState } from 'react';
 import { mainTheme } from '../resources/themes';
 import ProductCard from './ProductCard';
@@ -103,6 +103,15 @@ export default function ProductsPreview(props: ProductsPreviewProps) {
   }, [])
 
   const renderItems = () => {
+    if (productsArray.length === 0) {
+      if (isLoading) {
+        // Return Loading Indicator
+        return <CircularProgress/>
+      } else {
+        // Return some info message
+        return <Typography variant="h5" color="text.secondary">Couldn't find matching products</Typography>
+      }
+    }
     return <>
         {productsArray.map((product: Product, productIndex: number) => {
           return <ProductItem ref={currentProductRef} direction={parseChangeToString(lastChange)} productIndex={productIndex+1} product={product}/>
