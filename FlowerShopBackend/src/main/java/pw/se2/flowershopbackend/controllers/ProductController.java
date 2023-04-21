@@ -14,6 +14,7 @@ import pw.se2.flowershopbackend.web.ProductCreationDto;
 import pw.se2.flowershopbackend.web.ProductDto;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @Tag(name = "Products")
@@ -36,6 +37,14 @@ public class ProductController {
         productService.validateAndSave(product);
     }
 
+    @PutMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createProducts(@RequestBody List<ProductCreationDto> productDtos) {
+        productService.assertEmployee(User.getAuthenticated());
+        List<Product> products = productDtos.stream().map(ProductCreationDto::convertToModel).toList();
+        productService.validateAndSaveMany(products);
+    }
+
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<ProductDto>> fetchProducts() {
         Collection<Product> products = productService.getAllProducts();
@@ -44,7 +53,7 @@ public class ProductController {
 
     @GetMapping(path = "/{productID}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProductDto> fetchProduct(@PathVariable UUID productID) {
-        Product product = productService.getProduct(productID);
+        Product product = productService.getProductById(productID);
         return ResponseEntity.status(HttpStatus.OK).body(ProductDto.valueFrom(product));
     }
 

@@ -51,7 +51,7 @@ public class WebSecurityConfig {
                 .antMatchers("/api/users/log_in").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/users").permitAll()
                 // TODO: Think if we should allow anyone to browse products
-                //.antMatchers(HttpMethod.GET, "/api/products").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/products").permitAll()
                 .antMatchers(HttpMethod.GET, "/actuator/**").permitAll()
                 // all other requests need to be authenticated
                 .antMatchers("/api/**").authenticated()

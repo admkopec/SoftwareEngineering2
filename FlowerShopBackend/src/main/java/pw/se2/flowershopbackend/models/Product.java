@@ -1,6 +1,6 @@
 package pw.se2.flowershopbackend.models;
 
-import org.hibernate.annotations.GenericGenerator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -8,23 +8,39 @@ import java.util.UUID;
 @Entity
 @Table
 public class Product {
+    public enum Category
+    {
+        @JsonProperty("flower")
+        Flower,
+        @JsonProperty("bouquet")
+        Bouquet,
+        @JsonProperty("groundFlower")
+        GroundFlower,
+        @JsonProperty("supplement")
+        Supplement
+    }
+
     @Id
-    //@GeneratedValue(generator = "User")
-    //@GenericGenerator(name = "User", strategy = "") // TODO: Make sure this is user provided always
     @Column(columnDefinition = "BINARY(16) DEFAULT (UUID_TO_BIN(UUID()))")
     private UUID id;
 
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR(2048)")
     private String description;
 
     @Column(nullable = false)
     private double price;
 
+    @Column(nullable = false)
+    private int quantity;
+
+    @Column(nullable = false)
+    private Category category;
+
     @Lob
-    @Column(columnDefinition = "BLOB")
+    @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] image;
 
     public Product(UUID productId) {
@@ -54,6 +70,14 @@ public class Product {
     public double getPrice() { return price; }
 
     public void setPrice(double price) { this.price = price; }
+
+    public int getQuantity() { return quantity; }
+
+    public void setQuantity(int quantity) { this.quantity = quantity; }
+
+    public Category getCategory() { return category; }
+
+    public void setCategory(Category category) { this.category = category; }
 
     public byte[] getImage() {
         return image;
