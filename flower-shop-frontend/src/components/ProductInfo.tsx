@@ -6,12 +6,13 @@ import Link from '@mui/material/Link';
 import Typography from "@mui/material/Typography";
 import {IS_DEV, Roles} from '../resources/constants';
 import {useLocation, useNavigate} from "react-router-dom";
+import Paper from "@mui/material/Paper";
+import FloweryImage from './FloweryImage';
 import Box from "@mui/material/Box";
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded';
 import {Grid} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import {Validate, ValidationGroup} from 'mui-validate'
-
 
 export default function ProductInfo(){
     const locData = useLocation();
@@ -89,7 +90,12 @@ export default function ProductInfo(){
                 {breadcrumbs}
             </Breadcrumbs>
             <Grid container spacing={2}>
-                {/*add some image*/}
+                <Grid item xs={12} md={4} justifyContent={'center'}>
+                    <Paper elevation={4} sx={{p:3, width: 'fit-content', alignSelf: 'center'}} >
+                        <FloweryImage src={'data:image/png;base64,' + productData?.image} width={'auto'}
+                                      height={'auto'}/>
+                    </Paper>
+                </Grid>
                 <Grid container item xs={12} md={8} textAlign={'center'}>
                     <Grid item xs={12} flexGrow={0}>
                         <Typography variant={'h3'}>{productData?.name}</Typography>
