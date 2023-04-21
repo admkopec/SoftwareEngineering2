@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useState} from 'react';
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -10,17 +11,12 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { ThemeProvider } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
-import { mainTheme } from '../resources/themes';
 import Copyright from './Copyright';
-
-interface JWTToken {
-  jwttoken: string;
-}
+import {Credentials, JWTToken} from "../resources/types";
+import {IS_DEV, Roles} from "../resources/constants";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -30,43 +26,40 @@ export default function SignUp() {
     event.preventDefault();
     const formEntries = Object.fromEntries(new FormData(event.currentTarget).entries());
     setIsLoading(true);
-    if (formEntries.password !== formEntries.verifyPassword) {
-      setIsLoading(false);
-      throw new Error(`Passwords don't match`);
-    }
-    const credentials = {
-      'name': formEntries.firstName + ' ' + formEntries.lastName,
-      'email': formEntries.email,
-      'password': formEntries.password
+    // TODO: implement validation for these forms (removed previous password match ver.)
+    let credentials : Credentials = {
+      name: `${formEntries.firstName} ${formEntries.lastName}`,
+      email: formEntries.email.toString(),
+      password: formEntries.password.toString(),
+      role: Roles.Employee.valueOf()
     };
-    console.log(JSON.stringify(credentials));
+    IS_DEV && console.log(JSON.stringify(credentials));
     await fetch(`/api/users`, {
       method: 'POST',
       body: JSON.stringify(credentials),
       headers: {
         'Content-type': 'application/json'
       }
-    })
-        .then((response) => {
-          if (response.ok) return response.json();
+    }).then((response) => {
+        if (response.ok) return response.json();
 
-          throw new Error(`ERROR ${response.status}`);
-        })
-        .then((responseJSON: JWTToken) => {
-          console.log('Success signing up.');
-          sessionStorage.setItem('loggedIn', 'true');
-          sessionStorage.setItem('jwttoken', responseJSON.jwttoken);
-          console.log(responseJSON.jwttoken);
-          navigate('/signup/success');
-        })
-        .catch((e) => {
-          console.log(`Error when trying to sign up: ${e}`);
-        });
+        throw new Error(`ERROR ${response.status}`);
+      })
+      .then((responseJSON: JWTToken) => {
+        IS_DEV && console.log('Success signing up.');
+        sessionStorage.setItem('jwtToken', responseJSON.jwtToken);
+        sessionStorage.setItem('loggedIn', 'false');
+        IS_DEV && console.log(responseJSON.jwtToken);
+        navigate('/signup/success');
+      })
+      .catch((e) => {
+        IS_DEV && console.log(`Error when trying to sign up: ${e}`);
+      });
     setIsLoading(false);
   };
 
   return (
-    <ThemeProvider theme={mainTheme}>
+    <>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -77,7 +70,7 @@ export default function SignUp() {
             alignItems: 'center'
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, color: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
@@ -158,6 +151,6 @@ export default function SignUp() {
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
-    </ThemeProvider>
+    </>
   );
 }

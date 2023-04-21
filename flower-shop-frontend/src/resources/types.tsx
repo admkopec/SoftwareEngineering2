@@ -1,9 +1,19 @@
 import { SvgIconComponent } from "@mui/icons-material";
 import { NavigateFunction } from "react-router-dom";
+import {Category, Roles} from "./constants";
 
+// Will be used later in profile pages
 export interface Credentials {
-  username: string;
-  password: string;
+  name: string,
+  email: string,
+  password: string,
+  role?: Roles
+}
+
+// To use in future order processing
+export interface OrderProduct {
+  productId: string,
+  quantity: number
 }
 
 export interface User {
@@ -13,15 +23,12 @@ export interface User {
   address?: string;
 }
 
-enum Category {
-  Flower,
-  Bouquet,
-  GroundFlower,
-  Supplement
+export interface JWTToken {
+  jwtToken: string;
 }
 
 export interface Product {
-  id: string,
+  productId: string,
   name: string,
   image: string,
   description: string,
