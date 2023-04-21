@@ -8,11 +8,11 @@ import javax.validation.constraints.PositiveOrZero;
 import java.util.UUID;
 import java.util.Base64;
 
-public record ProductCreationDto(UUID productID, @NotEmpty String name, @NotEmpty String description,
+public record ProductCreationDto(UUID productId, @NotEmpty String name, @NotEmpty String description,
                                  @NotEmpty String image, @Positive double price, @PositiveOrZero int quantity,
                                  @NotNull Product.Category category) {
     public Product convertToModel() {
-        Product product = new Product(productID != null ? productID : UUID.randomUUID());
+        Product product = new Product(productId != null ? productId : UUID.randomUUID());
         product.setName(this.name());
         product.setDescription(this.description());
         product.setImage(Base64.getDecoder().decode(this.image()));
