@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import SplitButton from '../components/SplitButton';
-import { authButtons } from '../pages/HomePage';
+import { authButtons } from '../components/Header';
 import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 import { routes } from '../pages/Router';
 

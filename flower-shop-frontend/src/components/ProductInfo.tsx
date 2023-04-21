@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { Product } from '../resources/types';
 import { Container, Typography } from '@mui/material';
 import { IS_DEV } from '../resources/setup';
-import Image from 'mui-image';
 
 interface ProductInfoProps {
     productId: string | undefined
