@@ -8,11 +8,16 @@ import {IS_DEV, Roles} from '../resources/constants';
 import {useLocation, useNavigate} from "react-router-dom";
 import Paper from "@mui/material/Paper";
 import FloweryImage from './FloweryImage';
+import CircularProgress from "@mui/material/CircularProgress";
+import LoadingButton from "@mui/lab/LoadingButton";
 import Box from "@mui/material/Box";
+import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone';
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded';
 import {Grid} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import {Validate, ValidationGroup} from 'mui-validate'
+import CheckCircleTwoToneIcon from "@mui/icons-material/CheckCircleTwoTone";
+
 
 export default function ProductInfo(){
     const locData = useLocation();
@@ -144,7 +149,26 @@ export default function ProductInfo(){
                                     />
                                 </Validate>
                             </ValidationGroup>
-                            {/*TODO: add buy now/add to cart btns*/}
+                            <LoadingButton
+                                loading={isLoading}
+                                loadingIndicator={<CircularProgress color="primary" size={20} />}
+                                type="button"
+                                variant="contained"
+                                sx={{ m: 2 }}
+                                endIcon={<AddCircleTwoToneIcon />}
+                            >
+                                Buy Now
+                            </LoadingButton>
+                            <LoadingButton
+                                loading={isLoading}
+                                loadingIndicator={<CircularProgress color="primary" size={20} />}
+                                type="button"
+                                variant="contained"
+                                sx={{ m: 2 }}
+                                endIcon={<CheckCircleTwoToneIcon />}
+                            >
+                                Add to cart
+                            </LoadingButton>
                         </Box>
                     </Grid>
                     {/*TODO: add employee buttons*/}
