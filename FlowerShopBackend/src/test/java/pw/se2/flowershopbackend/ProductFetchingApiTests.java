@@ -21,6 +21,7 @@ import pw.se2.flowershopbackend.models.Product;
 import pw.se2.flowershopbackend.services.ProductService;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -68,6 +69,10 @@ public class ProductFetchingApiTests {
                 .thenReturn(product1);
         Mockito.when(productRepository.getById(product2.getId()))
                 .thenReturn(product2);
+        Mockito.when(productRepository.findById(product1.getId()))
+                .thenReturn(Optional.of(product1));
+        Mockito.when(productRepository.findById(product2.getId()))
+                .thenReturn(Optional.of(product2));
         Mockito.when(productRepository.existsById(product1.getId()))
                 .thenReturn(true);
         Mockito.when(productRepository.existsById(product2.getId()))

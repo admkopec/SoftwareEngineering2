@@ -12,7 +12,7 @@ public record ProductCreationDto(UUID productID, @NotEmpty String name, @NotEmpt
                                  @NotEmpty String image, @Positive double price, @PositiveOrZero int quantity,
                                  @NotNull Product.Category category) {
     public Product convertToModel() {
-        Product product = new Product(productId != null ? productId : UUID.randomUUID());
+        Product product = new Product(productID != null ? productID : UUID.randomUUID());
         product.setName(this.name());
         product.setDescription(this.description());
         product.setImage(Base64.getDecoder().decode(this.image()));

@@ -40,12 +40,11 @@ public class ProductService {
     }
 
     public Product getProductById(UUID id) {
-        Product product;
+        Optional<Product> product = productRepository.findById(id);
 
-        if(productRepository.existsById(id))
+        if(product.isPresent())
         {
-            product = productRepository.getById(id);
-            return product;
+            return product.get();
         }
         else
         {
