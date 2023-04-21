@@ -13,12 +13,10 @@ import { useState } from 'react';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
-import { mainTheme } from './Themes';
+import { mainTheme } from '../resources/themes';
 import Copyright from './Copyright';
-
-interface JWTToken {
-  jwttoken: string;
-}
+import {IS_DEV, Roles} from '../resources/constants';
+import {JWTToken} from "../resources/types";
 
 export default function LogIn() {
   const navigate = useNavigate();
@@ -40,14 +38,15 @@ export default function LogIn() {
         throw new Error(`ERROR ${response.status}`);
       })
       .then((responseJSON: JWTToken) => {
-        console.log('Success logging in.');
+        IS_DEV && console.log('Success logging in.');
+        sessionStorage.setItem('jwtToken', responseJSON.jwtToken);
         sessionStorage.setItem('loggedIn', 'true');
-        sessionStorage.setItem('jwttoken', responseJSON.jwttoken);
-        console.log(responseJSON.jwttoken);
+        IS_DEV && sessionStorage.setItem('role', Roles.Employee.toString());
+        IS_DEV && console.log(responseJSON.jwtToken);
         navigate('/');
       })
       .catch((e) => {
-        console.log(`Error when trying to log in: ${e}`);
+        IS_DEV && console.log(`Error when trying to log in: ${e}`);
       });
     setIsLoading(false);
   };
@@ -65,7 +64,7 @@ export default function LogIn() {
             justifyContent: 'center'
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, backgroundColor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">

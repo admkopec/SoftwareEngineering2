@@ -55,8 +55,8 @@ export const mainTheme = createTheme({
       // contrastText: will be calculated to contrast with palette.primary.main
     },
     secondary: {
-      light: '#0066ff',
-      main: '#0044ff',
+      // light: will be calculated from palette.primary.main,
+      main: '#87a6ff',
       // dark: will be calculated from palette.secondary.main,
       contrastText: '#ffcc00'
     },
@@ -70,6 +70,7 @@ export const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     background: white;
-    font-family: Open-Sans, Helvetica, Sans-Serif;
+    width: 100%;
+    font-family: Open-Sans, Helvetica, Sans-Serif, sans-serif;
   }
 `;

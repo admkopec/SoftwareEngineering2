@@ -127,6 +127,8 @@ public class OrderAddingApiTests {
                 .thenReturn(product);
         Mockito.when(productRepository.existsById(product.getId()))
                 .thenReturn(true);
+        Mockito.when(productRepository.findById(product.getId()))
+                .thenReturn(Optional.of(product));
     }
 
     @Test
@@ -193,5 +195,3 @@ public class OrderAddingApiTests {
 
     }
 }
-
-

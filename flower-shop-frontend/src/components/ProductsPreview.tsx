@@ -1,85 +1,161 @@
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
 import Container from '@mui/material/Container';
 import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
 import Typography from '@mui/material/Typography';
-import { CardMedia, Divider, List, ListItem, Slide } from '@mui/material';
-import React from 'react';
-import { mainTheme } from './Themes';
+import {CircularProgress, Divider, List, ListItem, ListSubheader, Slide} from '@mui/material';
+import React, { ForwardedRef, MutableRefObject, useEffect, useState } from 'react';
+import { mainTheme } from '../resources/themes';
+import ProductCard from './ProductCard';
+import Grid from "@mui/material/Grid";
+import { Product } from '../resources/types';
+import { IS_DEV } from '../resources/constants';
 
-export default function ProductsPreview() {
-    const [currentItemIndex, setCurrentItemIndex] = React.useState(1);
+interface ProductsPreviewProps{
+  tag: string
+}
 
-    return (
-        <Container>
-            <Typography variant='h5'>Classic Bouquets</Typography><Divider />
-            <List sx={{height: '500px'}}>
-                <ListItem sx={{ position: 'absolute', display: 'block' }}>
-                    <Slide direction={currentItemIndex === 1 ? 'left' : 'right'} in={currentItemIndex === 1} addEndListener={(event) => {event}} easing={{ enter: mainTheme.transitions.easing.easeOut, exit: mainTheme.transitions.easing.easeIn }}>
-                        <Card variant='outlined'>
-                            <CardMedia
-                                component="img"
-                                alt="roses bouquet"
-                                height="300"
-                                width="400"
-                                image={require("../static/imgs/rose-bouquet.jpg")}
-                            ></CardMedia>
-                            <CardContent>
-                                <Typography variant="h5" component="div">
-                                    Roses
-                                </Typography>
-                                <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                                    Bouquet
-                                </Typography>
-                                <Typography variant="body2">
-                                    Very beautiful flower!
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Button size="small">Go to Product</Button>
-                            </CardActions>
-                        </Card>
-                    </Slide>
-                </ListItem>
-                <ListItem sx={{ position: 'absolute', display: 'block' }}>
-                    <Slide direction={currentItemIndex === 2 ? 'left' : 'right'} in={currentItemIndex === 2} addEndListener={(event) => {event}} easing={{ enter: mainTheme.transitions.easing.easeOut, exit: mainTheme.transitions.easing.easeIn }}>
-                        <Card variant='outlined'>
-                            <CardMedia
-                                component="img"
-                                alt="tulip bouquet"
-                                height="300"
-                                width="400"
-                                image={require("../static/imgs/tulip-bouquet.webp")}
-                            ></CardMedia>
-                            <CardContent>
-                                <Typography variant="h5" component="div">
-                                    Tulip
-                                </Typography>
-                                <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                                    Bouquet
-                                </Typography>
-                                <Typography variant="body2">
-                                    Very beautiful flower as well!
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Button size="small">Go to Product</Button>
-                            </CardActions>
-                        </Card>
-                    </Slide>
-                </ListItem>
-            </List>
-            <Pagination count={10} renderItem={(item) =>
-                <PaginationItem {...item} >
-                </PaginationItem>
-            } onChange={(_, indexNumber: number) => {
+interface ProductsContainerProps{
+  productIndex: number,
+  product: Product,
+  direction: 'left' | 'right' | 'up' | 'down' | undefined
+}
 
-                setCurrentItemIndex(indexNumber);
+enum Changes {
+  None = 0,
+  Right = 1,
+  Left = 2
+}
 
-            }}/>
-        </Container>
-    );
+export default function ProductsPreview(props: ProductsPreviewProps) {
+  const [currentItemIndex, setCurrentItemIndex] = React.useState<number>(1);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [productsArray, setProductsArray] = React.useState<Product[]>([]);
+  const currentProductRef = React.useRef<HTMLLIElement>(null);
+  const [lastChange, setLastChange] = useState<Changes>(Changes.None);
+  const [listHeight, setListHeight] = useState<number | undefined>(undefined);
+
+  const fetchProducts = async () => {
+    setIsLoading(true);
+    await fetch(`/api/products`, {
+    method: 'GET',
+    headers: {
+        'Content-type': 'application/json'
+    }
+    })
+    .then((response) => {
+        if (response.ok) return response.json();
+        throw new Error(`ERROR ${response.status}`);
+    })
+    .then((responseJSON: Product[]) => {
+        IS_DEV && console.log('Success fetching product.');
+        IS_DEV && console.log(responseJSON);
+        setProductsArray(responseJSON);
+    })
+    .catch((e) => {
+        IS_DEV && console.log(`Error when trying to fetch product: ${e}`);
+    });
+    setListHeight(currentProductRef.current?.clientHeight);
+    setIsLoading(false);
+  };    
+
+  const handleDirection = (productIndex: number) => {
+    if (productIndex < currentItemIndex)
+      return Changes.Right;
+    else if (productIndex > currentItemIndex)
+      return Changes.Left;
+    else
+      return Changes.None;
+  }
+
+  function parseChangeToString(direction: Changes) {
+    switch(direction){
+      case Changes.Left:
+        return 'left';
+      case Changes.Right:
+        return 'right';
+      default:
+        return 'left';
+    }
+  } 
+
+  const ProductsContainer = React.forwardRef((props: ProductsContainerProps, ref: ForwardedRef<HTMLLIElement>) => (
+    <ListItem sx={{ position: 'absolute', margin: '0 auto', alignSelf: 'center', width: 'fit-content' }}
+              key={props.productIndex} ref={ref}>
+      <Slide
+        direction={props.direction}
+        in={currentItemIndex === props.productIndex}
+        addEndListener={(event) => {
+
+        }}
+        easing={{ enter: mainTheme.transitions.easing.easeOut, exit: mainTheme.transitions.easing.easeIn }}
+        timeout={{ enter: 800, exit: 600 }}
+      >
+        <Grid container spacing={2}>
+          <Grid item>
+            <ProductCard product={props.product}/>
+          </Grid>
+        </Grid>
+      </Slide>
+    </ListItem>
+  ));
+
+  useEffect(() => {
+    setListHeight(currentProductRef.current?.clientHeight);
+  }, [productsArray]);
+
+  useEffect(() => {
+    fetchProducts().finally();
+  }, []);
+
+  const renderItems = () => {
+    if (productsArray.length === 0) {
+      if (isLoading) {
+        // Return Loading Indicator
+        return <CircularProgress/>
+      } else {
+        // Return some info message
+        return <Typography variant="h5" color="text.secondary">Couldn't find matching products</Typography>
+      }
+    } else
+      // Return the products
+      return <>
+      {productsArray.map((product: Product, productIndex: number) => {
+        return <ProductsContainer ref={currentItemIndex === productIndex + 1 ? currentProductRef : null}
+                                  direction={parseChangeToString(lastChange)} productIndex={productIndex+1}
+                                  product={product}/>
+      })}
+    </>;
+  }
+
+  return (
+    <React.Fragment>
+      <Container sx={{
+        m: 0, display: 'flex', flexFlow: 'column nowrap', justifyContent: 'center', alignItems: 'center',
+        maxWidth: '100%', width: '100%'
+      }}
+                 maxWidth={false}>
+        <ListSubheader component="div" sx={{fontSize: 24, width: '100%'}}>
+          {props.tag}
+          <Divider />
+        </ListSubheader>
+        <List sx={{ height: listHeight ? listHeight : 200, width: '100%', display: 'flex', flexFlow: 'row wrap',
+          justifyContent: 'center', alignItems: 'center'}} component={'nav'}
+        >
+            {renderItems()}
+
+        </List>
+        <Pagination
+          count={productsArray.length}
+          sx={{p: 2}}
+          renderItem={(item) => <PaginationItem {...item}/>}
+          onChange={(_, indexNumber: number) => {
+            console.log('Index to change to: ' + indexNumber);
+            console.log('Index to change from: ' + currentItemIndex);
+            setCurrentItemIndex(indexNumber);
+            setLastChange(handleDirection(indexNumber));
+          }}
+          />
+      </Container>
+    </React.Fragment>
+  );
 }

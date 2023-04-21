@@ -1,11 +1,16 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import LocalFloristIcon from '@mui/icons-material/LocalFlorist';
+import { SxProps, Theme } from '@mui/material';
 
-export default function Logo() {
+interface LogoProps{
+  sx?: SxProps<Theme>
+}
+
+export default function Logo(props: LogoProps) {
   return (
-    <Box sx={{ display: 'flex', p: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
-      <LocalFloristIcon titleAccess='flower-icon' sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+    <Box sx={props.sx}>
+      <LocalFloristIcon titleAccess='flower-icon' sx={{ mr: 1 }} />
       <Typography
         variant="h6"
         noWrap
@@ -13,7 +18,6 @@ export default function Logo() {
         href="/"
         sx={{
           mr: 2,
-          display: { xs: 'none', md: 'flex' },
           fontFamily: 'Amatic SC, cursive',
           color: 'inherit',
           textDecoration: 'none',

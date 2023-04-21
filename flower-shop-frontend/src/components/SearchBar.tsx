@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Theme, alpha, styled } from "@mui/material/styles";
-import { mainTheme as theme } from "./Themes";
+import { alpha, styled } from "@mui/material/styles";
+import { mainTheme as theme } from "../resources/themes";
 import SearchIcon from '@mui/icons-material/Search'
 import InputBase from "@mui/material/InputBase";
 
