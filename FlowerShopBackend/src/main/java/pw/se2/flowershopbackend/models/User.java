@@ -1,6 +1,8 @@
 package pw.se2.flowershopbackend.models;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,8 +15,11 @@ public class User implements UserDetails {
 
     public enum Roles
     {
+        @JsonProperty("client")
         Client,
+        @JsonProperty("employee")
         Employee,
+        @JsonProperty("deliveryman")
         DeliveryMan
     }
 
@@ -46,6 +51,10 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "deliveryMan", orphanRemoval = true)
     private Set<Order> ordersToDeliver = new LinkedHashSet<>();
+
+    public User() {
+        this.id = UUID.randomUUID();
+    }
 
     public UUID getId() {
         return id;
