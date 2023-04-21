@@ -13,10 +13,13 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import Box from "@mui/material/Box";
 import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone';
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded';
+import RemoveCircleTwoToneIcon from '@mui/icons-material/RemoveCircleTwoTone';
+import BuildCircleTwoToneIcon from '@mui/icons-material/BuildCircleTwoTone';
 import {Grid} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import {Validate, ValidationGroup} from 'mui-validate'
 import CheckCircleTwoToneIcon from "@mui/icons-material/CheckCircleTwoTone";
+import DeleteDialog from "./DeleteDialog";
 
 
 export default function ProductInfo(){
@@ -32,16 +35,16 @@ export default function ProductInfo(){
             Home
         </Link>,
         <Link
-          underline="hover"
-          key="2"
-          color="inherit"
-          href={"/products/"}
-          onClick={() => {}}
+            underline="hover"
+            key="2"
+            color="inherit"
+            href={"/products/"}
+            onClick={() => {}}
         >
             Products
         </Link>,
         <Typography
-          key="2"
+            key="2"
         >
             Flowers
         </Typography>,
@@ -60,22 +63,22 @@ export default function ProductInfo(){
     const fetchProduct = async () => {
         setIsLoading(true);
         await fetch(`/api/products/${locData.state.productId}`, {
-        method: 'GET',
-        headers: {
-            'Content-type': 'application/json'
-        }})
-        .then((response) => {
-            if (response.ok) return response.json();
-            throw new Error(`ERROR ${response.status}`);
-        })
-        .then((responseJSON: Product) => {
-            IS_DEV && console.log('Success fetching product.');
-            IS_DEV && console.log(responseJSON);
-            setProductData(responseJSON);
-        })
-        .catch((e) => {
-            IS_DEV && console.log(`Error when trying to fetch product: ${e}`);
-        }).finally();
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json'
+            }})
+            .then((response) => {
+                if (response.ok) return response.json();
+                throw new Error(`ERROR ${response.status}`);
+            })
+            .then((responseJSON: Product) => {
+                IS_DEV && console.log('Success fetching product.');
+                IS_DEV && console.log(responseJSON);
+                setProductData(responseJSON);
+            })
+            .catch((e) => {
+                IS_DEV && console.log(`Error when trying to fetch product: ${e}`);
+            }).finally();
         setIsLoading(false);
     };
 
@@ -88,9 +91,9 @@ export default function ProductInfo(){
     return (
         <Container sx={{ width: '100%', backgroundColor: '', p: 2}}>
             <Breadcrumbs
-              separator={<NavigateNextRoundedIcon fontSize="small" />}
-              aria-label="breadcrumb"
-              sx={{p: 2}}
+                separator={<NavigateNextRoundedIcon fontSize="small" />}
+                aria-label="breadcrumb"
+                sx={{p: 2}}
             >
                 {breadcrumbs}
             </Breadcrumbs>
@@ -139,13 +142,13 @@ export default function ProductInfo(){
                                     return parseInt(value) > 0 && parseInt(value) < productData?.quantity + 1;
                                 }, 'Please enter a valid number.']} initialValidation={'silent'}>
                                     <TextField
-                                      id="outlined-number"
-                                      label="Number"
-                                      type="number"
-                                      variant={'outlined'}
-                                      size={'small'}
-                                      aria-valuemax={productData?.quantity}
-                                      sx={{width: '120px', maxWidth: '180px', minWidth: '60px', m: 2}}
+                                        id="outlined-number"
+                                        label="Number"
+                                        type="number"
+                                        variant={'outlined'}
+                                        size={'small'}
+                                        aria-valuemax={productData?.quantity}
+                                        sx={{width: '120px', maxWidth: '180px', minWidth: '60px', m: 2}}
                                     />
                                 </Validate>
                             </ValidationGroup>
@@ -171,7 +174,39 @@ export default function ProductInfo(){
                             </LoadingButton>
                         </Box>
                     </Grid>
-                    {/*TODO: add employee buttons*/}
+                    <Grid item xs={12}>
+                        {isAdmin && <>
+                            <Typography variant={'overline'}>Employee Panel</Typography>
+                            <Box sx={{display: 'flex', flexFlow: 'row wrap', justifyContent: 'center',
+                                alignItems: 'center'}}>
+                                <LoadingButton
+                                    loading={isDeleting}
+                                    loadingIndicator={<CircularProgress color="primary" size={20} />}
+                                    type="button"
+                                    variant="contained"
+                                    color={'error'}
+                                    sx={{ m: 2 }}
+                                    onClick={() => setIsDeleting(true)}
+                                    endIcon={<RemoveCircleTwoToneIcon />}
+                                >
+                                    Delete Product
+                                </LoadingButton>
+                                <LoadingButton
+                                    loading={isLoading}
+                                    loadingIndicator={<CircularProgress color="primary" size={20} />}
+                                    type="button"
+                                    color={'error'}
+                                    variant="contained"
+                                    sx={{ m: 2 }}
+                                    endIcon={<BuildCircleTwoToneIcon />}
+                                >
+                                    Modify Product
+                                </LoadingButton>
+                            </Box>
+                        </>}
+                        <DeleteDialog productId={productData?.productId} productName={productData?.name}
+                                      open={isDeleting} setOpen={(isOpen) => setIsDeleting(isOpen)}/>
+                    </Grid>
                 </Grid>
             </Grid>
         </Container>
