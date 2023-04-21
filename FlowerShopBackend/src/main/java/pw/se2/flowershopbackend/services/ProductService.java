@@ -39,14 +39,20 @@ public class ProductService {
         });
     }
 
-    public Product getProductById(UUID productId){
-        Optional<Product> product = productRepository.findById(productId);
-        if (product.isEmpty()) {
-            log.info("Product is not present in the database.");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product is not present in the database.");
-        } else
-            return product.get();
+    public Product getProductById(UUID id) {
+        Product product;
+
+        if(productRepository.existsById(id))
+        {
+            product = productRepository.getById(id);
+            return product;
+        }
+        else
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No such product");
+        }
     }
+
 
     public List<Product> getAllProducts () {
         return productRepository.findAll();

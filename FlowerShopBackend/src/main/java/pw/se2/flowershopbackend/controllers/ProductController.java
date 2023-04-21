@@ -45,7 +45,7 @@ public class ProductController {
         productService.validateAndSaveMany(products);
     }
 
-    @GetMapping(path = "")
+    @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<ProductDto>> fetchProducts() {
         Collection<Product> products = productService.getAllProducts();
         return ResponseEntity.status(HttpStatus.OK).body(products.stream().map(ProductDto::valueFrom).toList());

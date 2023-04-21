@@ -7,10 +7,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.UUID;
 
-public record OrderProductDto(@NotNull UUID productId, @Positive long quantity) {
+public record OrderProductDto(@NotNull UUID productID, @Positive long quantity) {
     public OrderProduct convertToModel(ProductService productService) {
         OrderProduct orderProduct = new OrderProduct();
-        orderProduct.setProduct(productService.getProductById(productId));
+        orderProduct.setProduct(productService.getProductById(productID));
         orderProduct.setQuantity(this.quantity);
         return orderProduct;
     }
