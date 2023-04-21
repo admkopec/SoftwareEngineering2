@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import pw.se2.flowershopbackend.models.Order;
 import pw.se2.flowershopbackend.models.OrderProduct;
 import pw.se2.flowershopbackend.models.Product;
@@ -71,8 +72,12 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     public void createOrder(@RequestBody OrderCreationDto orderDto) {
         User user = User.getAuthenticated();
+        if (user.getRole() != User.Roles.Client) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to perform this action.");
+        }
         Order order = orderDto.convertToModel(productService);
-        order.setClient(userService.getUserById(user.getId()));
+        //order.setClient(userService.getUserById(user.getId()));
+        order.setClient(user);
         order.getOrderProducts().forEach((orderProduct) -> orderProduct.setOrder(order));
         orderService.validateAndSave(order);
         orderProductService.validateAndSaveAll(order.getOrderProducts());
