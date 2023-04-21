@@ -25,6 +25,10 @@ public class OrderProductService {
                 log.error("Negative product quantity.");
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Negative product quantity.");
             }
+            if (orderProduct.getProduct().getQuantity() < orderProduct.getQuantity() ){
+                log.error("Assortment quantity exceeded");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Assortment quantity exceeded");
+            }
             return true;
         }
         log.error("OrderProduct is null.");
