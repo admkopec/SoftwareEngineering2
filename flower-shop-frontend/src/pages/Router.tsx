@@ -48,9 +48,9 @@ export const homePageRoute = {
   element: <HomePage />,
   errorElement: <ErrorPage />,
   children: [
-    productsPreviewSubPageRoute,  // 1
-    productsSubPageRoute,         // 2
-    productInfoSubPageRoute       // 3
+    productsPreviewSubPageRoute,  // 0
+    productsSubPageRoute,         // 1
+    productInfoSubPageRoute       // 2
   ]
 }
 
