@@ -11,6 +11,7 @@ name: FlowerShop Backend CI with Maven
 on:
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -37,13 +38,13 @@ jobs:
         directory: ./FlowerShopBackend/
   
   checkstyle:
-    name: Style checking
+    name: Style Checking
     runs-on: ubuntu-latest
     
     steps:
     - name: ☁️ Checkout repository
       uses: actions/checkout@v2
-    - name: 🔧 Run checkstyle
+    - name: 🔍 Check style
       uses: nikitasavinov/checkstyle-action@master
       with:
         workdir: ./FlowerShopBackend/
