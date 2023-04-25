@@ -51,4 +51,5 @@ jobs:
     - name: 🔍 Check style
       uses: nikitasavinov/checkstyle-action@master
       with:
+        reporter: github-pr-review
         workdir: ./FlowerShopBackend/
