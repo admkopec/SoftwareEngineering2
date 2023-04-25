@@ -31,7 +31,7 @@ export default function SignUp() {
       name: `${formEntries.firstName} ${formEntries.lastName}`,
       email: formEntries.email.toString(),
       password: formEntries.password.toString(),
-      role: Roles.Employee.valueOf()
+      newsletter: formEntries.hasNewsletter === "on",
     };
     IS_DEV && console.log(JSON.stringify(credentials));
     await fetch(`/api/users`, {
@@ -47,9 +47,9 @@ export default function SignUp() {
       })
       .then((responseJSON: JWTToken) => {
         IS_DEV && console.log('Success signing up.');
-        sessionStorage.setItem('jwtToken', responseJSON.jwtToken);
+        sessionStorage.setItem('jwtToken', responseJSON.jwttoken);
         sessionStorage.setItem('loggedIn', 'false');
-        IS_DEV && console.log(responseJSON.jwtToken);
+        IS_DEV && console.log(responseJSON.jwttoken);
         navigate('/signup/success');
       })
       .catch((e) => {
@@ -126,7 +126,7 @@ export default function SignUp() {
               </Grid>
               <Grid item xs={12}>
                 <FormControlLabel
-                  control={<Checkbox value="hasNewsletter" color="primary" />}
+                  control={<Checkbox name="hasNewsletter" color="primary" />}
                   label="I would like to partake in the Newsletter programme, that is receive discount information, updates and suggestions via email."
                 />
               </Grid>
