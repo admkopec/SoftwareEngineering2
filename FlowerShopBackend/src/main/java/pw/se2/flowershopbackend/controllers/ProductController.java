@@ -47,6 +47,8 @@ public class ProductController {
 
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<ProductDto>> fetchProducts() {
+        // TODO: Add support for search query and category filtering
+        // TODO: Add support for server-side paging
         Collection<Product> products = productService.getAllProducts();
         return ResponseEntity.status(HttpStatus.OK).body(products.stream().map(ProductDto::valueFrom).toList());
     }
@@ -59,11 +61,16 @@ public class ProductController {
 
     @DeleteMapping(path = "/{productId}")
     public void deleteProduct(@PathVariable UUID productId) {
-        log.info("Entered deleting node");
         productService.assertEmployee(User.getAuthenticated());
-        log.info("Asserted employee");
         productService.deleteProduct(productId);
-        log.info("Deleted product");
     }
 
+    @PutMapping(path = "/{productId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public void modifyProduct(@PathVariable UUID productId, @RequestBody ProductCreationDto productDto) {
+        productService.assertEmployee(User.getAuthenticated());
+        Product product = productDto.convertToModel();
+        product.setId(productId);
+        productService.validateAndSave(product);
+    }
 }
