@@ -11,7 +11,7 @@ name: FlowerShop Backend CI with Maven
 on:
   pull_request:
     branches: [ "main" ]
-  workflow_dispatch:
+  push:
 
 jobs:
   build:
