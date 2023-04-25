@@ -25,7 +25,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "lint": "eslint src/**/*.{ts,tsx,js}",
     "lint:fix": "eslint --fix src/**/*.{ts,tsx,js}",
     "test": "jest",
