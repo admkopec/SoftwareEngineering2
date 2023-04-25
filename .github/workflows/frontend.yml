@@ -47,9 +47,12 @@ jobs:
 
   lint:
     name: Code standards & linting
-
+    
     runs-on: ubuntu-latest
-
+    
+    permissions: 
+      pull-requests: write
+      
     timeout-minutes: 10
 
     steps:
