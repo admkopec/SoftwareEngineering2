@@ -11,13 +11,13 @@ name: FlowerShop Backend CI with Maven
 on:
   pull_request:
     branches: [ "main" ]
-  push:
 
 jobs:
   build:
     name: Build & Test
     runs-on: ubuntu-latest
-    permissions: write-all
+    permissions:
+      contents: write
 
     steps:
     - name: ☁️ Checkout repository
@@ -41,6 +41,8 @@ jobs:
   checkstyle:
     name: Style Checking
     runs-on: ubuntu-latest
+    permissions: 
+      pull-requests: write
     
     steps:
     - name: ☁️ Checkout repository
