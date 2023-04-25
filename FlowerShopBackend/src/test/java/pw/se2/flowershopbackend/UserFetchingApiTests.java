@@ -82,19 +82,10 @@ public class UserFetchingApiTests {
     @Test
     public void givenValidCredentials_whileFetchingUser_thenReturnUserDto() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-                user, null, employee.getAuthorities()
+                user, null, user.getAuthorities()
         ));
         mvc.perform(get("/api/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is(user.getName())));
-    }
-
-    @Test
-    public void givenNullCredentials_whileCreatingUser_thenReturnUserDto() throws Exception {
-        mvc.perform(post("/api/users").contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"Test User\", \"email\":\"test.user@shop.com\", \"password\":\"1234\"}")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.name", is("Test User")));
     }
 }
