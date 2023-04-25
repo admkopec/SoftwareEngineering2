@@ -49,6 +49,6 @@ jobs:
     - name: ☁️ Checkout repository
       uses: actions/checkout@v3
     - name: 🔍 Check style
-      uses: dbelyaev/action-checkstyle@v0.7.5
+      uses: nikitasavinov/checkstyle-action@master
       with:
         workdir: ./FlowerShopBackend/
