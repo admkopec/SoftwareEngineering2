@@ -12,7 +12,7 @@
     "@mui/system": "^5.11.14",
     "@testing-library/user-event": "^13.5.0",
     "eslint-plugin-jest-dom": "^4.0.3",
-    "eslint-plugin-testing-library": "^5.10.2",
+    "eslint-plugin-testing-library": "^5.10.3",
     "http-proxy-middleware": "^2.0.6",
     "mui-image": "^1.0.7",
     "mui-validate": "^1.0.0",
@@ -55,7 +55,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/core": "^7.21.3",
+    "@babel/core": "^7.21.4",
     "@babel/plugin-transform-modules-commonjs": "^7.21.2",
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-typescript": "^7.21.0",
