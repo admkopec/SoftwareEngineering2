@@ -4,38 +4,38 @@ import { Category, Roles } from './constants';
 
 // Will be used later in profile pages
 export interface Credentials {
-  name: string,
-  email: string,
-  password: string,
-  newsletter?: boolean
+  name: string;
+  email: string;
+  password: string;
+  newsletter?: boolean;
 }
 
 interface Address {
-  street: string,
-  buildingNo?: string,
-  houseNo?: string,
-  postalCode: string,
-  city: string,
-  country: string
+  street: string;
+  buildingNo?: string;
+  houseNo?: string;
+  postalCode: string;
+  city: string;
+  country: string;
 }
 
 export interface OrderCreation {
-  id?: string,
-  clientID?: string,
-  deliveryAddress: Address,
-  items: OrderProduct[]
+  id?: string;
+  clientID?: string;
+  deliveryAddress: Address;
+  items: OrderProduct[];
 }
 
 export interface Order {
-  id: string,
-  deliveryAddress: Address,
-  items: OrderProduct[]
+  id: string;
+  deliveryAddress: Address;
+  items: OrderProduct[];
 }
 
 // To use in future order processing
 export interface OrderProduct {
-  productID: string,
-  quantity: number
+  productID: string;
+  quantity: number;
 }
 
 export interface User {
@@ -50,13 +50,13 @@ export interface JWTToken {
 }
 
 export interface Product {
-  productID: string,
-  name: string,
-  image: string,
-  description: string,
-  price: number,
-  quantity: number,
-  category: Category
+  productID: string;
+  name: string;
+  image: string;
+  description: string;
+  price: number;
+  quantity: number;
+  category: Category;
 }
 
 export interface MenuItemSettings {
