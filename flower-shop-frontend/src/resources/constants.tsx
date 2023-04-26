@@ -1,6 +1,6 @@
 export const IS_DEV = process.env.NODE_ENV === 'development';
 
-export enum SurfaceSizes{
+export enum SurfaceSizes {
   TileSmall = 180,
   TileLarge = 300,
   ImageSmall = 150,
