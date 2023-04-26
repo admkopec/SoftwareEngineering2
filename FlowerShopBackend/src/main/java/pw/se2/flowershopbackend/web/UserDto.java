@@ -10,8 +10,7 @@ import javax.validation.constraints.NotEmpty;
 import java.io.IOException;
 import java.util.UUID;
 
-// TODO: Maybe add account type (User.Role)?
-public record UserDto(UUID id, @NotEmpty String name, @Email String email, AddressDto address) {
+public record UserDto(UUID id, @NotEmpty String name, @Email String email, User.Roles role, AddressDto address) {
     public static UserDto valueFrom(User user) {
         AddressDto address = null;
         if (user.getAddress() != null && !user.getAddress().isBlank()) {
@@ -22,6 +21,6 @@ public record UserDto(UUID id, @NotEmpty String name, @Email String email, Addre
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Corrupted data in database.");
             }
         }
-        return new UserDto(user.getId(), user.getName(), user.getEmail(), address);
+        return new UserDto(user.getId(), user.getName(), user.getEmail(), user.getRole(), address);
     }
 }

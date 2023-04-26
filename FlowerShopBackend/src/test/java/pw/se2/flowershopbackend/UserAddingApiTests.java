@@ -82,7 +82,8 @@ public class UserAddingApiTests {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.name", is("Test User")))
-                .andExpect(jsonPath("$.email", is("test.user@shop.com")));
+                .andExpect(jsonPath("$.email", is("test.user@shop.com")))
+                .andExpect(jsonPath("$.role", is("client")));
         Optional<User> user = users.stream().filter(e -> e.getEmail().equals("test.user@shop.com")).findFirst();
         assertNotNull(user);
         assertFalse(user.get().getNewsletter());
@@ -113,7 +114,8 @@ public class UserAddingApiTests {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.name", is("Test User")))
-                .andExpect(jsonPath("$.email", is("test.user@flowershop.com")));
+                .andExpect(jsonPath("$.email", is("test.user@flowershop.com")))
+                .andExpect(jsonPath("$.role", is("employee")));
         Optional<User> user = users.stream().filter(e -> e.getEmail().equals("test.user@flowershop.com")).findFirst();
         assertNotNull(user);
         assertFalse(user.get().getNewsletter());
@@ -127,7 +129,8 @@ public class UserAddingApiTests {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.name", is("Test User")))
-                .andExpect(jsonPath("$.email", is("test.user@delivery.flowershop.com")));
+                .andExpect(jsonPath("$.email", is("test.user@delivery.flowershop.com")))
+                .andExpect(jsonPath("$.role", is("deliveryman")));
         Optional<User> user = users.stream().filter(e -> e.getEmail().equals("test.user@delivery.flowershop.com")).findFirst();
         assertNotNull(user);
         assertFalse(user.get().getNewsletter());
