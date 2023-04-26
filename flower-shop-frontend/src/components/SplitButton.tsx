@@ -88,7 +88,7 @@ export default function SplitButton(props: ButtonOptionsProps) {
                       onClick={(event) => handleMenuItemClick(event, index)}
                     >
                       {option.key}
-                      <option.icon />
+                      {option.icon && <option.icon />}
                     </MenuItem>
                   ))}
                 </MenuList>

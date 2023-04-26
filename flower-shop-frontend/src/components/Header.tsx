@@ -27,7 +27,26 @@ interface HeaderBarProps{
     sx?: SxProps<Theme>
 }
 
-const pagesLinks = ['Home', 'Products', 'Contact'];
+const pagesLinks: MenuItemSettings[] = [
+  {
+    key: 'Home',
+    callback: (navigate) => {
+      navigate('/');
+    }
+  },
+  {
+    key: 'Products',
+    callback: (navigate) => {
+      navigate('/');
+    }
+  },
+  {
+    key: 'Contact',
+    callback: (navigate) => {
+      navigate('/');
+    }
+  }
+];
 
 export const authButtons: MenuItemSettings[] = [
     {
@@ -134,53 +153,59 @@ export default function Header(props: HeaderBarProps){
                 <Logo sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' }, flexFlow: 'row nowrap',
                     alignItems: 'center', justifyContent: 'center'}}/>
 
-                {/* Shop name, pages to navigate to. Only shows when page width decreases. */}
-                <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-                    <IconButton
-                        size="large"
-                        aria-label="account of current user"
-                        aria-controls="menu-appbar"
-                        aria-haspopup="true"
-                        onClick={handleOpenNavMenu}
-                        color="inherit"
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Menu
-                        id="menu-appbar"
-                        anchorEl={anchorElNav}
-                        anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'left'
-                        }}
-                        keepMounted
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'left'
-                        }}
-                        open={Boolean(anchorElNav)}
-                        onClose={handleCloseNavMenu}
-                        sx={{ display: 'block' }}
-                    >
-                        {pagesLinks.map((page) => (
-                            <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                <Typography textAlign="center">{page}</Typography>
-                            </MenuItem>
-                        ))}
-                    </Menu>
-                </Box>
+        {/* Shop name, pages to navigate to. Only shows when page width decreases. */}
+        <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleOpenNavMenu}
+            color="inherit"
+          >
+            <MenuIcon />
+          </IconButton>
+          <Menu
+            id="menu-appbar"
+            anchorEl={anchorElNav}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left'
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left'
+            }}
+            open={Boolean(anchorElNav)}
+            onClose={handleCloseNavMenu}
+            sx={{ display: 'block' }}
+          >
+            {pagesLinks.map((page) => (
+              <MenuItem key={page.key} onClick={() => {
+                page.callback(navigate);
+                handleCloseNavMenu();
+              }}>
+                <Typography textAlign="center">{page.key}</Typography>
+              </MenuItem>
+            ))}
+          </Menu>
+        </Box>
 
                 <Logo sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, flexFlow: 'row nowrap',
                     alignItems: 'center', justifyContent: 'center'}}/>
 
-                {/* Pages*/}
-                <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                    {pagesLinks.map((page) => (
-                        <Button key={page} onClick={handleCloseNavMenu} sx={{ my: 2, color: 'white', display: 'block' }}>
-                            {page}
-                        </Button>
-                    ))}
-                </Box>
+        {/* Pages */}
+        <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          {pagesLinks.map((page) => (
+            <Button key={page.key} onClick={() => {
+              page.callback(navigate);
+              handleCloseNavMenu();
+            }} sx={{ my: 2, color: 'white', display: 'block' }}>
+              {page.key}
+            </Button>
+          ))}
+        </Box>
 
                 {/* Basket button */}
                 <Box sx={{ flexGrow: 0 }}>
@@ -191,51 +216,53 @@ export default function Header(props: HeaderBarProps){
                     </Tooltip>
                 </Box>
 
-                <Box sx={{display: 'block', flexGrow: 0}}>
-                    {userData == null ? (
-                        <SplitButton options={authButtons} sx={{ flexGrow: 0, color: 'primary.dark'}}/>
-                    ) : (
-                        <Box sx={{ flexGrow: 0 }}>
-                            <Tooltip title="Open settings">
-                                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                    <Avatar alt="User" src="#" />
-                                </IconButton>
-                            </Tooltip>
-                            <Menu
-                                sx={{ mt: '45px' }}
-                                id="menu-appbar"
-                                anchorEl={anchorElUser}
-                                anchorOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right'
-                                }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right'
-                                }}
-                                open={Boolean(anchorElUser)}
-                                onClose={handleCloseUserMenu}
-                            >
-                                <MenuItem onClick={handleCloseNavMenu}>
-                                    <Avatar sx={{ height: 30, width: 30, mr: 1 }} /> Welcome, {userData?.name}
-                                </MenuItem>
-                                <Divider />
-                                {profileSettingsUser.map((setting) => (
-                                    <MenuItem key={setting.key} onClick={() => setting.callback(navigate)}>
-                                        <ListItemIcon>
-                                            <setting.icon />
-                                        </ListItemIcon>
-                                        <Typography textAlign="center" color={setting.key === 'Logout' ? 'error.light' : 'inherit'}>
-                                            {setting.key}
-                                        </Typography>
-                                    </MenuItem>
-                                ))}
-                            </Menu>
-                        </Box>
+        <Box sx={{ display: 'block', flexGrow: 0 }}>
+          {userData == null ? (
+            <SplitButton options={authButtons} sx={{ flexGrow: 0, color: 'primary.dark' }} />
+          ) : (
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="User" src="#" />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right'
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right'
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                <MenuItem onClick={handleCloseNavMenu}>
+                  <Avatar sx={{ height: 30, width: 30, mr: 1 }} /> Welcome, {userData?.name}
+                </MenuItem>
+                <Divider />
+                {profileSettingsUser.map((setting) => (
+                  <MenuItem key={setting.key} onClick={() => setting.callback(navigate)}>
+                    { setting.icon && (
+                        <ListItemIcon>
+                          <setting.icon />
+                        </ListItemIcon>
                     )}
-                </Box>
-            </Toolbar>
-        </AppBar>
-    )
+                    <Typography textAlign="center" color={setting.key === 'Logout' ? 'error.light' : 'inherit'}>
+                      {setting.key}
+                    </Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          )}
+        </Box>
+      </Toolbar>
+    </AppBar>
+  );
 }
