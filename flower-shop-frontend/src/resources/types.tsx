@@ -1,6 +1,6 @@
-import { SvgIconComponent } from "@mui/icons-material";
-import { NavigateFunction } from "react-router-dom";
-import {Category, Roles} from "./constants";
+import { SvgIconComponent } from '@mui/icons-material';
+import { NavigateFunction } from 'react-router-dom';
+import { Category, Roles } from './constants';
 
 // Will be used later in profile pages
 export interface Credentials {
