@@ -12,9 +12,8 @@
     "@mui/system": "^5.11.14",
     "@testing-library/user-event": "^13.5.0",
     "eslint-plugin-jest-dom": "^4.0.3",
-    "eslint-plugin-testing-library": "^5.10.2",
+    "eslint-plugin-testing-library": "^5.10.3",
     "http-proxy-middleware": "^2.0.6",
-    "image-magnify": "^2.7.5",
     "mui-image": "^1.0.7",
     "mui-validate": "^1.0.0",
     "react": "^18.2.0",
@@ -26,16 +25,16 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "lint": "eslint src/**/*.{ts,tsx,js,jsx}",
-    "lint:fix": "eslint --fix src/**/*.{ts,tsx,js,jsx}",
+    "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
+    "lint": "eslint src/**/*.{ts,tsx,js}",
+    "lint:fix": "eslint --fix src/**/*.{ts,tsx,js}",
     "test": "jest",
     "test:watch": "jest --watch",
     "eject": "react-scripts eject",
     "coverage": "jest --collectCoverage --",
     "audit:prod": "npm audit --omit=dev",
-    "prettier": "prettier src/**/*.{ts,tsx,js,jsx}",
-    "prettier:fix": "prettier src/**/*.{ts,tsx,js,jsx} --write"
+    "prettier": "prettier src/**/*.{ts,tsx,js}",
+    "prettier:fix": "prettier src/**/*.{ts,tsx,js} --write"
   },
   "eslintConfig": {
     "extends": [
@@ -56,7 +55,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/core": "^7.21.3",
+    "@babel/core": "^7.21.4",
     "@babel/plugin-transform-modules-commonjs": "^7.21.2",
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-typescript": "^7.21.0",

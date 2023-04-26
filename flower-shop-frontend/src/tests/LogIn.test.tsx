@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import LogIn from '../components/LogIn';
 import { RouterProvider, createMemoryRouter } from 'react-router-dom';
+import LogIn from '../components/LogIn';
 import { routes } from '../pages/Router';
 
 const memoryRouter = createMemoryRouter(routes, {
