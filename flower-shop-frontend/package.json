@@ -12,7 +12,7 @@
     "@mui/system": "^5.11.14",
     "@testing-library/user-event": "^13.5.0",
     "eslint-plugin-jest-dom": "^4.0.3",
-    "eslint-plugin-testing-library": "^5.10.2",
+    "eslint-plugin-testing-library": "^5.10.3",
     "http-proxy-middleware": "^2.0.6",
     "mui-image": "^1.0.7",
     "mui-validate": "^1.0.0",
