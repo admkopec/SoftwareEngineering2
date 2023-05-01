@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@blacklab/react-image-magnify": "^4.1.1",
-    "@emotion/react": "^11.10.6",
+    "@emotion/react": "^11.10.8",
     "@mui/icons-material": "^5.11.11",
     "@mui/lab": "^5.0.0-alpha.128",
     "@mui/material": "^5.11.13",
