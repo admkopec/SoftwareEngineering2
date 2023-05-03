@@ -20,28 +20,22 @@ import org.springframework.test.web.servlet.MockMvc;
 import pw.se2.flowershopbackend.controllers.ProductController;
 import pw.se2.flowershopbackend.dao.ProductRepository;
 import pw.se2.flowershopbackend.dao.UserRepository;
-import pw.se2.flowershopbackend.models.Product;
 import pw.se2.flowershopbackend.models.User;
 import pw.se2.flowershopbackend.services.ProductService;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(ProductController.class)
 @AutoConfigureMockMvc(addFilters = false)
-public class ProductFetchingIntegrationTests {
+public class ProductAddingApiTests {
     @TestConfiguration
-    static class ProductFetchingApiTestsContextConfiguration {
+    static class ProductAddingApiTestsContextConfiguration {
         @Autowired
         private ProductRepository productRepository;
 
@@ -62,41 +56,44 @@ public class ProductFetchingIntegrationTests {
     @MockBean
     private AuthenticationManager authenticationManager;
 
-    Product product1 = new Product(UUID.randomUUID());
-    Product product2 = new Product(UUID.randomUUID());
+    private final User user = new User();
+    private final User employee = new User();
     @BeforeEach
     public void setUp() {
-        product1.setName("Daisy");
-        product1.setDescription("Description one");
-        product1.setPrice(15.0);
-        product2.setName("Sunflower");
-        product2.setDescription("Description two");
-        product2.setPrice(23.5);
-        Mockito.when(productRepository.getById(product1.getId()))
-                .thenReturn(product1);
-        Mockito.when(productRepository.getById(product2.getId()))
-                .thenReturn(product2);
-        Mockito.when(productRepository.existsById(product1.getId()))
-                .thenReturn(true);
-        Mockito.when(productRepository.existsById(product2.getId()))
-                .thenReturn(true);
-        Mockito.when(productRepository.findAll())
-                .thenReturn(Arrays.asList(product1, product2));
+        user.setName("Test User");
+        user.setEmail("test@shop.com");
+        user.setPassword(new BCryptPasswordEncoder().encode("1234"));
+        employee.setName("Test Employee");
+        employee.setEmail("employee@shop.com");
+        employee.setPassword(new BCryptPasswordEncoder().encode("5678"));
+        employee.setRole(User.Roles.Employee);
+        Mockito.when(userRepository.findByEmail(user.getEmail()))
+                .thenReturn(Optional.of(user));
+        Mockito.when(userRepository.findByEmail(employee.getEmail()))
+                .thenReturn(Optional.of(employee));
     }
 
     @Test
-    public void tryFetchingAllProducts() throws Exception {
-        mvc.perform(get("/api/products")
+    public void givenInvalidCredentials_whileAddingProduct_thenReturnError() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
+                user, null, user.getAuthorities()
+        ));
+        mvc.perform(post("/api/products").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"productID\":\"A9007774-CA6F-4D99-9E58-A3913988F1DD\",\"name\":\"Daisy\", \"description\":\"Description\", \"image\":\"\", \"price\":15.0, \"quantity\":100, \"category\":0}")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(status().is4xxClientError())
+                .andExpect(result -> assertNotNull(result.getResolvedException()))
+                .andExpect(result -> assertTrue(result.getResolvedException().getMessage().contains("User is not authorized to add products")));
     }
 
     @Test
-    public void tryFetchingOneProduct() throws Exception {
-        mvc.perform(get("/api/products/" + product1.getId())
+    public void givenValidCredentials_whileAddingProduct_thenReturnError() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
+                employee, null, employee.getAuthorities()
+        ));
+        mvc.perform(post("/api/products").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"productID\":\"A9007774-CA6F-4D99-9E58-A3913988F1DD\",\"name\":\"Daisy\", \"description\":\"Description\", \"image\":\"\", \"price\":15.0, \"quantity\":100, \"category\":0}")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.productID").exists());
+                .andExpect(status().is2xxSuccessful());
     }
 }

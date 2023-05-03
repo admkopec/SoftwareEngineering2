@@ -8,21 +8,24 @@ import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
 import MenuList from '@mui/material/MenuList';
 import { useNavigate } from 'react-router-dom';
-import { MenuItemSettings } from '../resources/dataTypes';
 import MenuItem from '@mui/material/MenuItem';
+import { SxProps, Theme } from '@mui/material';
+import Container from '@mui/material/Container';
+import { MenuItemSettings } from '../resources/types';
 
 interface ButtonOptionsProps {
   options: MenuItemSettings[];
+  sx: SxProps<Theme>;
 }
 
-export default function SplitButton({ options }: ButtonOptionsProps) {
+export default function SplitButton(props: ButtonOptionsProps) {
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef<HTMLDivElement>(null);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
 
   const handleClick = () => {
-    console.info(`You clicked ${options[selectedIndex].key}`);
+    console.info(`You clicked ${props.options[selectedIndex].key}`);
   };
 
   const handleMenuItemClick = (event: React.MouseEvent<HTMLLIElement, MouseEvent>, index: number) => {
@@ -42,9 +45,11 @@ export default function SplitButton({ options }: ButtonOptionsProps) {
   };
 
   return (
-    <>
+    <Container sx={props.sx}>
       <ButtonGroup variant="contained" ref={anchorRef} aria-label="split button">
-        <Button onClick={() => options[selectedIndex].callback(navigate)} title="action auth button">{options[selectedIndex].key}</Button>
+        <Button onClick={() => props.options[selectedIndex].callback(navigate)} title="action auth button">
+          {props.options[selectedIndex].key}
+        </Button>
         <Button
           size="small"
           aria-controls={open ? 'split-button-menu' : undefined}
@@ -58,7 +63,7 @@ export default function SplitButton({ options }: ButtonOptionsProps) {
       </ButtonGroup>
       <Popper
         sx={{
-          zIndex: 1
+          zIndex: 1000
         }}
         open={open}
         anchorEl={anchorRef.current}
@@ -76,14 +81,14 @@ export default function SplitButton({ options }: ButtonOptionsProps) {
             <Paper>
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList id="split-button-menu" autoFocusItem>
-                  {options.map((option, index) => (
+                  {props.options.map((option, index) => (
                     <MenuItem
                       key={option.key}
                       selected={index === selectedIndex}
                       onClick={(event) => handleMenuItemClick(event, index)}
                     >
                       {option.key}
-                      <option.icon />
+                      {option.icon && <option.icon />}
                     </MenuItem>
                   ))}
                 </MenuList>
@@ -92,6 +97,6 @@ export default function SplitButton({ options }: ButtonOptionsProps) {
           </Grow>
         )}
       </Popper>
-    </>
+    </Container>
   );
 }
