@@ -62,6 +62,6 @@ export interface Product {
 
 export interface MenuItemSettings {
   key: string;
-  icon: SvgIconComponent;
+  icon?: SvgIconComponent;
   callback: (navigate: NavigateFunction) => void;
 }
