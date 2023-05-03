@@ -7,12 +7,34 @@ export interface Credentials {
   name: string;
   email: string;
   password: string;
-  role?: Roles;
+  newsletter?: boolean;
+}
+
+interface Address {
+  street: string;
+  buildingNo?: string;
+  houseNo?: string;
+  postalCode: string;
+  city: string;
+  country: string;
+}
+
+export interface OrderCreation {
+  id?: string;
+  clientID?: string;
+  deliveryAddress: Address;
+  items: OrderProduct[];
+}
+
+export interface Order {
+  id: string;
+  deliveryAddress: Address;
+  items: OrderProduct[];
 }
 
 // To use in future order processing
 export interface OrderProduct {
-  productId: string;
+  productID: string;
   quantity: number;
 }
 
@@ -20,15 +42,16 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  address?: string;
+  role: string;
+  address?: Address;
 }
 
 export interface JWTToken {
-  jwtToken: string;
+  jwttoken: string;
 }
 
 export interface Product {
-  productId: string;
+  productID: string;
   name: string;
   image: string;
   description: string;

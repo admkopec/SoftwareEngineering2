@@ -38,10 +38,10 @@ export default function LogIn() {
       })
       .then((responseJSON: JWTToken) => {
         IS_DEV && console.log('Success logging in.');
-        sessionStorage.setItem('jwtToken', responseJSON.jwtToken);
+        sessionStorage.setItem('jwtToken', responseJSON.jwttoken);
         sessionStorage.setItem('loggedIn', 'true');
         IS_DEV && sessionStorage.setItem('role', Roles.Employee.toString());
-        IS_DEV && console.log(responseJSON.jwtToken);
+        IS_DEV && console.log(responseJSON.jwttoken);
         navigate('/');
       })
       .catch((e) => {
