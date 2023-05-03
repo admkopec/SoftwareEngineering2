@@ -27,7 +27,26 @@ interface HeaderBarProps {
   sx?: SxProps<Theme>;
 }
 
-const pagesLinks = ['Home', 'Products', 'Contact'];
+const pagesLinks: MenuItemSettings[] = [
+  {
+    key: 'Home',
+    callback: (navigate) => {
+      navigate('/');
+    }
+  },
+  {
+    key: 'Products',
+    callback: (navigate) => {
+      navigate('/');
+    }
+  },
+  {
+    key: 'Contact',
+    callback: (navigate) => {
+      navigate('/');
+    }
+  }
+];
 
 export const authButtons: MenuItemSettings[] = [
   {
@@ -168,8 +187,14 @@ export default function Header(props: HeaderBarProps) {
             sx={{ display: 'block' }}
           >
             {pagesLinks.map((page) => (
-              <MenuItem key={page} onClick={handleCloseNavMenu}>
-                <Typography textAlign="center">{page}</Typography>
+              <MenuItem
+                key={page.key}
+                onClick={() => {
+                  page.callback(navigate);
+                  handleCloseNavMenu();
+                }}
+              >
+                <Typography textAlign="center">{page.key}</Typography>
               </MenuItem>
             ))}
           </Menu>
@@ -188,8 +213,15 @@ export default function Header(props: HeaderBarProps) {
         {/* Pages */}
         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
           {pagesLinks.map((page) => (
-            <Button key={page} onClick={handleCloseNavMenu} sx={{ my: 2, color: 'white', display: 'block' }}>
-              {page}
+            <Button
+              key={page.key}
+              onClick={() => {
+                page.callback(navigate);
+                handleCloseNavMenu();
+              }}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              {page.key}
             </Button>
           ))}
         </Box>
@@ -235,9 +267,11 @@ export default function Header(props: HeaderBarProps) {
                 <Divider />
                 {profileSettingsUser.map((setting) => (
                   <MenuItem key={setting.key} onClick={() => setting.callback(navigate)}>
-                    <ListItemIcon>
-                      <setting.icon />
-                    </ListItemIcon>
+                    {setting.icon && (
+                      <ListItemIcon>
+                        <setting.icon />
+                      </ListItemIcon>
+                    )}
                     <Typography textAlign="center" color={setting.key === 'Logout' ? 'error.light' : 'inherit'}>
                       {setting.key}
                     </Typography>
