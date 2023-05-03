@@ -3,12 +3,6 @@ name: Flower Shop Frontend Build & Linting CI
 on:
   pull_request:
     branches: [ "main" ]
-    types:
-      - opened
-      - edited
-      - synchronize
-      - reopened
-  workflow_call:
 
 defaults:
     run:
