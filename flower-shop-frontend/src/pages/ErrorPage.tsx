@@ -1,9 +1,9 @@
-import * as React from 'react';
+import React from 'react';
 import { isRouteErrorResponse, useRouteError } from 'react-router-dom';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 export default function ErrorPage() {
   const error = useRouteError();

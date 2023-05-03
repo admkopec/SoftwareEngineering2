@@ -1,21 +1,16 @@
-import * as React from 'react';
+import React, {useEffect} from 'react';
 import Container from '@mui/material/Container';
-import { Grid } from '@mui/material';
+import {Grid} from '@mui/material';
+import {Outlet} from "react-router-dom";
 import SearchBar from '../components/SearchBar';
 import Footer from "../components/Footer";
-import {Outlet} from "react-router-dom";
 import Header from "../components/Header";
-import {useEffect} from "react";
 
 function HomePage() {
   // NOTE: Function meant to check the validity of jwt token and set variables in sessionStorage
-  const checkStatus = () => {
-
-  }
-
   useEffect(()=>{
 
-  }, [])
+  }, []);
 
   return (
     <Container sx={{width: 'auto', m: 0, p: 0, maxWidth: '100%', overflow: 'hidden'}} maxWidth={false} disableGutters>

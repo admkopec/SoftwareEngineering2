@@ -1,5 +1,6 @@
 [
     {
+        "id": "4cdae1b2-3de9-4598-8c41-721874783e12",
         "name": "Rose",
         "description": "Rose description",
         "price": 5,
@@ -8,6 +9,7 @@
         "category": 0
     },
     {
+        "id": "65def883-55f3-4906-b532-07071b19f991",
         "name": "Tulip",
         "description": "Tulip description",
         "price": 4,
@@ -16,6 +18,7 @@
         "category": 0
     },
     {
+        "id": "65b22e5e-b918-4a5d-ba39-7e4a19e3468f",
         "name": "Daffodil",
         "description": "Daffodil description",
         "price": 7,
@@ -24,6 +27,7 @@
         "category": 0
     },
     {
+        "id": "535e222c-92de-4ae5-a16c-4228f76e0beb",
         "name": "Daisy",
         "description": "Daisy description",
         "price": 3,
@@ -32,6 +36,7 @@
         "category": 0
     },
     {
+        "id": "3d56df15-50c7-4da3-b2c5-03d9ffad4a01",
         "name": "Iris",
         "description": "Iris description",
         "price": 7,
