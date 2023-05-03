@@ -54,7 +54,6 @@
     "types": [
       "react",
       "react-dom",
-      "react-native",
       "react-test-renderer",
       "jest",
       "node"
