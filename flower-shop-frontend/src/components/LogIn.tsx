@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -9,14 +9,13 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { ThemeProvider } from '@mui/material/styles';
-import { useState } from 'react';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
 import { mainTheme } from '../resources/themes';
 import Copyright from './Copyright';
-import {IS_DEV, Roles} from '../resources/constants';
-import {JWTToken} from "../resources/types";
+import { IS_DEV, Roles } from '../resources/constants';
+import { JWTToken } from '../resources/types';
 
 export default function LogIn() {
   const navigate = useNavigate();
@@ -24,7 +23,7 @@ export default function LogIn() {
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const credentials = Object.fromEntries(new FormData(event.currentTarget).entries());
+    const credentials = Object.fromEntries((new FormData(event.currentTarget)).entries());
     await fetch(`/api/users/log_in`, {
       method: 'POST',
       body: JSON.stringify(credentials),
@@ -45,8 +44,9 @@ export default function LogIn() {
         IS_DEV && console.log(responseJSON.jwtToken);
         navigate('/');
       })
-      .catch((e) => {
-        IS_DEV && console.log(`Error when trying to log in: ${e}`);
+      .catch((error) => {
+        sessionStorage.clear();
+        IS_DEV && console.log(`Error when trying to log in: ${error}`);
       });
     setIsLoading(false);
   };

@@ -8,10 +8,10 @@ import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
 import MenuList from '@mui/material/MenuList';
 import { useNavigate } from 'react-router-dom';
-import { MenuItemSettings } from '../resources/types';
 import MenuItem from '@mui/material/MenuItem';
-import {SxProps, Theme} from "@mui/material";
-import Container from "@mui/material/Container";
+import { SxProps, Theme } from '@mui/material';
+import Container from '@mui/material/Container';
+import { MenuItemSettings } from '../resources/types';
 
 interface ButtonOptionsProps {
   options: MenuItemSettings[];
@@ -23,10 +23,6 @@ export default function SplitButton(props: ButtonOptionsProps) {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef<HTMLDivElement>(null);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
-
-  const handleClick = () => {
-    console.info(`You clicked ${props.options[selectedIndex].key}`);
-  };
 
   const handleMenuItemClick = (event: React.MouseEvent<HTMLLIElement, MouseEvent>, index: number) => {
     setSelectedIndex(index);
