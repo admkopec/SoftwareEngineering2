@@ -29,7 +29,7 @@ export default function ProductCard(props: ProductCardProps) {
 
   const goToProduct = () =>
     navigateSearch(`/products/${props.product.name.toLowerCase().replace(' ', '-')}`, {
-      productId: props.product.productId
+      productId: props.product.productID
     });
 
   return (

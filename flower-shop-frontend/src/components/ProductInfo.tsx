@@ -196,7 +196,7 @@ export default function ProductInfo() {
               </>
             )}
             <DeleteDialog
-              productId={productData?.productId}
+              productId={productData?.productID}
               productName={productData?.name}
               open={isDeleting}
               setOpen={(isOpen) => setIsDeleting(isOpen)}
