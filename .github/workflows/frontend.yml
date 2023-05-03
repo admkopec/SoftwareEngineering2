@@ -3,12 +3,6 @@ name: Flower Shop Frontend Build & Linting CI
 on:
   pull_request:
     branches: [ "main" ]
-    types:
-      - opened
-      - edited
-      - synchronize
-      - reopened
-  workflow_call:
 
 defaults:
     run:
@@ -47,9 +41,13 @@ jobs:
 
   lint:
     name: Code standards & linting
-
+    
     runs-on: ubuntu-latest
-
+    
+    permissions: 
+      contents: read
+      pull-requests: write
+      
     timeout-minutes: 10
 
     steps:
@@ -66,8 +64,7 @@ jobs:
       - name: 🔧 Install Node.js in an automated env
         run: npm ci
 
-      - name: 🔧 Build the project
-        run: npm run build --if-present
-
       - name: 🔍 Lint code
-        run: npm run lint --if-present
+        uses: reviewdog/action-eslint@v1
+        with:
+          workdir: ./flower-shop-frontend/

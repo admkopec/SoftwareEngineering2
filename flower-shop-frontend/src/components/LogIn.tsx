@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -9,14 +9,13 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { ThemeProvider } from '@mui/material/styles';
-import { useState } from 'react';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
 import { mainTheme } from '../resources/themes';
 import Copyright from './Copyright';
-import {IS_DEV, Roles} from '../resources/constants';
-import {JWTToken} from "../resources/types";
+import { IS_DEV, Roles } from '../resources/constants';
+import { JWTToken } from '../resources/types';
 
 export default function LogIn() {
   const navigate = useNavigate();
@@ -39,10 +38,10 @@ export default function LogIn() {
       })
       .then((responseJSON: JWTToken) => {
         IS_DEV && console.log('Success logging in.');
-        sessionStorage.setItem('jwtToken', responseJSON.jwtToken);
+        sessionStorage.setItem('jwtToken', responseJSON.jwttoken);
         sessionStorage.setItem('loggedIn', 'true');
         IS_DEV && sessionStorage.setItem('role', Roles.Employee.toString());
-        IS_DEV && console.log(responseJSON.jwtToken);
+        IS_DEV && console.log(responseJSON.jwttoken);
         navigate('/');
       })
       .catch((e) => {
