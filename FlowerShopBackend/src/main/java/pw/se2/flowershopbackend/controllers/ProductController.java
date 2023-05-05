@@ -1,5 +1,7 @@
 package pw.se2.flowershopbackend.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +48,15 @@ public class ProductController {
     }
 
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<ProductDto>> fetchProducts() {
+    @Operation(summary = "Fetch Products", description = "This endpoint will return the list of all products matching provided criteria.")
+    public ResponseEntity<Collection<ProductDto>> fetchProducts(@Parameter(name = "Search Query", description = "The search string query that will be matched against product name")
+                                                                @RequestParam(required = false) String search,
+                                                                @Parameter(name = "Filtered categories", description = "The list of categories (comma separated string values) (available categories: 'flower', 'bouquet', 'groundFlower', 'supplement')")
+                                                                @RequestParam(required = false) String category,
+                                                                @Parameter(name = "Page number", description = "The number of the page to be displayed")
+                                                                @RequestParam(defaultValue = "1") int page,
+                                                                @Parameter(name = "Maximum number of elements on page", description = "The number of elements per page that will not be exceeded")
+                                                                @RequestParam(defaultValue = "50") int maxPerPage) {
         // TODO: Add support for search query and category filtering
         // TODO: Add support for server-side paging
         Collection<Product> products = productService.getAllProducts();
