@@ -33,6 +33,7 @@ public class ProductController {
 
     @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create new Product")
     public void createProduct(@RequestBody ProductCreationDto productDto) {
         productService.assertEmployee(User.getAuthenticated());
         Product product = productDto.convertToModel();
@@ -41,6 +42,7 @@ public class ProductController {
 
     @PutMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create multiple new Products")
     public void createProducts(@RequestBody List<ProductCreationDto> productDtos) {
         productService.assertEmployee(User.getAuthenticated());
         List<Product> products = productDtos.stream().map(ProductCreationDto::convertToModel).toList();
@@ -49,9 +51,9 @@ public class ProductController {
 
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Fetch Products", description = "This endpoint will return the list of all products matching provided criteria.")
-    public ResponseEntity<Collection<ProductDto>> fetchProducts(@Parameter(name = "Search Query", description = "The search string query that will be matched against product name")
+    public ResponseEntity<Collection<ProductDto>> fetchProducts(@Parameter(name = "Search Query", description = "The search string query that will be matched against product name", example = "rose")
                                                                 @RequestParam(required = false) String search,
-                                                                @Parameter(name = "Filtered categories", description = "The list of categories (comma separated string values) (available categories: 'flower', 'bouquet', 'groundFlower', 'supplement')")
+                                                                @Parameter(name = "Filtered categories", description = "The list of categories (comma separated string values) (available categories: 'flower', 'bouquet', 'groundFlower', 'supplement')", example = "flower,bouquet")
                                                                 @RequestParam(required = false) String category,
                                                                 @Parameter(name = "Page number", description = "The number of the page to be displayed")
                                                                 @RequestParam(defaultValue = "1") int page,
@@ -64,12 +66,14 @@ public class ProductController {
     }
 
     @GetMapping(path = "/{productID}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Fetch a specific Product")
     public ResponseEntity<ProductDto> fetchProduct(@PathVariable UUID productID) {
         Product product = productService.getProductById(productID);
         return ResponseEntity.status(HttpStatus.OK).body(ProductDto.valueFrom(product));
     }
 
     @DeleteMapping(path = "/{productId}")
+    @Operation(summary = "Delete Product")
     public void deleteProduct(@PathVariable UUID productId) {
         productService.assertEmployee(User.getAuthenticated());
         productService.deleteProduct(productId);
@@ -77,6 +81,7 @@ public class ProductController {
 
     @PutMapping(path = "/{productId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Modify Product")
     public void modifyProduct(@PathVariable UUID productId, @RequestBody ProductCreationDto productDto) {
         productService.assertEmployee(User.getAuthenticated());
         Product product = productDto.convertToModel();
