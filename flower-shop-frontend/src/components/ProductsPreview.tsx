@@ -3,12 +3,12 @@ import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
 import Typography from '@mui/material/Typography';
 import { CircularProgress, Divider, List, ListItem, ListSubheader, Slide } from '@mui/material';
-import React, { ForwardedRef, MutableRefObject, useEffect, useState } from 'react';
+import React, { ForwardedRef, useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import { mainTheme } from '../resources/themes';
 import ProductCard from './ProductCard';
 import { Product } from '../resources/types';
-import { IS_DEV } from '../resources/constants';
+import log from '../utils/logger';
 
 interface ProductsPreviewProps {
   tag: string;
@@ -47,12 +47,12 @@ export default function ProductsPreview(props: ProductsPreviewProps) {
         throw new Error(`ERROR ${response.status}`);
       })
       .then((responseJSON: Product[]) => {
-        IS_DEV && console.log('Success fetching product.');
-        IS_DEV && console.log(responseJSON);
+        log('Success fetching product.');
+        log(JSON.stringify(responseJSON));
         setProductsArray(responseJSON);
       })
-      .catch((error) => {
-        IS_DEV && console.log(`Error when trying to fetch product: ${error}`);
+      .catch((error: Error) => {
+        log(`Error when trying to fetch product: ${error.message}`);
       });
     setListHeight(currentProductRef.current?.clientHeight);
     setIsLoading(false);
@@ -78,34 +78,36 @@ export default function ProductsPreview(props: ProductsPreviewProps) {
     }
   }
 
-  const ProductsContainer = React.forwardRef((props: ProductsContainerProps, ref: ForwardedRef<HTMLLIElement>) => (
+  const ProductsContainer = React.forwardRef((containerProps: ProductsContainerProps, ref: ForwardedRef<HTMLLIElement>) => (
     <ListItem
       sx={{ position: 'absolute', margin: '0 auto', alignSelf: 'center', width: 'fit-content' }}
-      key={props.productIndex}
+      key={containerProps.productIndex}
       ref={ref}
     >
       <Slide
-        direction={props.direction}
-        in={currentItemIndex === props.productIndex}
-        addEndListener={(event) => {}}
+        direction={containerProps.direction}
+        in={currentItemIndex === containerProps.productIndex}
+        addEndListener={() => {}}
         easing={{ enter: mainTheme.transitions.easing.easeOut, exit: mainTheme.transitions.easing.easeIn }}
         timeout={{ enter: 800, exit: 600 }}
       >
         <Grid container spacing={2}>
           <Grid item>
-            <ProductCard product={props.product} />
+            <ProductCard product={containerProps.product} />
           </Grid>
         </Grid>
       </Slide>
     </ListItem>
   ));
+  
+  ProductsContainer.displayName = 'ProductsContainer'
 
   useEffect(() => {
     setListHeight(currentProductRef.current?.clientHeight);
   }, [productsArray]);
 
   useEffect(() => {
-    fetchProducts().finally();
+    fetchProducts();
   }, []);
 
   const renderItems = () => {
@@ -117,7 +119,7 @@ export default function ProductsPreview(props: ProductsPreviewProps) {
       // Return some info message
       return (
         <Typography variant="h5" color="text.secondary">
-          Couldn't find matching products
+          Couldn&apos;t find matching products
         </Typography>
       );
     }
@@ -125,7 +127,8 @@ export default function ProductsPreview(props: ProductsPreviewProps) {
       <>
         {productsArray.map((product: Product, productIndex: number) => (
           <ProductsContainer
-            ref={currentItemIndex === productIndex + 1 ? currentProductRef : null}
+            key={product.productID}
+            ref={currentItemIndex === productIndex + 1 ? currentProductRef : undefined}
             direction={parseChangeToString(lastChange)}
             productIndex={productIndex + 1}
             product={product}
@@ -170,8 +173,8 @@ export default function ProductsPreview(props: ProductsPreviewProps) {
         sx={{ p: 2 }}
         renderItem={(item) => <PaginationItem {...item} />}
         onChange={(_, indexNumber: number) => {
-          console.log(`Index to change to: ${indexNumber}`);
-          console.log(`Index to change from: ${currentItemIndex}`);
+          log(`Index to change to: ${indexNumber}`);
+          log(`Index to change from: ${currentItemIndex}`);
           setCurrentItemIndex(indexNumber);
           setLastChange(handleDirection(indexNumber));
         }}

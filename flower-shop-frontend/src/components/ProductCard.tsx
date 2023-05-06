@@ -15,22 +15,11 @@ interface ProductCardProps {
   product: Product;
 }
 
-interface ProductInfoProps {
-  productId: string;
-}
-
-const useNavigateSearch = () => {
-  const navigate = useNavigate();
-  return (pathname: string, params: ProductInfoProps) => navigate(pathname, { state: params });
-};
-
 export default function ProductCard(props: ProductCardProps) {
-  const navigateSearch = useNavigateSearch();
-
-  const goToProduct = () =>
-    navigateSearch(`/products/${props.product.name.toLowerCase().replace(' ', '-')}`, {
-      productId: props.product.productId
-    });
+  const navigate = useNavigate();
+  const goToProduct = () => {
+    navigate(`/products/${props.product.productID}`);
+  }
 
   return (
     <Paper elevation={4} sx={{ width: 'fit-content', height: 'fit-content' }}>

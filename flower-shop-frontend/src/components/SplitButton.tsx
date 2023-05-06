@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import MenuItem from '@mui/material/MenuItem';
 import { SxProps, Theme } from '@mui/material';
 import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
 import { MenuItemSettings } from '../resources/types';
 
 interface ButtonOptionsProps {
@@ -43,14 +44,14 @@ export default function SplitButton(props: ButtonOptionsProps) {
   return (
     <Container sx={props.sx}>
       <ButtonGroup variant="contained" ref={anchorRef} aria-label="split button">
-        <Button onClick={() => props.options[selectedIndex].callback(navigate)} title="action auth button">
+        <Button onClick={() => props.options[selectedIndex].callback(navigate)} title={props.options[selectedIndex].key}>
           {props.options[selectedIndex].key}
         </Button>
         <Button
           size="small"
           aria-controls={open ? 'split-button-menu' : undefined}
           aria-expanded={open ? 'true' : undefined}
-          title="split button"
+          title="Split button"
           aria-haspopup="menu"
           onClick={handleToggle}
         >
@@ -59,7 +60,8 @@ export default function SplitButton(props: ButtonOptionsProps) {
       </ButtonGroup>
       <Popper
         sx={{
-          zIndex: 1000
+          zIndex: 1000,
+          width: anchorRef?.current?.clientWidth
         }}
         open={open}
         anchorEl={anchorRef.current}
@@ -71,7 +73,7 @@ export default function SplitButton(props: ButtonOptionsProps) {
           <Grow
             {...TransitionProps}
             style={{
-              transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom'
+              transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom',
             }}
           >
             <Paper>
@@ -82,9 +84,12 @@ export default function SplitButton(props: ButtonOptionsProps) {
                       key={option.key}
                       selected={index === selectedIndex}
                       onClick={(event) => handleMenuItemClick(event, index)}
+                      sx={{display: 'flex', flexFlow: 'row-nowrap', justifyContent: 'space-between',
+                        alignItems: 'center'}}
                     >
-                      {option.key}
-                      <option.icon />
+                      <Typography fontSize={14}>{option.key}{' '}
+                      </Typography>
+                      <option.Icon fontSize="small"/>
                     </MenuItem>
                   ))}
                 </MenuList>

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { alpha, styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import InputBase from '@mui/material/InputBase';
 import { mainTheme as theme } from '../resources/themes';
@@ -7,16 +7,14 @@ import { mainTheme as theme } from '../resources/themes';
 const Search = styled('div')(() => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette?.primary?.light as string, 1),
+  backgroundColor: theme.palette?.primary?.main,
+  transition: 'all 0.6s ease-out',
+  opacity: 1,
   '&:hover': {
-    backgroundColor: alpha(theme.palette?.primary?.light as string, 0.5)
+    opacity: 0.9
   },
-  margin: '10px',
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    margin: theme.spacing(1),
-    width: 'auto'
-  }
+  margin: '10px auto',
+  width: 'fit-content',
 }));
 
 const SearchIconWrapper = styled('div')(() => ({
@@ -35,7 +33,7 @@ const StyledInputBase = styled(InputBase)(() => ({
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
+    transition: theme.transitions.create('width', {easing: 'ease-out'}),
     width: '100%',
     [theme.breakpoints.up('sm')]: {
       width: '20ch',

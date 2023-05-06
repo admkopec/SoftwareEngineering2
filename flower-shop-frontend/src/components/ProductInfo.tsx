@@ -3,7 +3,7 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Paper from '@mui/material/Paper';
 import CircularProgress from '@mui/material/CircularProgress';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -17,15 +17,17 @@ import TextField from '@mui/material/TextField';
 import { Validate, ValidationGroup } from 'mui-validate';
 import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import FloweryImage from './FloweryImage';
-import { IS_DEV, Roles } from '../resources/constants';
+import { Roles } from '../resources/constants';
 import { Product } from '../resources/types';
 import DeleteDialog from './DeleteDialog';
+import log from '../utils/logger';
 
 export default function ProductInfo() {
+  const { productID } = useParams();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [isDeleting, setIsDeleting] = React.useState<boolean>(false);
-  const [productData, setProductData] = React.useState<Product | null>(null);
+  const [productData, setProductData] = React.useState<Product | undefined>();
   const [isAdmin, setIsAdmin] = React.useState<boolean>(false);
 
   const breadcrumbs = [
@@ -48,31 +50,33 @@ export default function ProductInfo() {
   };
 
   const fetchProduct = async () => {
-    setIsLoading(true);
-    await fetch(`/api/products/${window.history.state.productId}`, {
-      method: 'GET',
-      headers: {
-        'Content-type': 'application/json'
-      }
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(`ERROR ${response.status}`);
+    if (productID){
+      setIsLoading(true);
+      log(productID);
+      await fetch(`/api/products/${productID}`, {
+        method: 'GET',
+        headers: {
+          'Content-type': 'application/json'
+        }
       })
-      .then((responseJSON: Product) => {
-        IS_DEV && console.log('Success fetching product.');
-        IS_DEV && console.log(responseJSON);
-        setProductData(responseJSON);
-      })
-      .catch((error) => {
-        IS_DEV && console.log(`Error when trying to fetch product: ${error}`);
-      })
-      .finally();
-    setIsLoading(false);
+        .then((response) => {
+          if (response.ok) return response.json();
+          throw new Error(`ERROR ${response.status}`);
+        })
+        .then((responseJSON: Product) => {
+          log('Success fetching product.');
+          log(JSON.stringify(responseJSON));
+          setProductData(responseJSON);
+        })
+        .catch((error: Error) => {
+          log(`Error when trying to fetch product: ${error.message}`);
+        })
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
-    fetchProduct().finally(() => true);
+    fetchProduct();
     if (sessionStorage.getItem('loggedIn')) checkEmployee();
   }, []);
 
@@ -84,7 +88,7 @@ export default function ProductInfo() {
       <Grid container spacing={2}>
         <Grid item xs={12} md={4} justifyContent="center">
           <Paper elevation={4} sx={{ p: 3, width: 'fit-content', alignSelf: 'center' }}>
-            <FloweryImage src={`data:image/png;base64,${productData?.image}`} width="auto" height="auto" />
+            <FloweryImage src={`data:image/png;base64,${productData?.image || ''}`} width="auto" height="auto" />
           </Paper>
         </Grid>
         <Grid container item xs={12} md={8} textAlign="center">
@@ -123,8 +127,10 @@ export default function ProductInfo() {
                   name="internal item-quantity"
                   custom={[
                     (value) => {
-                      if (productData?.quantity == undefined) return false;
-                      return Number.parseInt(value) > 0 && Number.parseInt(value) < productData?.quantity + 1;
+                      if (!productData?.quantity)
+                        return false;
+                      return Number.parseInt(value, 10) > 0 &&
+                        Number.parseInt(value, 10) < productData.quantity + 1;
                     },
                     'Please enter a valid number.'
                   ]}
@@ -195,7 +201,7 @@ export default function ProductInfo() {
               </>
             )}
             <DeleteDialog
-              productId={productData?.productId}
+              productID={productData?.productID}
               productName={productData?.name}
               open={isDeleting}
               setOpen={(isOpen) => setIsDeleting(isOpen)}

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -15,8 +14,8 @@ import { useNavigate } from 'react-router-dom';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CircularProgress from '@mui/material/CircularProgress';
 import Copyright from './Copyright';
-import { Credentials, JWTToken } from '../resources/types';
-import { IS_DEV, Roles } from '../resources/constants';
+import { JWTToken, User } from '../resources/types';
+import log from '../utils/logger';
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -24,19 +23,18 @@ export default function SignUp() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formEntries = Object.fromEntries(new FormData(event.currentTarget).entries());
     setIsLoading(true);
-    // TODO: implement validation for these forms (removed previous password match ver.)
-    const credentials: Credentials = {
-      name: `${formEntries.firstName} ${formEntries.lastName}`,
+    const formEntries = Object.fromEntries((new FormData(event.currentTarget)).entries());
+    const newUserData : User = {
+      name: `${formEntries.firstName.toString()} ${formEntries.lastName.toString()}`,
       email: formEntries.email.toString(),
       password: formEntries.password.toString(),
-      role: Roles.Employee.valueOf()
+      newsletter: formEntries.newsletter === "on"
     };
-    IS_DEV && console.log(JSON.stringify(credentials));
+    log(JSON.stringify(newUserData));
     await fetch(`/api/users`, {
       method: 'POST',
-      body: JSON.stringify(credentials),
+      body: JSON.stringify(newUserData),
       headers: {
         'Content-type': 'application/json'
       }
@@ -47,14 +45,14 @@ export default function SignUp() {
         throw new Error(`ERROR ${response.status}`);
       })
       .then((responseJSON: JWTToken) => {
-        IS_DEV && console.log('Success signing up.');
-        sessionStorage.setItem('jwtToken', responseJSON.jwtToken);
+        log('Success signing up.');
+        sessionStorage.setItem('jwtToken', responseJSON.jwttoken);
         sessionStorage.setItem('loggedIn', 'false');
-        IS_DEV && console.log(responseJSON.jwtToken);
+        log(responseJSON.jwttoken);
         navigate('/signup/success');
       })
-      .catch((error) => {
-        IS_DEV && console.log(`Error when trying to sign up: ${error}`);
+      .catch((error: Error) => {
+        log(`Error when trying to sign up: ${error.message}`);
       });
     setIsLoading(false);
   };
@@ -134,7 +132,7 @@ export default function SignUp() {
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
-                control={<Checkbox value="hasNewsletter" color="primary" />}
+                control={<Checkbox role="newsletter" id="newsletter" name="newsletter" color="primary" />}
                 label="I would like to partake in the Newsletter programme, that is receive discount information, updates and suggestions via email."
               />
             </Grid>

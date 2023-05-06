@@ -18,28 +18,48 @@ import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import FeaturedPlayListRoundedIcon from '@mui/icons-material/FeaturedPlayListRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import { useNavigate } from 'react-router-dom';
-import { IS_DEV } from '../resources/constants';
 import { MenuItemSettings, User } from '../resources/types';
 import SplitButton from './SplitButton';
 import Logo from './Logo';
+import log from '../utils/logger';
+import { mainTheme } from '../resources/themes';
 
 interface HeaderBarProps {
   sx?: SxProps<Theme>;
 }
 
-const pagesLinks = ['Home', 'Products', 'Contact'];
+const pagesLinks: MenuItemSettings[] = [
+  {
+    key: 'Home',
+    callback: (navigate) => {
+      navigate('/');
+    }
+  },
+  {
+    key: 'Products',
+    callback: (navigate) => {
+      navigate('/products');
+    }
+  },
+  {
+    key: 'Contact',
+    callback: (navigate) => {
+      navigate('/');
+    }
+  }
+];
 
 export const authButtons: MenuItemSettings[] = [
   {
     key: 'Log In',
-    icon: LoginRoundedIcon,
+    Icon: LoginRoundedIcon,
     callback: (navigate) => {
       navigate('/login');
     }
   },
   {
     key: 'Sign Up',
-    icon: AppRegistrationRoundedIcon,
+    Icon: AppRegistrationRoundedIcon,
     callback: (navigate) => {
       navigate('/signup');
     }
@@ -49,31 +69,39 @@ export const authButtons: MenuItemSettings[] = [
 const profileSettingsUser: MenuItemSettings[] = [
   {
     key: 'Profile',
-    icon: AccountCircleRoundedIcon,
+    Icon: AccountCircleRoundedIcon,
     callback: () => {}
   },
   {
     key: 'My Orders',
-    icon: FeaturedPlayListRoundedIcon,
+    Icon: FeaturedPlayListRoundedIcon,
     callback: () => {}
   },
   {
     key: 'Logout',
-    icon: LogoutRoundedIcon,
+    Icon: LogoutRoundedIcon,
     callback: () => {
       sessionStorage.clear();
       window.location.reload();
     }
   }
 ];
-const profileSettingsEmployee = ['Profile', 'Orders', 'Logout'];
-const profileSettingsDeliveryMan = ['Profile', 'Deliveries', 'Logout'];
+
+const handleOpenBasket = () => {
+  log("Basket opened!");
+};
+// Profile menu options for different kinds of users
+// const profileSettingsEmployee = ['Profile', 'Orders', 'Logout'];
+// const profileSettingsDeliveryMan = ['Profile', 'Deliveries', 'Logout'];
 
 export default function Header(props: HeaderBarProps) {
   const navigate = useNavigate();
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-  const [userData, setUserData] = React.useState<null | User>(null);
+  const [anchorElNav, setAnchorElNav] = React.useState<undefined | HTMLElement>();
+  const [anchorElUser, setAnchorElUser] = React.useState<undefined | HTMLElement>();
+  const [userData, setUserData] = React.useState<undefined | User>();
+  // Function should handle opening the basket
+
+
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -82,19 +110,19 @@ export default function Header(props: HeaderBarProps) {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleOpenBasket = (event: React.MouseEvent<HTMLElement>) => {};
+
 
   const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
+    setAnchorElNav(undefined);
   };
 
   const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
+    setAnchorElUser(undefined);
   };
 
   // Fetching user information
   const fetchUserData = async () => {
-    IS_DEV && console.log(sessionStorage.getItem('jwtToken'));
+    log(sessionStorage.getItem('jwtToken'));
     await fetch(`/api/users`, {
       method: 'GET',
       headers: {
@@ -104,24 +132,26 @@ export default function Header(props: HeaderBarProps) {
     })
       .then((response) => {
         if (response.ok) return response.json();
-
         throw new Error(`ERROR ${response.status}`);
       })
       .then((responseJSON: User) => {
-        IS_DEV && console.log('Success fetching user data.');
-        IS_DEV && console.log(responseJSON);
+        log('Success fetching user data.');
+        log(JSON.stringify(responseJSON));
         setUserData(responseJSON);
+        return true;
       })
-      .catch((error) => {
-        IS_DEV && console.log(`Error when trying to fetch user data: ${error}`);
+      .catch((error: Error) => {
+        sessionStorage.clear();
+        log(`Error when trying to fetch user data: ${error.message}`);
+        return false;
       });
   };
 
   React.useEffect(() => {
     if (sessionStorage.getItem('loggedIn') === 'true') {
-      fetchUserData().finally();
+      fetchUserData();
     } else {
-      setUserData(null);
+      setUserData(undefined);
     }
   }, []);
 
@@ -168,8 +198,14 @@ export default function Header(props: HeaderBarProps) {
             sx={{ display: 'block' }}
           >
             {pagesLinks.map((page) => (
-              <MenuItem key={page} onClick={handleCloseNavMenu}>
-                <Typography textAlign="center">{page}</Typography>
+              <MenuItem
+                key={page.key}
+                onClick={() => {
+                  page.callback(navigate);
+                  handleCloseNavMenu();
+                }}
+              >
+                <Typography textAlign="center">{page.key}</Typography>
               </MenuItem>
             ))}
           </Menu>
@@ -188,8 +224,15 @@ export default function Header(props: HeaderBarProps) {
         {/* Pages */}
         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
           {pagesLinks.map((page) => (
-            <Button key={page} onClick={handleCloseNavMenu} sx={{ my: 2, color: 'white', display: 'block' }}>
-              {page}
+            <Button
+              key={page.key}
+              onClick={() => {
+                page.callback(navigate);
+                handleCloseNavMenu();
+              }}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              {page.key}
             </Button>
           ))}
         </Box>
@@ -204,8 +247,8 @@ export default function Header(props: HeaderBarProps) {
         </Box>
 
         <Box sx={{ display: 'block', flexGrow: 0 }}>
-          {userData == undefined ? (
-            <SplitButton options={authButtons} sx={{ flexGrow: 0, color: 'primary.dark' }} />
+          {userData === undefined ? (
+            <SplitButton options={authButtons} sx={{ flexGrow: 0, color: mainTheme.palette?.primary?.main }} />
           ) : (
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
@@ -236,7 +279,7 @@ export default function Header(props: HeaderBarProps) {
                 {profileSettingsUser.map((setting) => (
                   <MenuItem key={setting.key} onClick={() => setting.callback(navigate)}>
                     <ListItemIcon>
-                      <setting.icon />
+                      {setting.Icon}
                     </ListItemIcon>
                     <Typography textAlign="center" color={setting.key === 'Logout' ? 'error.light' : 'inherit'}>
                       {setting.key}

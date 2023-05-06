@@ -3,17 +3,16 @@ const FlowersData = require('./products-flowers.json');
 
 const handlers = [
     rest.post('/api/users/log_in', (request, response, context) => 
-        // Persist user's authentication in the session
-
-         response(
+        // TODO: implement mock logging
+        response(
           // Respond with a 200 status code
           context.status(200),
         )
     ),
 
-    rest.get('/api/products/:productId', (request, response, context) => {
-        const { productId } = request.params;
-        const flower = FlowersData.filter((flower) => flower.id === productId);
+    rest.get('/api/products/:productID', (request, response, context) => {
+        const { productID } = request.params;
+        const flower = FlowersData.filter((flowerItem) => flowerItem.id === productID);
         return response(
           context.status(200),
           context.set('Content-Type', 'application/json'),
@@ -27,7 +26,7 @@ const handlers = [
           context.set('Content-Type', 'application/json'),
           context.json(FlowersData),
           context.text("Success fetching product."),
-        )),
+      )),
 ]
 
 module.exports = handlers;

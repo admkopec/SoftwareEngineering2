@@ -60,7 +60,8 @@ module.exports = {
                 "ts": "never",
                 "tsx": "never"
             }
-        ]
+        ],
+        "unicorn/filename-case": "off"
     },
 
     // Override Typescript files
@@ -137,6 +138,7 @@ module.exports = {
                 // Airbnb prefers forEach
                 "unicorn/no-array-for-each": "off",
                 // It's not accurate in the monorepo style
+                "unicorn/no-useless-undefined": "warn",
                 "unicorn/filename-case": "off",
                 "import/no-extraneous-dependencies": "off",
                 "@typescript-eslint/ban-ts-comment": [
@@ -146,6 +148,11 @@ module.exports = {
                         minimumDescriptionLength: 4,
                     },
                 ],
+                "@typescript-eslint/no-floating-promises": "warn",
+                "promise/always-return": "warn",
+                "@typescript-eslint/no-misused-promises": "warn",
+                "@typescript-eslint/no-unused-vars": "warn",
+                "no-promise-executor-return": "warn"
             },
         },
     ],

@@ -1,0 +1,22 @@
+# Specify location of manifest files for each package manager
+
+version: 2
+updates:
+  - package-ecosystem: "maven"
+    # Backend files stored in `FlowerShopBackend`
+    directory: "/FlowerShopBackend"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "npm"
+    # Frontend files in `flower-shop-frontend`
+    directory: "/flower-shop-frontend"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "github-actions"
+    # Workflow files stored in the
+    # default location of `.github/workflows`
+    directory: "/"
+    schedule:
+      interval: "weekly"

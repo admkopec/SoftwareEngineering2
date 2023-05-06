@@ -15,6 +15,7 @@ function HomePage() {
   return (
     <Container sx={{width: 'auto', m: 0, p: 0, maxWidth: '100%', overflow: 'hidden'}} maxWidth={false} disableGutters>
       <Header />
+      <SearchBar />
       <Grid
         container
         display ="flex"
@@ -25,9 +26,6 @@ function HomePage() {
         width='auto'
         sx={{ pr: 4, pl: 4, zIndex: 1, minHeight: '80vh' }}
       >
-        <Grid item>
-          <SearchBar/>
-        </Grid>
         <Grid item>
           <Outlet />
         </Grid>
