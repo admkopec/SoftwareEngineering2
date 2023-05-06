@@ -94,7 +94,8 @@ public class ProductService {
 
     public void assertEmployee(User user) {
         if (user.getRole() != User.Roles.Employee) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized to add products");
+            log.error("User is not an employee");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized to update products");
         }
     }
 }
