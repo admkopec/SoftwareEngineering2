@@ -3,6 +3,7 @@ package pw.se2.flowershopbackend.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -32,6 +33,9 @@ public class Order {
     //optional
     @Column
     private Status status;
+
+    @Column
+    private Timestamp dateCreated;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "client_id", nullable = false, columnDefinition = "BINARY(16)")
@@ -98,5 +102,13 @@ public class Order {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public Timestamp getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Timestamp dateCreated) {
+        this.dateCreated = dateCreated;
     }
 }
