@@ -86,7 +86,7 @@ public class ProductDeletingApiTests {
         mvc.perform(delete("/api/products/" + productId))
                 .andExpect(status().is4xxClientError())
                 .andExpect(result -> assertNotNull(result.getResolvedException()))
-                .andExpect(result -> assertTrue(result.getResolvedException().getMessage().contains("User is not authorized to add products")));
+                .andExpect(result -> assertTrue(result.getResolvedException().getMessage().contains("User is not authorized to update products")));
     }
 
     @Test
