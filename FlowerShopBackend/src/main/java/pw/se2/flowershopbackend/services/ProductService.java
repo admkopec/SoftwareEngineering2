@@ -3,16 +3,17 @@ package pw.se2.flowershopbackend.services;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pw.se2.flowershopbackend.dao.ProductRepository;
 import pw.se2.flowershopbackend.models.Product;
 import pw.se2.flowershopbackend.models.User;
-
+import java.util.Optional;
 import java.util.UUID;
-
 import java.util.List;
-import java.util.UUID;
 
+@Service
 public class ProductService {
     private static final Logger log = LoggerFactory.getLogger(ProductService.class);
 
@@ -22,7 +23,7 @@ public class ProductService {
         this.productRepository = productRepository;
     }
     public void validateAndSave(Product product) {
-        if (isValidProduct(product)) {
+        if (isProductValid(product)) {
             log.info("Product is valid");
             productRepository.save(product);
             log.info("Product was saved.");
@@ -30,7 +31,7 @@ public class ProductService {
     }
     public void validateAndSaveMany(List<Product> products) {
         products.forEach((product) -> {
-            if (isValidProduct(product)) {
+            if (isProductValid(product)) {
                 log.info("Product is valid");
                 productRepository.save(product);
                 log.info("Product was saved.");
@@ -38,35 +39,36 @@ public class ProductService {
         });
     }
 
-    public Product getProduct(UUID id) {
-        Product product;
+    public Product getProductById(UUID id) {
+        Optional<Product> product = productRepository.findById(id);
 
-        if(productRepository.existsById(id))
+        if(product.isPresent())
         {
-            product = productRepository.getById(id);
-            return product;
+            return product.get();
         }
         else
         {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such product");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No such product");
         }
     }
+
 
     public List<Product> getAllProducts () {
         return productRepository.findAll();
     }
 
-    private boolean isValidProduct(Product product) {
+    public boolean isProductValid(Product product) {
         if (product != null) {
             if (product.getId() == null) {
                 log.error("Null product id.");
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Null product id.");
             }
-            if (isInvalid(product.getName())) {
+//            MARK: Can also check validity of string using built in functions
+            if (product.getName().isBlank()) {
                 log.error("Empty product name.");
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Empty product name.");
             }
-            if (isInvalid(product.getDescription())) {
+            if (product.getDescription().isBlank()) {
                 log.error("Empty product description.");
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Empty product description.");
             }
@@ -92,12 +94,8 @@ public class ProductService {
 
     public void assertEmployee(User user) {
         if (user.getRole() != User.Roles.Employee) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized to add products");
+            log.error("User is not an employee");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized to update products");
         }
-    }
-
-    // MARK: - Helpers
-    private boolean isInvalid(String value) {
-        return value == null || value.isBlank();
     }
 }

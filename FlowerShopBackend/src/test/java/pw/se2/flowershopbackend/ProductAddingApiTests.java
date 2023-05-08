@@ -75,19 +75,15 @@ public class ProductAddingApiTests {
 
     @Test
     public void givenInvalidCredentials_whileAddingProduct_thenReturnError() throws Exception {
-        try {
-            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-                    user, null, user.getAuthorities()
-            ));
-            mvc.perform(post("/api/products").contentType(MediaType.APPLICATION_JSON)
-                            .content("{\"productID\":\"A9007774-CA6F-4D99-9E58-A3913988F1DD\",\"name\":\"Daisy\", \"description\":\"Description\", \"image\":\"\", \"price\":15.0, \"quantity\":100, \"category\":0}")
-                            .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().is4xxClientError())
-                    .andExpect(result -> assertNotNull(result.getResolvedException()))
-                    .andExpect(result -> assertTrue(result.getResolvedException().getMessage().contains("User is not authorized to add products")));
-        } catch (Exception exception) {
-            assertTrue(exception.getMessage().contains("User is not authorized to add products"), exception.getMessage());
-        }
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
+                user, null, user.getAuthorities()
+        ));
+        mvc.perform(post("/api/products").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"productID\":\"A9007774-CA6F-4D99-9E58-A3913988F1DD\",\"name\":\"Daisy\", \"description\":\"Description\", \"image\":\"\", \"price\":15.0, \"quantity\":100, \"category\":0}")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andExpect(result -> assertNotNull(result.getResolvedException()))
+                .andExpect(result -> assertTrue(result.getResolvedException().getMessage().contains("User is not authorized to update products")));
     }
 
     @Test

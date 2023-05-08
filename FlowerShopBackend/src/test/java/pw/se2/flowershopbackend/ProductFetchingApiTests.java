@@ -21,11 +21,10 @@ import pw.se2.flowershopbackend.models.Product;
 import pw.se2.flowershopbackend.services.ProductService;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -70,6 +69,10 @@ public class ProductFetchingApiTests {
                 .thenReturn(product1);
         Mockito.when(productRepository.getById(product2.getId()))
                 .thenReturn(product2);
+        Mockito.when(productRepository.findById(product1.getId()))
+                .thenReturn(Optional.of(product1));
+        Mockito.when(productRepository.findById(product2.getId()))
+                .thenReturn(Optional.of(product2));
         Mockito.when(productRepository.existsById(product1.getId()))
                 .thenReturn(true);
         Mockito.when(productRepository.existsById(product2.getId()))

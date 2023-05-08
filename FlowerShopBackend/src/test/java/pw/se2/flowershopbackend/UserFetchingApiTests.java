@@ -67,6 +67,7 @@ public class UserFetchingApiTests {
         user.setName("Test User");
         user.setEmail("test@shop.com");
         user.setPassword(new BCryptPasswordEncoder().encode("1234"));
+        user.setRole(User.Roles.Client);
         employee.setName("Test Employee");
         employee.setEmail("employee@shop.com");
         employee.setPassword(new BCryptPasswordEncoder().encode("5678"));
@@ -82,19 +83,26 @@ public class UserFetchingApiTests {
     @Test
     public void givenValidCredentials_whileFetchingUser_thenReturnUserDto() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-                user, null, employee.getAuthorities()
+                user, null, user.getAuthorities()
         ));
         mvc.perform(get("/api/users"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", is(user.getName())));
+                .andExpect(jsonPath("$.id", is(user.getId().toString())))
+                .andExpect(jsonPath("$.name", is(user.getName())))
+                .andExpect(jsonPath("$.email", is(user.getEmail())))
+                .andExpect(jsonPath("$.role", is(user.getRole().toString().toLowerCase())));
     }
 
     @Test
-    public void givenNullCredentials_whileCreatingUser_thenReturnUserDto() throws Exception {
-        mvc.perform(post("/api/users").contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"Test User\", \"email\":\"test.user@shop.com\", \"password\":\"1234\"}")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.name", is("Test User")));
+    public void givenValidEmployeeCredentials_whileFetchingUser_thenReturnUserDto() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
+                employee, null, employee.getAuthorities()
+        ));
+        mvc.perform(get("/api/users"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(employee.getId().toString())))
+                .andExpect(jsonPath("$.name", is(employee.getName())))
+                .andExpect(jsonPath("$.email", is(employee.getEmail())))
+                .andExpect(jsonPath("$.role", is(employee.getRole().toString().toLowerCase())));
     }
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -9,16 +9,13 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { ThemeProvider } from '@mui/material/styles';
-import { useState } from 'react';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
-import { mainTheme } from './Themes';
+import { mainTheme } from '../resources/themes';
 import Copyright from './Copyright';
-
-interface JWTToken {
-  jwttoken: string;
-}
+import { IS_DEV, Roles } from '../resources/constants';
+import { JWTToken } from '../resources/types';
 
 export default function LogIn() {
   const navigate = useNavigate();
@@ -40,14 +37,15 @@ export default function LogIn() {
         throw new Error(`ERROR ${response.status}`);
       })
       .then((responseJSON: JWTToken) => {
-        console.log('Success logging in.');
+        IS_DEV && console.log('Success logging in.');
+        sessionStorage.setItem('jwtToken', responseJSON.jwttoken);
         sessionStorage.setItem('loggedIn', 'true');
-        sessionStorage.setItem('jwttoken', responseJSON.jwttoken);
-        console.log(responseJSON.jwttoken);
+        IS_DEV && sessionStorage.setItem('role', Roles.Employee.toString());
+        IS_DEV && console.log(responseJSON.jwttoken);
         navigate('/');
       })
       .catch((e) => {
-        console.log(`Error when trying to log in: ${e}`);
+        IS_DEV && console.log(`Error when trying to log in: ${e}`);
       });
     setIsLoading(false);
   };
@@ -65,7 +63,7 @@ export default function LogIn() {
             justifyContent: 'center'
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, backgroundColor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">

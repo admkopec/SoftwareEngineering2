@@ -4,15 +4,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pw.se2.flowershopbackend.dao.UserRepository;
+import pw.se2.flowershopbackend.models.Order;
 import pw.se2.flowershopbackend.models.User;
-
 import java.util.Optional;
+import java.util.UUID;
 
+@Service
 public class UserService {
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
-
     private final UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
 
@@ -25,7 +28,7 @@ public class UserService {
     }
 
     public User validateAndSave(User user) {
-        if (isValidUser(user)) {
+        if (isUserValid(user)) {
             log.info("User is valid");
             Optional<User> dbUser = userRepository.findByEmail(user.getEmail());
             if (dbUser.isPresent()) {
@@ -55,13 +58,22 @@ public class UserService {
         log.info("User was saved after update.");
     }
 
-    private boolean isValidUser(User user) {
+    public User getUserById(UUID userId){
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            log.info("User is not present in the database.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User is not present in the database.");
+        } else
+            return user.get();
+    }
+
+    public boolean isUserValid(User user) {
         if (user != null) {
-            if (isInvalid(user.getEmail()) || isInvalid(user.getUsername())) {
+            if (user.getEmail().isBlank() || user.getUsername().isBlank()) {
                 log.error("Empty user email.");
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Empty user email.");
             }
-            if (isInvalid(user.getPassword())) {
+            if (user.getPassword().isBlank()) {
                 log.error("Empty user password.");
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Empty user password.");
             }
@@ -71,8 +83,7 @@ public class UserService {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is null.");
     }
 
-    // MARK: - Helpers
-    private boolean isInvalid(String value) {
-        return value == null || value.isBlank();
+    public void notify(User user, Order.Status newStatus) {
+        // TODO: Implement
     }
 }

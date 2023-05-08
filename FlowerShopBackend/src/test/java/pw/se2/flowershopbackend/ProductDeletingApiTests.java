@@ -80,17 +80,13 @@ public class ProductDeletingApiTests {
 
     @Test
     public void givenInvalidCredentials_whileDeletingProduct_thenReturnError() throws Exception {
-        try {
-            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-                    user, null, user.getAuthorities()
-            ));
-            mvc.perform(delete("/api/products/" + productId))
-                    .andExpect(status().is4xxClientError())
-                    .andExpect(result -> assertNotNull(result.getResolvedException()))
-                    .andExpect(result -> assertTrue(result.getResolvedException().getMessage().contains("User is not authorized to add products")));
-        } catch (Exception exception) {
-            assertTrue(exception.getMessage().contains("User is not authorized to add products"), exception.getMessage());
-        }
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
+                user, null, user.getAuthorities()
+        ));
+        mvc.perform(delete("/api/products/" + productId))
+                .andExpect(status().is4xxClientError())
+                .andExpect(result -> assertNotNull(result.getResolvedException()))
+                .andExpect(result -> assertTrue(result.getResolvedException().getMessage().contains("User is not authorized to update products")));
     }
 
     @Test
