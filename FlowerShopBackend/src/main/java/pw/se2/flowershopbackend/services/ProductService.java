@@ -2,16 +2,24 @@ package pw.se2.flowershopbackend.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pw.se2.flowershopbackend.dao.ProductRepository;
 import pw.se2.flowershopbackend.models.Product;
+import pw.se2.flowershopbackend.models.Product_;
 import pw.se2.flowershopbackend.models.User;
+
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.List;
+
+import static org.springframework.data.jpa.domain.Specification.where;
 
 @Service
 public class ProductService {
@@ -22,6 +30,7 @@ public class ProductService {
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
+
     public void validateAndSave(Product product) {
         if (isProductValid(product)) {
             log.info("Product is valid");
@@ -51,7 +60,6 @@ public class ProductService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No such product");
         }
     }
-
 
     public List<Product> getAllProducts () {
         return productRepository.findAll();
@@ -98,4 +106,44 @@ public class ProductService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized to update products");
         }
     }
+
+    private Specification<Product> nameLike(String name){
+        if (name == null)
+            return (root, query, criteriaBuilder)
+                    -> criteriaBuilder.conjunction();
+        return (root, query, criteriaBuilder)
+                -> criteriaBuilder.like(root.get(Product_.NAME), "%"+name+"%");
+    }
+    public Page<Product> getFilteredProducts(String query,
+                                             String categories,
+                                             int minPrice,
+                                             int maxPrice,
+                                             Pageable page) {
+        return productRepository.findAll(
+                where(nameLike(query))
+                        .and(belongsToCategory(categories))
+                        .and(priceMatches(minPrice, maxPrice)),
+                page);
+    }
+
+    private Specification<Product> priceMatches(int minPrice, int maxPrice){
+        // TODO: implement checking maximum price of product in our database
+        if (minPrice < 0 || maxPrice < 0)
+            return (root, query, criteriaBuilder)
+                    -> criteriaBuilder.conjunction();
+        return (root, query, criteriaBuilder)
+                -> criteriaBuilder.between(root.get(Product_.PRICE), minPrice, maxPrice);
+    }
+
+    private Specification<Product> belongsToCategory(String categories){
+        if (categories == null)
+            return (root, query, criteriaBuilder) -> criteriaBuilder.conjunction();
+
+        List<Product.Category> categoriesList = Arrays.stream(categories.split(",")).toList().stream()
+                .map(Product.Category::valueOf).toList();
+
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.in(root.get(Product_.CATEGORY)).value(categoriesList);
+    }
+
 }
