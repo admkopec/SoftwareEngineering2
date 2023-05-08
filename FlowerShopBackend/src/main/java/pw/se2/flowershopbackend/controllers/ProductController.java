@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -55,13 +57,17 @@ public class ProductController {
                                                                 @RequestParam(required = false) String search,
                                                                 @Parameter(name = "Filtered categories", description = "The list of categories (comma separated string values) (available categories: 'flower', 'bouquet', 'groundFlower', 'supplement')", example = "flower,bouquet")
                                                                 @RequestParam(required = false) String category,
+                                                                @Parameter(name = "Minimum price", description = "The minimum price for a product selected", example = "5")
+                                                                @RequestParam(required = false) int minPrice,
+                                                                @Parameter(name = "Maximum price", description = "The maximum price for a product selected", example = "20")
+                                                                @RequestParam(required = false) int maxPrice,
                                                                 @Parameter(name = "Page number", description = "The number of the page to be displayed")
-                                                                @RequestParam(defaultValue = "1") int page,
+                                                                @RequestParam(defaultValue = "0") int page,
                                                                 @Parameter(name = "Maximum number of elements on page", description = "The number of elements per page that will not be exceeded")
-                                                                @RequestParam(defaultValue = "50") int maxPerPage) {
-        // TODO: Add support for search query and category filtering
-        // TODO: Add support for server-side paging
-        Collection<Product> products = productService.getAllProducts();
+                                                                @RequestParam(defaultValue = "30") int maxPerPage) {
+        Pageable paging = PageRequest.of(page, maxPerPage);
+        Collection<Product> products = productService.getFilteredProducts(search, category, minPrice, maxPrice, paging)
+                .getContent();
         return ResponseEntity.status(HttpStatus.OK).body(products.stream().map(ProductDto::valueFrom).toList());
     }
 
