@@ -5,10 +5,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import pw.se2.flowershopbackend.models.Order;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-public record OrderDto(UUID orderId, AddressDto deliveryAddress, List<OrderProductDto> items) {
+public record OrderDto(UUID orderId, AddressDto deliveryAddress, Date dateCreated, List<OrderProductDto> items) {
     public static OrderDto valueFrom(Order order) {
         AddressDto address;
         try {
@@ -18,6 +19,6 @@ public record OrderDto(UUID orderId, AddressDto deliveryAddress, List<OrderProdu
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Corrupted data in database.");
         }
         List<OrderProductDto> items = order.getOrderProducts().stream().map(OrderProductDto::valueFrom).toList();
-        return new OrderDto(order.getId(), address, items);
+        return new OrderDto(order.getId(), address, order.getDateCreated(), items);
     }
 }

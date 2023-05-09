@@ -10,6 +10,8 @@ import pw.se2.flowershopbackend.services.ProductService;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.*;
 
 public record OrderCreationDto(UUID orderId, @NotNull AddressDto deliveryAddress,
@@ -24,6 +26,7 @@ public record OrderCreationDto(UUID orderId, @NotNull AddressDto deliveryAddress
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Corrupted data in request");
         }
         order.setAddress(address);
+        order.setDateCreated(new Timestamp(new java.util.Date().getTime()));
         List<OrderProduct> orderProducts = Arrays.stream(items).map((orderProductDto) ->
                 orderProductDto.convertToModel(productService)).toList();
         Set<OrderProduct> orderProductSet = new LinkedHashSet<>(orderProducts);
