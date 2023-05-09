@@ -72,10 +72,10 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(products.stream().map(ProductDto::valueFrom).toList());
     }
 
-    @GetMapping(path = "/{productID}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Fetch a specific Product")
-    public ResponseEntity<ProductDto> fetchProduct(@PathVariable UUID productID) {
-        Product product = productService.getProductById(productID);
+    public ResponseEntity<ProductDto> fetchProduct(@PathVariable UUID productId) {
+        Product product = productService.getProductById(productId);
         return ResponseEntity.status(HttpStatus.OK).body(ProductDto.valueFrom(product));
     }
 
@@ -89,9 +89,9 @@ public class ProductController {
     @PutMapping(path = "/{productId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Modify Product")
-    public void modifyProduct(@PathVariable UUID productId, @RequestBody ProductCreationDto productDto) {
+    public void modifyProduct(@PathVariable UUID productId, @RequestBody ProductCreationDto productCreationDto) {
         productService.assertEmployee(User.getAuthenticated());
-        Product product = productDto.convertToModel();
+        Product product = productCreationDto.convertToModel();
         product.setId(productId);
         productService.validateAndSave(product);
     }
