@@ -66,7 +66,7 @@ public class OrderService {
         if (order != null) {
             if (order.getId() == null) {
                 log.error("Null order id.");
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Null product id.");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Null order id.");
             }
             if (order.getAddress().isBlank()){
                 log.error("Empty address.");
