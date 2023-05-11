@@ -1,5 +1,7 @@
 package pw.se2.flowershopbackend.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,18 +11,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pw.se2.flowershopbackend.models.Order;
-import pw.se2.flowershopbackend.models.OrderProduct;
-import pw.se2.flowershopbackend.models.Product;
 import pw.se2.flowershopbackend.models.User;
-import org.springframework.web.bind.annotation.*;
 import pw.se2.flowershopbackend.services.OrderProductService;
 import pw.se2.flowershopbackend.services.OrderService;
 import pw.se2.flowershopbackend.services.ProductService;
-import pw.se2.flowershopbackend.services.UserService;
 import pw.se2.flowershopbackend.web.OrderDto;
 import pw.se2.flowershopbackend.web.OrderStatusChangeDto;
-import pw.se2.flowershopbackend.web.ProductCreationDto;
-
 import java.util.Collection;
 import java.util.UUID;
 import pw.se2.flowershopbackend.web.OrderCreationDto;
@@ -35,26 +31,29 @@ public class OrderController {
 
     private final ProductService productService;
 
-    private final UserService userService;
-
     private final OrderProductService orderProductService;
 
     public OrderController(OrderService orderService, OrderProductService orderProductService,
-                           ProductService productService, UserService userService)  {
+                           ProductService productService)  {
         this.orderService = orderService;
         this.orderProductService = orderProductService;
         this.productService = productService;
-        this.userService = userService;
     }
 
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<OrderDto>> fetchOrders() {
+    @Operation(summary = "Fetch Orders", description = "Orders will be returned in descending order by date created.")
+    public ResponseEntity<Collection<OrderDto>> fetchOrders(@Parameter(name = "Page number", description = "The number of the page to be displayed")
+                                                            @RequestParam(defaultValue = "1") int page,
+                                                            @Parameter(name = "Maximum number of elements on page", description = "The number of elements per page that will not be exceeded")
+                                                            @RequestParam(defaultValue = "50") int maxPerPage) {
+        // TODO: Add support for server-side paging
         User user = User.getAuthenticated();
         Collection<Order> orders = orderService.getOrdersFor(user);
         return ResponseEntity.status(HttpStatus.OK).body(orders.stream().map(OrderDto::valueFrom).toList());
     }
 
     @GetMapping(path = "/{orderId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Fetch a specific Order")
     public ResponseEntity<OrderDto> fetchOrder(@PathVariable UUID orderId) {
         User user = User.getAuthenticated();
         Order order = orderService.getOrderByIdAuth(orderId, user);
@@ -63,6 +62,7 @@ public class OrderController {
 
     @PostMapping(path = "/{orderId}/change_status", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Change status of an Order", description = "Requires employee or delivery man authorisation")
     public void changeOrderStatus(@PathVariable UUID orderId, @RequestBody OrderStatusChangeDto statusChangeDto) {
         User user = User.getAuthenticated();
         orderService.changeStatus(orderId, statusChangeDto.orderStatus(), user);
@@ -70,16 +70,34 @@ public class OrderController {
 
     @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create new Order")
     public void createOrder(@RequestBody OrderCreationDto orderDto) {
         User user = User.getAuthenticated();
         if (user.getRole() != User.Roles.Client) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to perform this action.");
         }
         Order order = orderDto.convertToModel(productService);
-        //order.setClient(userService.getUserById(user.getId()));
         order.setClient(user);
         order.getOrderProducts().forEach((orderProduct) -> orderProduct.setOrder(order));
         orderService.validateAndSave(order);
         orderProductService.validateAndSaveAll(order.getOrderProducts());
+    }
+
+    @PutMapping(path = "/{orderId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Modify Order")
+    public void modifyOrder(@PathVariable UUID orderId, @RequestBody OrderCreationDto orderDto) {
+        User user = User.getAuthenticated();
+        if (user.getRole() != User.Roles.Client) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to perform this action.");
+        }
+        // FIXME: This requires to be fixed!!!
+        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Not yet implemented.");
+//        Order order = orderDto.convertToModel(productService);
+//        order.setId(orderId);
+//        order.setClient(user);
+//        order.getOrderProducts().forEach((orderProduct) -> orderProduct.setOrder(order));
+//        orderService.validateAndSave(order);
+//        orderProductService.validateAndSaveAll(order.getOrderProducts());
     }
 }
