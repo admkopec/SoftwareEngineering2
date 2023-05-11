@@ -2,13 +2,16 @@ package pw.se2.flowershopbackend.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pw.se2.flowershopbackend.dao.ProductRepository;
 import pw.se2.flowershopbackend.models.Product;
 import pw.se2.flowershopbackend.models.User;
+
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.List;
@@ -22,6 +25,7 @@ public class ProductService {
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
+
     public void validateAndSave(Product product) {
         if (isProductValid(product)) {
             log.info("Product is valid");
@@ -51,7 +55,6 @@ public class ProductService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No such product");
         }
     }
-
 
     public List<Product> getAllProducts () {
         return productRepository.findAll();
@@ -97,5 +100,29 @@ public class ProductService {
             log.error("User is not an employee");
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized to update products");
         }
+    }
+
+    public Page<Product> getFilteredProducts(String query,
+                                             String categories,
+                                             Integer minPrice,
+                                             Integer maxPrice,
+                                             Pageable page) {
+        if (minPrice == null) {
+            minPrice = Integer.MIN_VALUE;
+        }
+        if (maxPrice == null) {
+            maxPrice = Integer.MAX_VALUE;
+        }
+        if (maxPrice < minPrice)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid min/max prices.");
+        return productRepository.findByNameLikeAndCategoryInAndQuantityBetween(query, getCategoriesFrom(categories), minPrice, maxPrice, page);
+    }
+
+    private List<Product.Category> getCategoriesFrom(String categoryString) {
+        if (categoryString == null) {
+            return Arrays.asList(Product.Category.Flower, Product.Category.Bouquet, Product.Category.GroundFlower, Product.Category.Supplement);
+        }
+
+        return Arrays.stream(categoryString.split(",")).toList().stream().map(Product.Category::valueOf).toList();
     }
 }
