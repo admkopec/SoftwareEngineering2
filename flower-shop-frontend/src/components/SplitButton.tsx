@@ -9,9 +9,10 @@ import Popper from '@mui/material/Popper';
 import MenuList from '@mui/material/MenuList';
 import { useNavigate } from 'react-router-dom';
 import MenuItem from '@mui/material/MenuItem';
-import { SxProps, Theme } from '@mui/material';
+import { SvgIcon, SxProps, Theme } from '@mui/material';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
+import { SvgIconComponent } from '@mui/icons-material';
 import { MenuItemSettings } from '../resources/types';
 
 interface ButtonOptionsProps {
@@ -89,7 +90,7 @@ export default function SplitButton(props: ButtonOptionsProps) {
                     >
                       <Typography fontSize={14}>{option.key}{' '}
                       </Typography>
-                      <option.Icon fontSize="small"/>
+                      {option.Icon && <SvgIcon component={option.Icon} />}
                     </MenuItem>
                   ))}
                 </MenuList>

@@ -59,9 +59,9 @@ public class ProductController {
                                                                 @Parameter(name = "Filtered categories", description = "The list of categories (comma separated string values) (available categories: 'flower', 'bouquet', 'groundFlower', 'supplement')", example = "flower,bouquet")
                                                                 @RequestParam(required = false) String category,
                                                                 @Parameter(name = "Minimum price", description = "The minimum price for a product selected", example = "5")
-                                                                @RequestParam(required = false) @PositiveOrZero Integer minPrice,
+                                                                @RequestParam(required = false) Integer minPrice,
                                                                 @Parameter(name = "Maximum price", description = "The maximum price for a product selected", example = "20")
-                                                                @RequestParam(required = false) @PositiveOrZero Integer maxPrice,
+                                                                @RequestParam(required = false) Integer maxPrice,
                                                                 @Parameter(name = "Page number", description = "The number of the page to be displayed")
                                                                 @RequestParam(defaultValue = "0") @PositiveOrZero Integer page,
                                                                 @Parameter(name = "Maximum number of elements on page", description = "The number of elements per page that will not be exceeded")

@@ -14,7 +14,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
 import { mainTheme } from '../resources/themes';
 import Copyright from './Copyright';
-import { Roles } from '../resources/constants';
+import { IS_DEV, Roles } from '../resources/constants';
 import { Credentials, JWTToken } from '../resources/types';
 import log from '../utils/logger';
 

@@ -7,9 +7,8 @@ import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
-import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import Avatar from '@mui/material/Avatar';
-import { Divider, ListItemIcon, SxProps, Theme } from '@mui/material';
+import { Divider, ListItemIcon, SvgIcon, SxProps, Theme } from '@mui/material';
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import LoginRoundedIcon from '@mui/icons-material/Login';
@@ -23,6 +22,7 @@ import SplitButton from './SplitButton';
 import Logo from './Logo';
 import log from '../utils/logger';
 import { mainTheme } from '../resources/themes';
+import Basket from './Basket';
 
 interface HeaderBarProps {
   sx?: SxProps<Theme>;
@@ -87,9 +87,7 @@ const profileSettingsUser: MenuItemSettings[] = [
   }
 ];
 
-const handleOpenBasket = () => {
-  log("Basket opened!");
-};
+
 // Profile menu options for different kinds of users
 // const profileSettingsEmployee = ['Profile', 'Orders', 'Logout'];
 // const profileSettingsDeliveryMan = ['Profile', 'Deliveries', 'Logout'];
@@ -99,8 +97,6 @@ export default function Header(props: HeaderBarProps) {
   const [anchorElNav, setAnchorElNav] = React.useState<undefined | HTMLElement>();
   const [anchorElUser, setAnchorElUser] = React.useState<undefined | HTMLElement>();
   const [userData, setUserData] = React.useState<undefined | User>();
-  // Function should handle opening the basket
-
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -109,8 +105,6 @@ export default function Header(props: HeaderBarProps) {
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
-
-
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(undefined);
@@ -126,7 +120,7 @@ export default function Header(props: HeaderBarProps) {
     await fetch(`/api/users`, {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('jwtToken') ?? ''}`,
+        'Authorization': `Bearer ${sessionStorage.getItem('jwtToken') ?? ''}`,
         'Content-type': 'application/json; charset=UTF-8'
       }
     })
@@ -238,13 +232,7 @@ export default function Header(props: HeaderBarProps) {
         </Box>
 
         {/* Basket button */}
-        <Box sx={{ flexGrow: 0 }}>
-          <Tooltip title="Show items in your basket" sx={{ p: 0 }}>
-            <IconButton onClick={handleOpenBasket} sx={{ p: 0 }}>
-              <ShoppingBagIcon fontSize="large" sx={{ color: 'white' }} />
-            </IconButton>
-          </Tooltip>
-        </Box>
+        <Basket />
 
         <Box sx={{ display: 'block', flexGrow: 0 }}>
           {userData === undefined ? (
@@ -279,7 +267,7 @@ export default function Header(props: HeaderBarProps) {
                 {profileSettingsUser.map((setting) => (
                   <MenuItem key={setting.key} onClick={() => setting.callback(navigate)}>
                     <ListItemIcon>
-                      {setting.Icon}
+                      {setting.Icon && <SvgIcon component={setting.Icon} fontSize='small'/>}
                     </ListItemIcon>
                     <Typography textAlign="center" color={setting.key === 'Logout' ? 'error.light' : 'inherit'}>
                       {setting.key}

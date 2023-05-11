@@ -34,7 +34,7 @@ export default function DeleteDialog(props: DeleteDialogProps) {
         method: 'DELETE',
         headers: {
           'Content-type': 'application/json',
-          Authorization: `Bearer ${sessionStorage.getItem('jwtToken') ?? ''}`
+          'Authorization': `Bearer ${sessionStorage.getItem('jwtToken') ?? ''}`
         }
       })
         .then((response) => {

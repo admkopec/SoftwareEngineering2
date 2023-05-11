@@ -9,6 +9,7 @@ import { mainTheme } from '../resources/themes';
 import ProductCard from './ProductCard';
 import { Product } from '../resources/types';
 import log from '../utils/logger';
+import { SurfaceSizes } from '../resources/constants';
 
 interface ProductsPreviewProps {
   tag: string;
@@ -93,7 +94,7 @@ export default function ProductsPreview(props: ProductsPreviewProps) {
       >
         <Grid container spacing={2}>
           <Grid item>
-            <ProductCard product={containerProps.product} />
+            <ProductCard product={containerProps.product} size={SurfaceSizes.TileLarge} sx={{m: 2}}/>
           </Grid>
         </Grid>
       </Slide>

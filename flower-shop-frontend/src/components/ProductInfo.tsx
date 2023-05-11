@@ -18,9 +18,10 @@ import { Validate, ValidationGroup } from 'mui-validate';
 import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import FloweryImage from './FloweryImage';
 import { Roles } from '../resources/constants';
-import { Product } from '../resources/types';
+import { BasketItem, OrderProduct, Product } from '../resources/types';
 import DeleteDialog from './DeleteDialog';
 import log from '../utils/logger';
+import { addProductToBasket } from '../services/product.service';
 
 export default function ProductInfo() {
   const { productID } = useParams();
@@ -28,13 +29,15 @@ export default function ProductInfo() {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [isDeleting, setIsDeleting] = React.useState<boolean>(false);
   const [productData, setProductData] = React.useState<Product | undefined>();
+  const [chosenQuantity, setChosenQuantity] = React.useState<number | undefined>();
   const [isAdmin, setIsAdmin] = React.useState<boolean>(false);
 
+  
   const breadcrumbs = [
-    <Link underline="hover" key="1" color="inherit" href="/" onClick={() => navigate('/')}>
+    <Link underline="hover" key="1" color="inherit" onClick={() => navigate('/')}>
       Home
     </Link>,
-    <Link underline="hover" key="2" color="inherit" href="/products/" onClick={() => {}}>
+    <Link underline="hover" key="2" color="inherit" onClick={() => navigate('/products')}>
       Products
     </Link>,
     <Typography key="2">Flowers</Typography>,
@@ -49,6 +52,35 @@ export default function ProductInfo() {
     } else setIsAdmin(false);
   };
 
+  const handleAddToBasket = () => {
+    if (productData && chosenQuantity){
+      if (chosenQuantity <= 0)
+        // TODO: handle showing error near the quantity chooser
+        log("Negative quantity.");
+      const orderProduct : OrderProduct = {
+        productID: productData?.productID,
+        quantity: chosenQuantity
+      };
+      addProductToBasket(orderProduct)
+        .then(() =>
+          log('Success fetching product.'))
+        .catch((error: Error) =>
+          log(`Error when trying to fetch product: ${error.message}`));
+    } else {
+      // TODO: Implement popup telling addition failed
+      log("Unable to add to basket!!");
+    }
+  }
+
+  const handleBuyNow = () : OrderProduct | undefined => {
+    if (productData?.productID && chosenQuantity)
+      return {
+        productID: productData?.productID,
+        quantity: chosenQuantity
+      } as OrderProduct;
+    return undefined;
+  }
+  
   const fetchProduct = async () => {
     if (productID){
       setIsLoading(true);
@@ -138,11 +170,12 @@ export default function ProductInfo() {
                 >
                   <TextField
                     id="outlined-number"
-                    label="Number"
+                    label="Quantity"
                     type="number"
                     variant="outlined"
                     size="small"
                     aria-valuemax={productData?.quantity}
+                    onChange={(event) => setChosenQuantity(Number.parseInt(event.target.value, 10))}
                     sx={{ width: '120px', maxWidth: '180px', minWidth: '60px', m: 2 }}
                   />
                 </Validate>
@@ -154,6 +187,11 @@ export default function ProductInfo() {
                 variant="contained"
                 sx={{ m: 2 }}
                 endIcon={<AddCircleTwoToneIcon />}
+                onClick={() => {
+                  const ordProd = handleBuyNow();
+                  if (ordProd)
+                    navigate('/order', {state: ordProd})
+                }}
               >
                 Buy Now
               </LoadingButton>
@@ -163,9 +201,10 @@ export default function ProductInfo() {
                 type="button"
                 variant="contained"
                 sx={{ m: 2 }}
+                onClick={handleAddToBasket}
                 endIcon={<CheckCircleTwoToneIcon />}
               >
-                Add to cart
+                Add to basket
               </LoadingButton>
             </Box>
           </Grid>

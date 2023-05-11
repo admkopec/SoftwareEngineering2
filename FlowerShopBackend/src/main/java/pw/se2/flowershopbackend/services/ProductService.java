@@ -119,8 +119,6 @@ public class ProductService {
                                              Integer minPrice,
                                              Integer maxPrice,
                                              Pageable page) {
-        if (maxPrice < minPrice)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid min/max prices.");
         return productRepository.findAll(
                 where(nameLike(query))
                         .and(belongsToCategory(categories))
@@ -130,7 +128,7 @@ public class ProductService {
 
     private Specification<Product> priceMatches(Integer minPrice, Integer maxPrice){
         // TODO: implement checking maximum price of product in our database
-        if (minPrice == null || maxPrice == null)
+        if (minPrice == null || maxPrice == null || maxPrice < minPrice)
             return (root, query, criteriaBuilder)
                     -> criteriaBuilder.conjunction();
         return (root, query, criteriaBuilder)

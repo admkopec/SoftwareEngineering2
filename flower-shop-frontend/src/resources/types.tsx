@@ -10,6 +10,8 @@ export interface UserData {
   role: string;
 }
 
+
+
 export interface Credentials {
   username: string;
   password: string;
@@ -24,7 +26,6 @@ interface Address {
   country: string;
 }
 
-// To use in future order processing
 export interface OrderProduct {
   productID: string;
   quantity: number;
@@ -64,8 +65,13 @@ export interface Product {
   category: Category;
 }
 
+export interface BasketItem {
+  product: Product;
+  quantity: number;
+}
+
 export interface MenuItemSettings {
   key: string;
-  Icon?: any;
+  Icon?: SvgIconComponent;
   callback: (navigate: NavigateFunction) => void;
 }

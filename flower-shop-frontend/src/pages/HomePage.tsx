@@ -7,6 +7,8 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 
 function HomePage() {
+  const [query, setQuery] = React.useState<string | undefined>();
+
   // NOTE: Function meant to check the validity of jwt token and set variables in sessionStorage
   useEffect(()=>{
 
@@ -15,7 +17,7 @@ function HomePage() {
   return (
     <Container sx={{width: 'auto', m: 0, p: 0, maxWidth: '100%', overflow: 'hidden'}} maxWidth={false} disableGutters>
       <Header />
-      <SearchBar />
+      <SearchBar setQuery={setQuery}/>
       <Grid
         container
         display ="flex"
@@ -27,7 +29,7 @@ function HomePage() {
         sx={{ pr: 4, pl: 4, zIndex: 1, minHeight: '80vh' }}
       >
         <Grid item>
-          <Outlet />
+          <Outlet context={[query, setQuery]}/>
         </Grid>
       </Grid>
       <Footer />

@@ -152,7 +152,8 @@ module.exports = {
                 "promise/always-return": "warn",
                 "@typescript-eslint/no-misused-promises": "warn",
                 "@typescript-eslint/no-unused-vars": "warn",
-                "no-promise-executor-return": "warn"
+                "no-promise-executor-return": "warn",
+                "import/order": "warn"
             },
         },
     ],

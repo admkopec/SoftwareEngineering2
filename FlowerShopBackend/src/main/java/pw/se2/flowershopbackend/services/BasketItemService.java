@@ -30,7 +30,7 @@ public class BasketItemService {
             List<BasketItem> basketItems = optionalBasketItems.get();
             // Verify the user is authorized to fetch their basket
             if (basketItems.stream().allMatch((basketItem ->
-                    basketItem.getClient().getId() == user.getId())))
+                    basketItem.getClient().equals(user))))
                 return basketItems;
             else {
                 log.error("User not authorized to perform this action.");

@@ -5,8 +5,9 @@ import SignUp from '../components/SignUp';
 import SignUpSuccess from '../components/SignUpSuccess';
 import ErrorPage from './ErrorPage';
 import ProductsPreview from '../components/ProductsPreview';
-import ProductInfo from '../components/ProductInfo';
 import ProductsSearch from '../components/ProductsSearch';
+import ProductInfo from '../components/ProductInfo';
+import OrderPage from './OrderPage';
 
 export const signUpSuccessPageRoute = {
   path: '/signup/success',
@@ -44,6 +45,12 @@ export const productsPreviewSubPageRoute = {
   errorElement: <ErrorPage />
 };
 
+export const orderPageRoute = {
+  path: '/order',
+  element: <OrderPage />,
+  errorElement: <ErrorPage />,
+}
+
 export const homePageRoute = {
   path: '/',
   element: <HomePage />,
@@ -57,6 +64,7 @@ export const homePageRoute = {
 
 export const routes = [
   homePageRoute,
+  orderPageRoute,
   loginPageRoute,
   signUpPageRoute,
   signUpSuccessPageRoute

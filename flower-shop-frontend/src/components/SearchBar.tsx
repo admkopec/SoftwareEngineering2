@@ -33,7 +33,7 @@ const StyledInputBase = styled(InputBase)(() => ({
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width', {easing: 'ease-out'}),
+    transition: theme.transitions.create('width', {duration: '0.4s', easing: 'ease-out'}),
     width: '100%',
     [theme.breakpoints.up('sm')]: {
       width: '20ch',
@@ -44,13 +44,21 @@ const StyledInputBase = styled(InputBase)(() => ({
   }
 }));
 
-export default function SearchBar() {
+interface SearchBarProps{
+  setQuery: React.Dispatch<React.SetStateAction<string | undefined>>
+}
+
+export default function SearchBar(props: SearchBarProps) {
   return (
     <Search>
       <SearchIconWrapper>
         <SearchIcon />
       </SearchIconWrapper>
-      <StyledInputBase placeholder="Search…" inputProps={{ style: { color: 'white' }, 'aria-label': 'search' }} />
+      <StyledInputBase placeholder="Search…" inputProps={{ style: { color: 'white' }, 'aria-label': 'search' }}
+                       onKeyDown={(e) => {
+                         if (e.key === 'Enter')
+                           props.setQuery(e.currentTarget.value);
+                       }}/>
     </Search>
   );
 }
