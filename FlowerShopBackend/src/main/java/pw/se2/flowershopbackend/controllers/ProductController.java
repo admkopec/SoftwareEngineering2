@@ -59,16 +59,16 @@ public class ProductController {
                                                                 @Parameter(name = "Filtered categories", description = "The list of categories (comma separated string values) (available categories: 'flower', 'bouquet', 'groundFlower', 'supplement')", example = "flower,bouquet")
                                                                 @RequestParam(required = false) String category,
                                                                 @Parameter(name = "Minimum price", description = "The minimum price for a product selected", example = "5")
-                                                                @RequestParam(required = false) Integer minPrice,
+                                                                @RequestParam(required = false) @PositiveOrZero Integer minPrice,
                                                                 @Parameter(name = "Maximum price", description = "The maximum price for a product selected", example = "20")
-                                                                @RequestParam(required = false) Integer maxPrice,
+                                                                @RequestParam(required = false) @PositiveOrZero Integer maxPrice,
                                                                 @Parameter(name = "Page number", description = "The number of the page to be displayed")
                                                                 @RequestParam(defaultValue = "0") @PositiveOrZero Integer page,
                                                                 @Parameter(name = "Maximum number of elements on page", description = "The number of elements per page that will not be exceeded")
                                                                 @RequestParam(defaultValue = "30") @PositiveOrZero Integer maxPerPage) {
         Pageable paging = PageRequest.of(page, maxPerPage);
         Collection<Product> products = productService.getFilteredProducts(search, category, minPrice,
-                        maxPrice, paging).getContent();
+                maxPrice, paging).getContent();
         return ResponseEntity.status(HttpStatus.OK).body(products.stream().map(ProductDto::valueFrom).toList());
     }
 
