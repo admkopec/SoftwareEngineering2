@@ -15,7 +15,8 @@ import { useNavigate } from 'react-router-dom';
 import { mainTheme } from '../resources/themes';
 import Copyright from './Copyright';
 import { IS_DEV, Roles } from '../resources/constants';
-import { JWTToken } from '../resources/types';
+import { Credentials, JWTToken } from '../resources/types';
+import log from '../utils/logger';
 
 export default function LogIn() {
   const navigate = useNavigate();
@@ -23,31 +24,33 @@ export default function LogIn() {
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const credentials = Object.fromEntries(new FormData(event.currentTarget).entries());
-    await fetch(`/api/users/log_in`, {
-      method: 'POST',
-      body: JSON.stringify(credentials),
-      headers: {
-        'Content-type': 'application/json'
-      }
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-
-        throw new Error(`ERROR ${response.status}`);
+    const credentials : Credentials = Object.fromEntries((new FormData(event.currentTarget)).entries()) as unknown as Credentials;
+    if (credentials){
+      await fetch(`/api/users/log_in`, {
+        method: 'POST',
+        body: JSON.stringify(credentials),
+        headers: {
+          'Content-type': 'application/json'
+        }
       })
-      .then((responseJSON: JWTToken) => {
-        IS_DEV && console.log('Success logging in.');
-        sessionStorage.setItem('jwtToken', responseJSON.jwttoken);
-        sessionStorage.setItem('loggedIn', 'true');
-        IS_DEV && sessionStorage.setItem('role', Roles.Employee.toString());
-        IS_DEV && console.log(responseJSON.jwttoken);
-        navigate('/');
-      })
-      .catch((e) => {
-        IS_DEV && console.log(`Error when trying to log in: ${e}`);
-      });
-    setIsLoading(false);
+        .then((response) => {
+          if (response.ok) return response.json();
+          throw new Error(`ERROR ${response.status}`);
+        })
+        .then((responseJSON: JWTToken) => {
+          log('Success logging in.');
+          sessionStorage.setItem('jwtToken', responseJSON.jwttoken);
+          sessionStorage.setItem('loggedIn', 'true');
+          sessionStorage.setItem('role', Roles.Employee.toString());
+          log(responseJSON.jwttoken);
+          navigate('/');
+        })
+        .catch((error: Error) => {
+          sessionStorage.clear();
+          log(`Error when trying to log in: ${error.message}`);
+        });
+      setIsLoading(false);
+    }
   };
 
   return (

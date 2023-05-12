@@ -49,6 +49,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "client", orphanRemoval = true)
     private Set<Order> orders = new LinkedHashSet<>();
 
+    @OneToMany(mappedBy = "client", orphanRemoval = true)
+    private Set<BasketItem> basketItems = new LinkedHashSet<>();
+
     @OneToMany(mappedBy = "deliveryMan", orphanRemoval = true)
     private Set<Order> ordersToDeliver = new LinkedHashSet<>();
 
@@ -112,6 +115,14 @@ public class User implements UserDetails {
 
     public void setOrders(Set<Order> orders) {
         this.orders = orders;
+    }
+
+    public Set<BasketItem> getBasket() {
+        return basketItems;
+    }
+
+    public void setBasket(Set<BasketItem> basketItems) {
+        this.basketItems = basketItems;
     }
 
     public Set<Order> getOrdersToDeliver() {

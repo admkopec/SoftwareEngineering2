@@ -11,18 +11,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pw.se2.flowershopbackend.models.Order;
-import pw.se2.flowershopbackend.models.OrderProduct;
-import pw.se2.flowershopbackend.models.Product;
 import pw.se2.flowershopbackend.models.User;
-import org.springframework.web.bind.annotation.*;
 import pw.se2.flowershopbackend.services.OrderProductService;
 import pw.se2.flowershopbackend.services.OrderService;
 import pw.se2.flowershopbackend.services.ProductService;
-import pw.se2.flowershopbackend.services.UserService;
 import pw.se2.flowershopbackend.web.OrderDto;
 import pw.se2.flowershopbackend.web.OrderStatusChangeDto;
-import pw.se2.flowershopbackend.web.ProductCreationDto;
-
 import java.util.Collection;
 import java.util.UUID;
 import pw.se2.flowershopbackend.web.OrderCreationDto;
@@ -37,16 +31,13 @@ public class OrderController {
 
     private final ProductService productService;
 
-    private final UserService userService;
-
     private final OrderProductService orderProductService;
 
     public OrderController(OrderService orderService, OrderProductService orderProductService,
-                           ProductService productService, UserService userService)  {
+                           ProductService productService)  {
         this.orderService = orderService;
         this.orderProductService = orderProductService;
         this.productService = productService;
-        this.userService = userService;
     }
 
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -86,7 +77,6 @@ public class OrderController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to perform this action.");
         }
         Order order = orderDto.convertToModel(productService);
-        //order.setClient(userService.getUserById(user.getId()));
         order.setClient(user);
         order.getOrderProducts().forEach((orderProduct) -> orderProduct.setOrder(order));
         orderService.validateAndSave(order);

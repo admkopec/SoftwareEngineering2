@@ -1,8 +1,7 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { createMemoryRouter, RouterProvider, useLocation } from 'react-router-dom';
-import { routes, signUpPageRoute } from '../pages/Router';
-import { renderWithRouter } from '../utils/renderWithRouter';
+import { signUpPageRoute } from '../pages/Router';
+import renderWithRouter from '../utils/renderWithRouter';
 import SignUp from '../components/SignUp';
 
 describe('<SignUp />', () => {
@@ -43,12 +42,4 @@ describe('<SignUp />', () => {
     expect(linkElement).toHaveLength(1);
     expect(linkElement[0]).toHaveTextContent('Already have an account? Log In');
   });
-
-  // test('link correctly redirects to <LogIn />', async () => {
-  //     render(<RouterProvider router={memoryRouter}></RouterProvider>);
-  //     const linkElement = screen.getByRole('link');
-  //     fireEvent.click(linkElement);
-  //     const location = useLocation();
-  //     expect(location.pathname).toBe('/login')
-  // });
 });

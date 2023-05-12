@@ -89,9 +89,9 @@ public class ProductController {
     @PutMapping(path = "/{productId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Modify Product")
-    public void modifyProduct(@PathVariable UUID productId, @RequestBody ProductCreationDto productDto) {
+    public void modifyProduct(@PathVariable UUID productId, @RequestBody ProductCreationDto productCreationDto) {
         productService.assertEmployee(User.getAuthenticated());
-        Product product = productDto.convertToModel();
+        Product product = productCreationDto.convertToModel();
         product.setId(productId);
         productService.validateAndSave(product);
     }

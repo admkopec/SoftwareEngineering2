@@ -1,6 +1,5 @@
 import Image from 'mui-image';
-import * as React from 'react';
-import { useState } from 'react';
+import React from 'react';
 
 interface FloweryImageProps {
   src: string;
@@ -10,5 +9,5 @@ interface FloweryImageProps {
 
 // NOTE: This is a prototype of an image wrapper that would be used in an image magnifying component
 export default function FloweryImage(props: FloweryImageProps) {
-  return <Image src={props.src} width={props.width} height={props.height} style={{ objectFit: 'contain' }} />;
+  return <Image src={props.src} width={props.width} height={props.height} duration={2000} style={{ objectFit: 'contain' }} />;
 }
