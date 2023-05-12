@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -59,11 +60,10 @@ public class ProductFetchingApiTests {
     @MockBean
     private AuthenticationManager authenticationManager;
 
-    @Mock
-    private Page<Product> mockPage;
-
     Product product1 = new Product(UUID.randomUUID());
     Product product2 = new Product(UUID.randomUUID());
+    Page<Product> mockPage;
+
     @BeforeEach
     public void setUp() {
         product1.setName("Daisy");
@@ -72,6 +72,7 @@ public class ProductFetchingApiTests {
         product2.setName("Sunflower");
         product2.setDescription("Description two");
         product2.setPrice(23.5);
+        mockPage = new PageImpl<Product>(Arrays.asList(product1, product2));
         Mockito.when(productRepository.getById(product1.getId()))
                 .thenReturn(product1);
         Mockito.when(productRepository.getById(product2.getId()))
@@ -84,11 +85,10 @@ public class ProductFetchingApiTests {
                 .thenReturn(true);
         Mockito.when(productRepository.existsById(product2.getId()))
                 .thenReturn(true);
-        Mockito.when(productRepository.findByNameLikeAndCategoryInAndQuantityBetween(anyString(), anyCollection(), anyInt(), anyInt(), any(Pageable.class)))
+        Mockito.when(productRepository.findByNameLikeIgnoreCaseAndCategoryInAndPriceBetween(anyString(), anyCollection(), anyDouble(), anyDouble(), any(Pageable.class)))
                 .thenReturn(mockPage);
         Mockito.when(productRepository.findAll())
-                .thenReturn(Arrays.asList(product1, product2));
-        Mockito.when(mockPage.getContent()).thenReturn(Arrays.asList(product1, product2));
+                .thenReturn(mockPage.getContent());
     }
 
     @Test
