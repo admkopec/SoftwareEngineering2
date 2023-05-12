@@ -78,7 +78,7 @@ public class OrderService {
         if (optionalOrder.isPresent()) {
             Order order = optionalOrder.get();
             // Verify the user is authorized to cancel this order
-            if (order.getClient().getId() == user.getId() || (order.getDeliveryMan() != null && order.getDeliveryMan().getId() == user.getId()) || user.getRole() == User.Roles.Employee) {
+            if (order.getClient().getId() == user.getId() || user.getRole() == User.Roles.Employee) {
                 if (order.getStatus() == Order.Status.Accepted || order.getStatus() == Order.Status.Delivered) {
                     throw new ResponseStatusException(HttpStatus.FORBIDDEN, "This order cannot be cancelled.");
                 }
