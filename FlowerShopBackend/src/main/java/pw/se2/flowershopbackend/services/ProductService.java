@@ -109,11 +109,6 @@ public class ProductService {
                                              Integer minPrice,
                                              Integer maxPrice,
                                              Pageable page) {
-        if (query == null) {
-            query = "%%";
-        } else {
-            query = "%"+query+"%";
-        }
         if (minPrice == null) {
             minPrice = Integer.MIN_VALUE;
         }
@@ -122,7 +117,7 @@ public class ProductService {
         }
         if (maxPrice < minPrice)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid min/max prices.");
-        return productRepository.findByNameLikeIgnoreCaseAndCategoryInAndPriceBetween(query, getCategoriesFrom(categories), Double.valueOf(minPrice), Double.valueOf(maxPrice), page);
+        return productRepository.findByNameContainsIgnoreCaseAndCategoryInAndPriceBetween(query, getCategoriesFrom(categories), Double.valueOf(minPrice), Double.valueOf(maxPrice), page);
     }
 
     private List<Product.Category> getCategoriesFrom(String categoryString) {
