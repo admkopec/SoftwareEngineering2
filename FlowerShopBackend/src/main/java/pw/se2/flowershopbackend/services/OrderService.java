@@ -2,6 +2,8 @@ package pw.se2.flowershopbackend.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -9,7 +11,6 @@ import pw.se2.flowershopbackend.dao.OrderRepository;
 import pw.se2.flowershopbackend.models.Order;
 import pw.se2.flowershopbackend.models.User;
 
-import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,11 +27,11 @@ public class OrderService {
         this.algorithmService = algorithmService;
     }
 
-    public Collection<Order> getOrdersFor(User user) {
+    public Page<Order> getOrdersFor(User user, Pageable paging) {
         if (user.getRole() == User.Roles.Client) {
-            return user.getOrders();
+            return orderRepository.findByClient(user, paging);
         } else if (user.getRole() == User.Roles.DeliveryMan) {
-            return user.getOrdersToDeliver();
+            return orderRepository.findByDeliveryMan(user, paging);
         } else {
             log.error("User not authorized to perform this action.");
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to perform this action.");
@@ -53,14 +54,7 @@ public class OrderService {
         }
     }
 
-    public Order getOrderById(UUID orderId){
-        Optional<Order> order = orderRepository.findById(orderId);
-        if (order.isEmpty()) {
-            log.info("Order is not present in the database.");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order is not present in the database.");
-        } else
-            return order.get();
-    }
+
 
     public boolean isOrderValid(Order order) {
         if (order != null) {
