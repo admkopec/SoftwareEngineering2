@@ -3,7 +3,7 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Paper from '@mui/material/Paper';
 import CircularProgress from '@mui/material/CircularProgress';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -17,23 +17,27 @@ import TextField from '@mui/material/TextField';
 import { Validate, ValidationGroup } from 'mui-validate';
 import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import FloweryImage from './FloweryImage';
-import { IS_DEV, Roles } from '../resources/constants';
-import { Product } from '../resources/types';
+import { Roles } from '../resources/constants';
+import { BasketItem, OrderProduct, Product } from '../resources/types';
 import DeleteDialog from './DeleteDialog';
+import log from '../utils/logger';
+import { addProductToBasket } from '../services/product.service';
 
 export default function ProductInfo() {
-  const locData = useLocation();
+  const { productID } = useParams();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [isDeleting, setIsDeleting] = React.useState<boolean>(false);
-  const [productData, setProductData] = React.useState<Product | null>(null);
+  const [productData, setProductData] = React.useState<Product | undefined>();
+  const [chosenQuantity, setChosenQuantity] = React.useState<number | undefined>();
   const [isAdmin, setIsAdmin] = React.useState<boolean>(false);
 
+  
   const breadcrumbs = [
-    <Link underline="hover" key="1" color="inherit" href="/" onClick={() => navigate('/')}>
+    <Link underline="hover" key="1" color="inherit" onClick={() => navigate('/')}>
       Home
     </Link>,
-    <Link underline="hover" key="2" color="inherit" href="/products/" onClick={() => {}}>
+    <Link underline="hover" key="2" color="inherit" onClick={() => navigate('/products')}>
       Products
     </Link>,
     <Typography key="2">Flowers</Typography>,
@@ -48,32 +52,63 @@ export default function ProductInfo() {
     } else setIsAdmin(false);
   };
 
+  const handleAddToBasket = () => {
+    if (productData && chosenQuantity){
+      if (chosenQuantity <= 0)
+        // TODO: handle showing error near the quantity chooser
+        log("Negative quantity.");
+      const orderProduct : OrderProduct = {
+        productID: productData?.productID,
+        quantity: chosenQuantity
+      };
+      addProductToBasket(orderProduct)
+        .then(() =>
+          log('Success fetching product.'))
+        .catch((error: Error) =>
+          log(`Error when trying to fetch product: ${error.message}`));
+    } else {
+      // TODO: Implement popup telling addition failed
+      log("Unable to add to basket!!");
+    }
+  }
+
+  const handleBuyNow = () : OrderProduct | undefined => {
+    if (productData?.productID && chosenQuantity)
+      return {
+        productID: productData?.productID,
+        quantity: chosenQuantity
+      } as OrderProduct;
+    return undefined;
+  }
+  
   const fetchProduct = async () => {
-    setIsLoading(true);
-    await fetch(`/api/products/${locData.state.productId}`, {
-      method: 'GET',
-      headers: {
-        'Content-type': 'application/json'
-      }
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(`ERROR ${response.status}`);
+    if (productID){
+      setIsLoading(true);
+      log(productID);
+      await fetch(`/api/products/${productID}`, {
+        method: 'GET',
+        headers: {
+          'Content-type': 'application/json'
+        }
       })
-      .then((responseJSON: Product) => {
-        IS_DEV && console.log('Success fetching product.');
-        IS_DEV && console.log(responseJSON);
-        setProductData(responseJSON);
-      })
-      .catch((e) => {
-        IS_DEV && console.log(`Error when trying to fetch product: ${e}`);
-      })
-      .finally();
-    setIsLoading(false);
+        .then((response) => {
+          if (response.ok) return response.json();
+          throw new Error(`ERROR ${response.status}`);
+        })
+        .then((responseJSON: Product) => {
+          log('Success fetching product.');
+          log(JSON.stringify(responseJSON));
+          setProductData(responseJSON);
+        })
+        .catch((error: Error) => {
+          log(`Error when trying to fetch product: ${error.message}`);
+        })
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
-    fetchProduct().finally(() => true);
+    fetchProduct();
     if (sessionStorage.getItem('loggedIn')) checkEmployee();
   }, []);
 
@@ -85,7 +120,7 @@ export default function ProductInfo() {
       <Grid container spacing={2}>
         <Grid item xs={12} md={4} justifyContent="center">
           <Paper elevation={4} sx={{ p: 3, width: 'fit-content', alignSelf: 'center' }}>
-            <FloweryImage src={`data:image/png;base64,${productData?.image}`} width="auto" height="auto" />
+            <FloweryImage src={`data:image/png;base64,${productData?.image || ''}`} width="auto" height="auto" />
           </Paper>
         </Grid>
         <Grid container item xs={12} md={8} textAlign="center">
@@ -94,13 +129,13 @@ export default function ProductInfo() {
           </Grid>
           <Grid item container xs={12} flexGrow={1} textAlign="center">
             <Grid item xs={12} flexGrow={0}>
-              <Typography variant="overline">Overview</Typography>
+              <Typography variant="overline" role="overview-headline">Overview</Typography>
               <Typography variant="body1">{productData?.description}</Typography>
             </Grid>
           </Grid>
           <Grid item container xs={12} textAlign="center" flexGrow={0}>
             <Grid item xs={12} flexGrow={0}>
-              <Typography variant="overline">Details</Typography>
+              <Typography variant="overline" role="details-headline">Details</Typography>
             </Grid>
             <Grid item container spacing={0} margin={0}>
               <Grid item xs={4} textAlign="center" flexGrow={0}>
@@ -124,8 +159,10 @@ export default function ProductInfo() {
                   name="internal item-quantity"
                   custom={[
                     (value) => {
-                      if (productData?.quantity == undefined) return false;
-                      return parseInt(value) > 0 && parseInt(value) < productData?.quantity + 1;
+                      if (!productData?.quantity)
+                        return false;
+                      return Number.parseInt(value, 10) > 0 &&
+                        Number.parseInt(value, 10) < productData.quantity + 1;
                     },
                     'Please enter a valid number.'
                   ]}
@@ -133,11 +170,12 @@ export default function ProductInfo() {
                 >
                   <TextField
                     id="outlined-number"
-                    label="Number"
+                    label="Quantity"
                     type="number"
                     variant="outlined"
                     size="small"
                     aria-valuemax={productData?.quantity}
+                    onChange={(event) => setChosenQuantity(Number.parseInt(event.target.value, 10))}
                     sx={{ width: '120px', maxWidth: '180px', minWidth: '60px', m: 2 }}
                   />
                 </Validate>
@@ -149,6 +187,11 @@ export default function ProductInfo() {
                 variant="contained"
                 sx={{ m: 2 }}
                 endIcon={<AddCircleTwoToneIcon />}
+                onClick={() => {
+                  const ordProd = handleBuyNow();
+                  if (ordProd)
+                    navigate('/order', {state: ordProd})
+                }}
               >
                 Buy Now
               </LoadingButton>
@@ -158,9 +201,10 @@ export default function ProductInfo() {
                 type="button"
                 variant="contained"
                 sx={{ m: 2 }}
+                onClick={handleAddToBasket}
                 endIcon={<CheckCircleTwoToneIcon />}
               >
-                Add to cart
+                Add to basket
               </LoadingButton>
             </Box>
           </Grid>
@@ -196,7 +240,7 @@ export default function ProductInfo() {
               </>
             )}
             <DeleteDialog
-              productId={productData?.productID}
+              productID={productData?.productID}
               productName={productData?.name}
               open={isDeleting}
               setOpen={(isOpen) => setIsDeleting(isOpen)}

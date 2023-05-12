@@ -13,18 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pw.se2.flowershopbackend.models.Order;
-import pw.se2.flowershopbackend.models.OrderProduct;
-import pw.se2.flowershopbackend.models.Product;
 import pw.se2.flowershopbackend.models.User;
-import org.springframework.web.bind.annotation.*;
 import pw.se2.flowershopbackend.services.OrderProductService;
 import pw.se2.flowershopbackend.services.OrderService;
 import pw.se2.flowershopbackend.services.ProductService;
-import pw.se2.flowershopbackend.services.UserService;
 import pw.se2.flowershopbackend.web.OrderDto;
 import pw.se2.flowershopbackend.web.OrderStatusChangeDto;
-import pw.se2.flowershopbackend.web.ProductCreationDto;
-
 import java.util.Collection;
 import java.util.UUID;
 import pw.se2.flowershopbackend.web.OrderCreationDto;

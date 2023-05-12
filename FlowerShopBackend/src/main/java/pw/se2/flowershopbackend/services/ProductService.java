@@ -9,12 +9,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pw.se2.flowershopbackend.dao.ProductRepository;
 import pw.se2.flowershopbackend.models.Product;
+import pw.se2.flowershopbackend.models.Product_;
 import pw.se2.flowershopbackend.models.User;
 
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.List;
+
+import static org.springframework.data.jpa.domain.Specification.where;
 
 @Service
 public class ProductService {

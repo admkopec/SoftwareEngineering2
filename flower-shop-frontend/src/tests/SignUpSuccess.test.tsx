@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import SignUpSuccess from '../components/SignUpSuccess';
-import { renderWithRouter } from '../utils/renderWithRouter';
+import renderWithRouter from '../utils/renderWithRouter';
 import { signUpSuccessPageRoute } from '../pages/Router';
 
 describe('<SignUpSuccess />', () => {
