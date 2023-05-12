@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pw.se2.flowershopbackend.dao.ProductRepository;
 import pw.se2.flowershopbackend.models.Product;
-import pw.se2.flowershopbackend.models.Product_;
 import pw.se2.flowershopbackend.models.User;
 
 import java.util.Arrays;
@@ -112,6 +111,8 @@ public class ProductService {
                                              Pageable page) {
         if (query == null) {
             query = "%%";
+        } else {
+            query = "%"+query+"%";
         }
         if (minPrice == null) {
             minPrice = Integer.MIN_VALUE;
