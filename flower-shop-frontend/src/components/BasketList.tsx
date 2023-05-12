@@ -50,7 +50,8 @@ export default function BasketList(props: BasketListProps){
   }
 
   return (
-    <List dense={props.dense} sx={{overflow: 'auto', maxHeight: props.maxHeight || '200px'}}>
+    <List dense={props.dense} sx={{overflow: 'auto', maxHeight: props.maxHeight || '200px'}} id={"basket-list"}
+          role={"basket-list"}>
       {generateItems()}
     </List>
   );
