@@ -22,27 +22,29 @@ import pw.se2.flowershopbackend.dao.OrderProductRepository;
 import pw.se2.flowershopbackend.dao.OrderRepository;
 import pw.se2.flowershopbackend.dao.ProductRepository;
 import pw.se2.flowershopbackend.dao.UserRepository;
+import pw.se2.flowershopbackend.models.Order;
+import pw.se2.flowershopbackend.models.OrderProduct;
 import pw.se2.flowershopbackend.models.Product;
 import pw.se2.flowershopbackend.models.User;
 import pw.se2.flowershopbackend.services.*;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(OrderController.class)
 @AutoConfigureMockMvc(addFilters = false)
-public class OrderAddingApiTests {
+public class OrderModifyingApiTests {
     @TestConfiguration
-    static class OrderAddingApiTestsContextConfiguration {
+    static class OrderModifyingApiTestsContextConfiguration {
         @Autowired
         private UserRepository userRepository;
         @Autowired
@@ -98,6 +100,8 @@ public class OrderAddingApiTests {
 
     private final Product product = new Product();
 
+    private final Order order = new Order();
+
     @BeforeEach
     public void setUp() {
         user.setName("Test User");
@@ -117,6 +121,13 @@ public class OrderAddingApiTests {
         product.setCategory(Product.Category.Flower);
         product.setQuantity(10);
         product.setPrice(3.5);
+        OrderProduct orderProduct = new OrderProduct();
+        orderProduct.setProduct(product);
+        orderProduct.setQuantity(1L);
+        order.setId(UUID.randomUUID());
+        order.setClient(user);
+        order.setAddress("{\"street\":\"\",\"buildingNo\":\"\",\"houseNo\":\"\",\"postalCode\":\"\",\"city\":\"\",\"country\":\"\"}");
+        order.setOrderProducts(new HashSet<>(List.of(orderProduct)));
         Mockito.when(userRepository.findByEmail(user.getEmail()))
                 .thenReturn(Optional.of(user));
         Mockito.when(userRepository.findByEmail(employee.getEmail()))
@@ -129,69 +140,71 @@ public class OrderAddingApiTests {
                 .thenReturn(true);
         Mockito.when(productRepository.findById(product.getId()))
                 .thenReturn(Optional.of(product));
+        Mockito.when(orderRepository.findById(order.getId()))
+                .thenReturn(Optional.of(order));
     }
 
     @Test
-    public void tryAddingOrderAsEmployee() throws Exception {
+    public void tryModifyingOrderAsEmployee() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
                 employee, null, employee.getAuthorities()
         ));
-        mvc.perform(post("/api/orders")
+        mvc.perform(put("/api/orders/"+order.getId().toString())
                         .content("{\"deliveryAddress\": {\"street\":\"\",\"buildingNo\":\"\",\"houseNo\":\"\",\"city\":\"\",\"postalCode\":\"\",\"country\":\"\"}, \"items\":[{\"productID\":\"" + product.getId() + "\", \"quantity\": 5}]}")
                         .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
                 .andExpect(result -> assertNotNull(result.getResolvedException()));
-                //.andExpect(result -> assertTrue(result.getResolvedException().getMessage().contains("Employee is not authorized to order product")));
     }
     @Test
-    public void tryAddingOrderAsDeliveryMan() throws Exception {
+    public void tryModifyingOrderAsDeliveryMan() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
                 deliveryMan, null, deliveryMan.getAuthorities()
         ));
-        mvc.perform(post("/api/orders")
+        mvc.perform(put("/api/orders/"+order.getId().toString())
                         .content("{\"deliveryAddress\": {\"street\":\"\",\"buildingNo\":\"\",\"houseNo\":\"\",\"city\":\"\",\"postalCode\":\"\",\"country\":\"\"}, \"items\":[{\"productID\":\"" + product.getId() + "\", \"quantity\": 5}]}")
                         .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
                 .andExpect(result -> assertNotNull(result.getResolvedException()));
-        //.andExpect(result -> assertTrue(result.getResolvedException().getMessage().contains("Employee is not authorized to order product")));
     }
 
     @Test
-    public void tryAddingInvalidOrderAsClient() throws Exception {
+    public void tryModifyingProvidingInvalidOrderAsClient() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
                 user, null, user.getAuthorities()
         ));
-        mvc.perform(post("/api/orders")
+        mvc.perform(put("/api/orders/"+order.getId().toString())
                         .content("{\"deliveryAddress\": {\"street\":\"\",\"buildingNo\":\"\",\"houseNo\":\"\",\"city\":\"\",\"postalCode\":\"\",\"country\":\"\"}, \"items\":[{\"productID\":\"" + product.getId() + "\", \"quantity\": 200}]}")
                         .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
                 .andExpect(result -> assertNotNull(result.getResolvedException()));
-        //.andExpect(result -> assertTrue(result.getResolvedException().getMessage().contains("Employee is not authorized to order product")));
     }
 
     @Test
-    public void tryAddingValidOrderAsClient() throws Exception {
+    public void tryModifyingProvidingValidOrderAsClient() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
                 user, null, user.getAuthorities()
         ));
-        mvc.perform(post("/api/orders")
-                        .content("{\"deliveryAddress\": {\"street\":\"\",\"buildingNo\":\"\",\"houseNo\":\"\",\"city\":\"\",\"postalCode\":\"\",\"country\":\"\"}, \"items\":[{\"productID\":\"" + product.getId() + "\", \"quantity\": 5}]}")
+        mvc.perform(put("/api/orders/"+order.getId().toString())
+                        .content("{\"deliveryAddress\": {\"street\":\"Sesame Street\",\"buildingNo\":\"\",\"houseNo\":\"\",\"postalCode\":\"\",\"city\":\"\",\"country\":\"\"}, \"items\":[{\"productID\":\"" + product.getId() + "\", \"quantity\": 5}]}")
                         .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is2xxSuccessful());
-                //.andExpect(result -> assertNotNull(result.getResolvedException()));
-        //.andExpect(result -> assertTrue(result.getResolvedException().getMessage().contains("Employee is not authorized to order product")));
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(result -> assertEquals("{\"street\":\"Sesame Street\",\"buildingNo\":\"\",\"houseNo\":\"\",\"postalCode\":\"\",\"city\":\"\",\"country\":\"\"}" ,order.getAddress()))
+                .andExpect(result -> assertTrue(order.getOrderProducts().stream().findFirst().isPresent()))
+                .andExpect(result -> assertEquals(5L, (long) order.getOrderProducts().stream().findFirst().get().getQuantity()));
     }
 
     @Test
-    public void tryAddingOrderInvalidProduct() throws Exception {
+    public void tryModifyingOrderProvidingInvalidProduct() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
                 user, null, user.getAuthorities()
         ));
-        mvc.perform(post("/api/orders")
-                        .content("{\"deliveryAddress\": {\"street\":\"\",\"buildingNo\":\"\",\"houseNo\":\"\",\"city\":\"\",\"postalCode\":\"\",\"country\":\"\"}, \"items\":[{\"productID\":\"" + UUID.randomUUID() + "\", \"quantity\": 5}]}")
+        mvc.perform(put("/api/orders/"+order.getId().toString())
+                        .content("{\"deliveryAddress\": {\"street\":\"Sesame Street\",\"buildingNo\":\"\",\"houseNo\":\"\",\"city\":\"\",\"postalCode\":\"\",\"country\":\"\"}, \"items\":[{\"productID\":\"" + UUID.randomUUID() + "\", \"quantity\": 5}]}")
                         .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
-                .andExpect(result -> assertNotNull(result.getResolvedException()));
+                .andExpect(result -> assertNotNull(result.getResolvedException()))
+                .andExpect(result -> assertEquals("{\"street\":\"\",\"buildingNo\":\"\",\"houseNo\":\"\",\"postalCode\":\"\",\"city\":\"\",\"country\":\"\"}" ,order.getAddress()))
+                .andExpect(result -> assertEquals(1L, (long) order.getOrderProducts().stream().findFirst().get().getQuantity()));;
 
     }
 }

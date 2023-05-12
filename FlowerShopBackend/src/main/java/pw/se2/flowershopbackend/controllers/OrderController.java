@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,24 +33,20 @@ public class OrderController {
 
     private final ProductService productService;
 
-    private final OrderProductService orderProductService;
-
-    public OrderController(OrderService orderService, OrderProductService orderProductService,
-                           ProductService productService)  {
+    public OrderController(OrderService orderService, ProductService productService)  {
         this.orderService = orderService;
-        this.orderProductService = orderProductService;
         this.productService = productService;
     }
 
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Fetch Orders", description = "Orders will be returned in descending order by date created.")
     public ResponseEntity<Collection<OrderDto>> fetchOrders(@Parameter(name = "Page number", description = "The number of the page to be displayed")
-                                                            @RequestParam(defaultValue = "1") int page,
+                                                            @RequestParam(defaultValue = "0") int page,
                                                             @Parameter(name = "Maximum number of elements on page", description = "The number of elements per page that will not be exceeded")
-                                                            @RequestParam(defaultValue = "50") int maxPerPage) {
-        // TODO: Add support for server-side paging
+                                                            @RequestParam(defaultValue = "30") int maxPerPage) {
         User user = User.getAuthenticated();
-        Collection<Order> orders = orderService.getOrdersFor(user);
+        Pageable paging = PageRequest.of(page, maxPerPage);
+        Collection<Order> orders = orderService.getOrdersFor(user, paging).getContent();
         return ResponseEntity.status(HttpStatus.OK).body(orders.stream().map(OrderDto::valueFrom).toList());
     }
 
@@ -80,7 +78,14 @@ public class OrderController {
         order.setClient(user);
         order.getOrderProducts().forEach((orderProduct) -> orderProduct.setOrder(order));
         orderService.validateAndSave(order);
-        orderProductService.validateAndSaveAll(order.getOrderProducts());
+    }
+
+    @DeleteMapping(path = "/{orderId}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Delete Order")
+    public void deleteOrder(@PathVariable UUID orderId) {
+        User user = User.getAuthenticated();
+        orderService.deleteOrderByAuth(orderId, user);
     }
 
     @PutMapping(path = "/{orderId}", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -88,16 +93,11 @@ public class OrderController {
     @Operation(summary = "Modify Order")
     public void modifyOrder(@PathVariable UUID orderId, @RequestBody OrderCreationDto orderDto) {
         User user = User.getAuthenticated();
-        if (user.getRole() != User.Roles.Client) {
+
+        Order order = orderService.modifiedOrderBy(orderId, orderDto.convertToModel(productService));
+        if (user != order.getClient()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to perform this action.");
         }
-        // FIXME: This requires to be fixed!!!
-        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Not yet implemented.");
-//        Order order = orderDto.convertToModel(productService);
-//        order.setId(orderId);
-//        order.setClient(user);
-//        order.getOrderProducts().forEach((orderProduct) -> orderProduct.setOrder(order));
-//        orderService.validateAndSave(order);
-//        orderProductService.validateAndSaveAll(order.getOrderProducts());
+        orderService.validateAndSave(order);
     }
 }

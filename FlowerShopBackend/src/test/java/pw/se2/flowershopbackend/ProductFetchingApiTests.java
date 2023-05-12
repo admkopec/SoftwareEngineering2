@@ -60,9 +60,9 @@ public class ProductFetchingApiTests {
     @MockBean
     private AuthenticationManager authenticationManager;
 
-    Product product1 = new Product(UUID.randomUUID());
-    Product product2 = new Product(UUID.randomUUID());
-    Page<Product> mockPage;
+    private final Product product1 = new Product(UUID.randomUUID());
+    private final Product product2 = new Product(UUID.randomUUID());
+    private final Page<Product> mockPage = new PageImpl<>(Arrays.asList(product1, product2));;
 
     @BeforeEach
     public void setUp() {
@@ -72,7 +72,6 @@ public class ProductFetchingApiTests {
         product2.setName("Sunflower");
         product2.setDescription("Description two");
         product2.setPrice(23.5);
-        mockPage = new PageImpl<Product>(Arrays.asList(product1, product2));
         Mockito.when(productRepository.getById(product1.getId()))
                 .thenReturn(product1);
         Mockito.when(productRepository.getById(product2.getId()))
