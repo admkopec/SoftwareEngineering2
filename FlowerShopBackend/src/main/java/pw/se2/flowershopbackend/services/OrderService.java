@@ -20,11 +20,13 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserService userService;
     private final AlgorithmService algorithmService;
+    private final OrderProductService orderProductService;
 
-    public OrderService(OrderRepository orderRepository, UserService userService, AlgorithmService algorithmService) {
+    public OrderService(OrderRepository orderRepository, UserService userService, AlgorithmService algorithmService, OrderProductService orderProductService) {
         this.orderRepository = orderRepository;
         this.userService = userService;
         this.algorithmService = algorithmService;
+        this.orderProductService = orderProductService;
     }
 
     public Page<Order> getOrdersFor(User user, Pageable paging) {
@@ -54,7 +56,40 @@ public class OrderService {
         }
     }
 
+    public Order modifiedOrderBy(UUID orderID, Order newOrder) {
+        Optional<Order> optionalOrder = orderRepository.findById(orderID);
+        if (optionalOrder.isPresent()) {
+            Order order = optionalOrder.get();
+            if (order.getStatus() == Order.Status.Accepted || order.getStatus() == Order.Status.Delivered) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "This order cannot be modified.");
+            }
+            order.setAddress(newOrder.getAddress());
+            order.setStatus(null);
+            orderProductService.deleteAll(order.getOrderProducts());
+            order.setOrderProducts(newOrder.getOrderProducts());
+            return order;
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No such order.");
+        }
+    }
 
+    public void deleteOrderByAuth(UUID orderID, User user) {
+        Optional<Order> optionalOrder = orderRepository.findById(orderID);
+        if (optionalOrder.isPresent()) {
+            Order order = optionalOrder.get();
+            // Verify the user is authorized to cancel this order
+            if (order.getClient().getId() == user.getId() || (order.getDeliveryMan() != null && order.getDeliveryMan().getId() == user.getId()) || user.getRole() == User.Roles.Employee) {
+                if (order.getStatus() == Order.Status.Accepted || order.getStatus() == Order.Status.Delivered) {
+                    throw new ResponseStatusException(HttpStatus.FORBIDDEN, "This order cannot be cancelled.");
+                }
+                orderProductService.deleteAll(order.getOrderProducts());
+                orderRepository.delete(order);
+            } else {
+                log.error("User not authorized to perform this action.");
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to perform this action.");
+            }
+        }
+    }
 
     public boolean isOrderValid(Order order) {
         if (order != null) {
@@ -62,7 +97,7 @@ public class OrderService {
                 log.error("Null order id.");
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Null product id.");
             }
-            if (order.getAddress().isBlank()){
+            if (order.getAddress().isBlank()) {
                 log.error("Empty address.");
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Empty address.");
             }
@@ -73,9 +108,10 @@ public class OrderService {
     }
 
     public void validateAndSave(Order order) {
-        if (isOrderValid(order)) {
+        if (isOrderValid(order) && order.getOrderProducts().stream().allMatch(orderProductService::isOrderProductValid)) {
             log.info("Order is valid");
             orderRepository.save(order);
+            orderProductService.validateAndSaveAll(order.getOrderProducts());
             log.info("Order was saved.");
         }
     }

@@ -50,4 +50,9 @@ public class OrderProductService {
             log.info("OrderProducts were saved.");
         }
     }
+
+    public void deleteAll(Set<OrderProduct> orderProducts) {
+        orderProductRepository.deleteAll(orderProducts);
+        log.info("OrderProducts were deleted.");
+    }
 }

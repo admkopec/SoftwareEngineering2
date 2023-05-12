@@ -68,8 +68,8 @@ public class OrderAddingApiTests {
         }
 
         @Bean
-        public OrderService orderService(UserService userService, AlgorithmService algorithmService) {
-            return new OrderService(orderRepository, userService, algorithmService);
+        public OrderService orderService(UserService userService, AlgorithmService algorithmService, OrderProductService orderProductService) {
+            return new OrderService(orderRepository, userService, algorithmService, orderProductService);
         }
 
         @Bean

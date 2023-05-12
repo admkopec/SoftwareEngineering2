@@ -39,12 +39,8 @@ public class OrderController {
 
     private final ProductService productService;
 
-    private final OrderProductService orderProductService;
-
-    public OrderController(OrderService orderService, OrderProductService orderProductService,
-                           ProductService productService)  {
+    public OrderController(OrderService orderService, ProductService productService)  {
         this.orderService = orderService;
-        this.orderProductService = orderProductService;
         this.productService = productService;
     }
 
@@ -88,7 +84,14 @@ public class OrderController {
         order.setClient(user);
         order.getOrderProducts().forEach((orderProduct) -> orderProduct.setOrder(order));
         orderService.validateAndSave(order);
-        orderProductService.validateAndSaveAll(order.getOrderProducts());
+    }
+
+    @DeleteMapping(path = "/{orderId}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Delete Order")
+    public void deleteOrder(@PathVariable UUID orderId) {
+        User user = User.getAuthenticated();
+        orderService.deleteOrderByAuth(orderId, user);
     }
 
     @PutMapping(path = "/{orderId}", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -96,16 +99,11 @@ public class OrderController {
     @Operation(summary = "Modify Order")
     public void modifyOrder(@PathVariable UUID orderId, @RequestBody OrderCreationDto orderDto) {
         User user = User.getAuthenticated();
-        if (user.getRole() != User.Roles.Client) {
+
+        Order order = orderService.modifiedOrderBy(orderId, orderDto.convertToModel(productService));
+        if (user != order.getClient()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to perform this action.");
         }
-        // FIXME: This requires to be fixed!!!
-        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Not yet implemented.");
-//        Order order = orderDto.convertToModel(productService);
-//        order.setId(orderId);
-//        order.setClient(user);
-//        order.getOrderProducts().forEach((orderProduct) -> orderProduct.setOrder(order));
-//        orderService.validateAndSave(order);
-//        orderProductService.validateAndSaveAll(order.getOrderProducts());
+        orderService.validateAndSave(order);
     }
 }
