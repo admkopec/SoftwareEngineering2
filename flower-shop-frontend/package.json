@@ -6,7 +6,7 @@
     "@emotion/react": "^11.10.6",
     "@mui/icons-material": "^5.11.11",
     "@mui/lab": "^5.0.0-alpha.128",
-    "@mui/material": "^5.11.13",
+    "@mui/material": "^5.13.1",
     "@mui/styled-engine-sc": "^5.12.0",
     "@mui/system": "^5.11.14",
     "@testing-library/user-event": "^14.4.3",
