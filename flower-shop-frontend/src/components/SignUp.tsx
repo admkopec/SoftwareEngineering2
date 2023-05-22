@@ -14,8 +14,10 @@ import { useNavigate } from 'react-router-dom';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CircularProgress from '@mui/material/CircularProgress';
 import Copyright from './Copyright';
-import { JWTToken, User } from '../resources/types';
+import {Credentials, JWTToken, User, UserData} from '../resources/types';
 import log from '../utils/logger';
+import {Roles} from "../resources/constants";
+import {loginWithCredentials} from "../services/user.service";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -41,15 +43,18 @@ export default function SignUp() {
     })
       .then((response) => {
         if (response.ok) return response.json();
-
         throw new Error(`ERROR ${response.status}`);
       })
-      .then((responseJSON: JWTToken) => {
+      .then((responseJSON: UserData) => {
         log('Success signing up.');
-        sessionStorage.setItem('jwtToken', responseJSON.jwttoken);
-        sessionStorage.setItem('loggedIn', 'false');
-        log(responseJSON.jwttoken);
-        navigate('/signup/success');
+        sessionStorage.setItem('role', responseJSON.role);
+        const credentials : Credentials = {
+          username: formEntries.email.toString(),
+          password: formEntries.password.toString()
+        };
+        loginWithCredentials(credentials).then(() => {
+          navigate('/');
+        });
       })
       .catch((error: Error) => {
         log(`Error when trying to sign up: ${error.message}`);

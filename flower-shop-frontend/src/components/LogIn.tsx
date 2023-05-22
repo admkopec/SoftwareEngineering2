@@ -17,6 +17,7 @@ import Copyright from './Copyright';
 import { IS_DEV, Roles } from '../resources/constants';
 import { Credentials, JWTToken } from '../resources/types';
 import log from '../utils/logger';
+import {loginWithCredentials} from "../services/user.service";
 
 export default function LogIn() {
   const navigate = useNavigate();
@@ -26,29 +27,9 @@ export default function LogIn() {
     event.preventDefault();
     const credentials : Credentials = Object.fromEntries((new FormData(event.currentTarget)).entries()) as unknown as Credentials;
     if (credentials){
-      await fetch(`/api/users/log_in`, {
-        method: 'POST',
-        body: JSON.stringify(credentials),
-        headers: {
-          'Content-type': 'application/json'
-        }
-      })
-        .then((response) => {
-          if (response.ok) return response.json();
-          throw new Error(`ERROR ${response.status}`);
-        })
-        .then((responseJSON: JWTToken) => {
-          log('Success logging in.');
-          sessionStorage.setItem('jwtToken', responseJSON.jwttoken);
-          sessionStorage.setItem('loggedIn', 'true');
-          sessionStorage.setItem('role', Roles.Employee.toString());
-          log(responseJSON.jwttoken);
-          navigate('/');
-        })
-        .catch((error: Error) => {
-          sessionStorage.clear();
-          log(`Error when trying to log in: ${error.message}`);
-        });
+      await loginWithCredentials(credentials).then(() => {
+        navigate('/');
+      });
       setIsLoading(false);
     }
   };
