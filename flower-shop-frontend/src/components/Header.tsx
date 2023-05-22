@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import Avatar from '@mui/material/Avatar';
-import { Divider, ListItemIcon, SvgIcon, SxProps, Theme } from '@mui/material';
+import {Divider, ListItemIcon, SvgIcon, SxProps, Theme} from '@mui/material';
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import LoginRoundedIcon from '@mui/icons-material/Login';
@@ -16,14 +16,14 @@ import AppRegistrationRoundedIcon from '@mui/icons-material/AppRegistrationRound
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import FeaturedPlayListRoundedIcon from '@mui/icons-material/FeaturedPlayListRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import { useNavigate } from 'react-router-dom';
-import { MenuItemSettings, UserData } from '../resources/types';
+import {useNavigate} from 'react-router-dom';
+import {MenuItemSettings, UserData} from '../resources/types';
 import SplitButton from './SplitButton';
 import Logo from './Logo';
 import log from '../utils/logger';
-import { mainTheme } from '../resources/themes';
+import {mainTheme} from '../resources/themes';
 import Basket from './Basket';
-import { fetchUser } from '../services/user.service';
+import {fetchUser} from '../services/user.service';
 
 interface HeaderBarProps {
   sx?: SxProps<Theme>;
@@ -107,10 +107,12 @@ export default function Header(props: HeaderBarProps) {
   };
 
   const handleCloseNavMenu = () => {
+    // @ts-ignore This is due to some eslint issues
     setAnchorElNav();
   };
 
   const handleCloseUserMenu = () => {
+    // @ts-ignore This is due to some eslint issues
     setAnchorElUser();
   };
 
@@ -133,8 +135,9 @@ export default function Header(props: HeaderBarProps) {
 
   React.useEffect(() => {
     if (sessionStorage.getItem('loggedIn') === 'true') {
-      fetchUserData().then();
+      fetchUserData().then().catch();
     } else {
+      // @ts-ignore This is due to some eslint issues
       setUserData();
     }
   }, []);

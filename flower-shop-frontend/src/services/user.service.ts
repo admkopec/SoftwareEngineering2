@@ -1,4 +1,4 @@
-import { Credentials, JWTToken, User, UserData } from '../resources/types';
+import {Credentials, JWTToken, User, UserData} from '../resources/types';
 import log from '../utils/logger';
 
 export const loginWithCredentials = async (credentials: Credentials) =>
