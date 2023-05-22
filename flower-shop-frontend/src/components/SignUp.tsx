@@ -14,10 +14,9 @@ import { useNavigate } from 'react-router-dom';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CircularProgress from '@mui/material/CircularProgress';
 import Copyright from './Copyright';
-import {Credentials, JWTToken, User, UserData} from '../resources/types';
+import { User } from '../resources/types';
 import log from '../utils/logger';
-import {Roles} from "../resources/constants";
-import {loginWithCredentials} from "../services/user.service";
+import { signupWithUser } from '../services/user.service';
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -26,39 +25,17 @@ export default function SignUp() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
-    const formEntries = Object.fromEntries((new FormData(event.currentTarget)).entries());
-    const newUserData : User = {
+    const formEntries = Object.fromEntries(new FormData(event.currentTarget).entries());
+    const newUserData: User = {
       name: `${formEntries.firstName.toString()} ${formEntries.lastName.toString()}`,
       email: formEntries.email.toString(),
       password: formEntries.password.toString(),
-      newsletter: formEntries.newsletter === "on"
+      newsletter: formEntries.newsletter === 'on'
     };
     log(JSON.stringify(newUserData));
-    await fetch(`/api/users`, {
-      method: 'POST',
-      body: JSON.stringify(newUserData),
-      headers: {
-        'Content-type': 'application/json'
-      }
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(`ERROR ${response.status}`);
-      })
-      .then((responseJSON: UserData) => {
-        log('Success signing up.');
-        sessionStorage.setItem('role', responseJSON.role);
-        const credentials : Credentials = {
-          username: formEntries.email.toString(),
-          password: formEntries.password.toString()
-        };
-        loginWithCredentials(credentials).then(() => {
-          navigate('/');
-        });
-      })
-      .catch((error: Error) => {
-        log(`Error when trying to sign up: ${error.message}`);
-      });
+    await signupWithUser(newUserData).then(() => {
+      navigate('/');
+    });
     setIsLoading(false);
   };
 

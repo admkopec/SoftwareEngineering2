@@ -14,10 +14,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
 import { mainTheme } from '../resources/themes';
 import Copyright from './Copyright';
-import { IS_DEV, Roles } from '../resources/constants';
-import { Credentials, JWTToken } from '../resources/types';
-import log from '../utils/logger';
-import {loginWithCredentials} from "../services/user.service";
+import { Credentials } from '../resources/types';
+import { fetchUser, loginWithCredentials } from '../services/user.service';
 
 export default function LogIn() {
   const navigate = useNavigate();
@@ -25,9 +23,13 @@ export default function LogIn() {
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const credentials : Credentials = Object.fromEntries((new FormData(event.currentTarget)).entries()) as unknown as Credentials;
-    if (credentials){
-      await loginWithCredentials(credentials).then(() => {
+    const credentials: Credentials = Object.fromEntries(
+      new FormData(event.currentTarget).entries()
+    ) as unknown as Credentials;
+    if (credentials) {
+      await loginWithCredentials(credentials);
+      await fetchUser().then((user) => {
+        sessionStorage.setItem('role', user.role);
         navigate('/');
       });
       setIsLoading(false);

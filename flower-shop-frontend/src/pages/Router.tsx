@@ -2,18 +2,11 @@ import { createBrowserRouter } from 'react-router-dom';
 import HomePage from './HomePage';
 import LogIn from '../components/LogIn';
 import SignUp from '../components/SignUp';
-import SignUpSuccess from '../components/SignUpSuccess';
 import ErrorPage from './ErrorPage';
 import ProductsPreview from '../components/ProductsPreview';
 import ProductsSearch from '../components/ProductsSearch';
 import ProductInfo from '../components/ProductInfo';
 import OrderPage from './OrderPage';
-
-export const signUpSuccessPageRoute = {
-  path: '/signup/success',
-  element: <SignUpSuccess />,
-  errorElement: <ErrorPage />
-};
 
 export const signUpPageRoute = {
   path: '/signup',
@@ -48,27 +41,21 @@ export const productsPreviewSubPageRoute = {
 export const orderPageRoute = {
   path: '/order',
   element: <OrderPage />,
-  errorElement: <ErrorPage />,
-}
+  errorElement: <ErrorPage />
+};
 
 export const homePageRoute = {
   path: '/',
   element: <HomePage />,
   errorElement: <ErrorPage />,
   children: [
-    productsPreviewSubPageRoute,  // 0
-    productsSubPageRoute,         // 1
-    productInfoSubPageRoute       // 2
+    productsPreviewSubPageRoute, // 0
+    productsSubPageRoute, // 1
+    productInfoSubPageRoute // 2
   ]
-}
+};
 
-export const routes = [
-  homePageRoute,
-  orderPageRoute,
-  loginPageRoute,
-  signUpPageRoute,
-  signUpSuccessPageRoute
-];
+export const routes = [homePageRoute, orderPageRoute, loginPageRoute, signUpPageRoute];
 
 const router = createBrowserRouter(routes);
 

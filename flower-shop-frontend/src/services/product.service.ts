@@ -18,12 +18,7 @@ export const fetchProductsFiltered = async (
   if (maxPerPageParam && maxPerPageParam > 0 && maxPerPageParam <= 50)
     productsSearchParams.append('maxPerPage', `${maxPerPageParam}`);
 
-  return fetch(`/api/products/?${productsSearchParams.toString()}`, {
-    method: 'GET',
-    headers: {
-      'Content-type': 'application/json'
-    }
-  }).then((response) => {
+  return fetch(`/api/products/?${productsSearchParams.toString()}`).then((response) => {
     if (response.ok) return response.json();
     throw new Error(`ERROR ${response.status}`);
   });
@@ -46,7 +41,6 @@ export const fetchBasket = async () =>
   fetch(`/api/basket`, {
     method: 'GET',
     headers: {
-      'Content-type': 'application/json',
       Authorization: `Bearer ${sessionStorage.getItem('jwtToken') ?? ''}`
     }
   }).then((response) => {
