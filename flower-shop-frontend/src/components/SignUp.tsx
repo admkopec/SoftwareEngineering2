@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -10,13 +10,16 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
+import {ThemeProvider} from '@mui/material/styles';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CircularProgress from '@mui/material/CircularProgress';
+import {mainTheme} from '../resources/themes';
 import Copyright from './Copyright';
-import { User } from '../resources/types';
+import {User} from '../resources/types';
 import log from '../utils/logger';
-import { signupWithUser } from '../services/user.service';
+import {signupWithUser} from '../services/user.service';
+import Layout from './Layout';
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -40,7 +43,9 @@ export default function SignUp() {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+      <Layout>
+        <ThemeProvider theme={mainTheme}>
+        <Container component="main" maxWidth="xs">
       <CssBaseline />
       <Box
         sx={{
@@ -139,5 +144,7 @@ export default function SignUp() {
       </Box>
       <Copyright sx={{ mt: 8, mb: 4 }} />
     </Container>
+        </ThemeProvider>
+      </Layout>
   );
 }

@@ -1,10 +1,8 @@
 import React, {useEffect} from 'react';
-import Container from '@mui/material/Container';
 import {Grid} from '@mui/material';
 import {Outlet} from "react-router-dom";
 import SearchBar from '../components/SearchBar';
-import Footer from "../components/Footer";
-import Header from "../components/Header";
+import Layout from "../components/Layout";
 
 function HomePage() {
   const [query, setQuery] = React.useState<string | undefined>();
@@ -15,25 +13,23 @@ function HomePage() {
   }, []);
 
   return (
-    <Container sx={{width: 'auto', m: 0, p: 0, maxWidth: '100%', overflow: 'hidden'}} maxWidth={false} disableGutters>
-      <Header />
-      <SearchBar setQuery={setQuery}/>
-      <Grid
-        container
-        display ="flex"
-        direction="column"
-        alignItems="center"
-        justifyContent="center"
-        spacing={2}
-        width='auto'
-        sx={{ pr: 4, pl: 4, zIndex: 1, minHeight: '80vh' }}
-      >
-        <Grid item>
-          <Outlet context={[query, setQuery]}/>
+    <Layout>
+        <SearchBar setQuery={setQuery}/>
+        <Grid
+            container
+            display ="flex"
+            direction="column"
+            alignItems="center"
+            justifyContent="center"
+            spacing={2}
+            width='auto'
+            sx={{ pr: 4, pl: 4, zIndex: 1, minHeight: '80vh' }}
+        >
+            <Grid item>
+                <Outlet context={[query, setQuery]}/>
+            </Grid>
         </Grid>
-      </Grid>
-      <Footer />
-    </Container>
+    </Layout>
   );
 }
 

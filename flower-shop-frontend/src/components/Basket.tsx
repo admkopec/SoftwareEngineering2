@@ -3,17 +3,16 @@ import IconButton from '@mui/material/IconButton';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import Box from '@mui/material/Box';
 import * as React from 'react';
+import {useEffect} from 'react';
 import Grow from '@mui/material/Grow';
 import Paper from '@mui/material/Paper';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Typography from '@mui/material/Typography';
 import Popper from '@mui/material/Popper';
-import Grid from '@mui/material/Grid';
-import { useEffect } from 'react';
 import Button from '@mui/material/Button';
-import { useNavigate } from 'react-router-dom';
-import { BasketItem } from '../resources/types';
-import { fetchBasket } from '../services/product.service';
+import {useNavigate} from 'react-router-dom';
+import {BasketItem} from '../resources/types';
+import {fetchBasket} from '../services/product.service';
 import log from '../utils/logger';
 import BasketList from './BasketList';
 
@@ -80,7 +79,7 @@ export default function Basket(){
             <Paper>
               <ClickAwayListener onClickAway={handleBasketClose}>
                 {basketData === undefined ?
-                  <Typography>Your basket is empty</Typography> :
+                  <Typography sx={{p: '2%'}}>Your basket is empty!</Typography> :
                   <Box sx={{m: '0 auto', p: 1 }}>
                     <BasketList dense={true} basketItems={basketData}/>
                     <Button

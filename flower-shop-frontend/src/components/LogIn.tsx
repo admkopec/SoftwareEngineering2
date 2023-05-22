@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -8,14 +8,15 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { ThemeProvider } from '@mui/material/styles';
+import {ThemeProvider} from '@mui/material/styles';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useNavigate } from 'react-router-dom';
-import { mainTheme } from '../resources/themes';
+import {useNavigate} from 'react-router-dom';
+import {mainTheme} from '../resources/themes';
 import Copyright from './Copyright';
-import { Credentials } from '../resources/types';
-import { fetchUser, loginWithCredentials } from '../services/user.service';
+import {Credentials} from '../resources/types';
+import {fetchUser, loginWithCredentials} from '../services/user.service';
+import Layout from "./Layout";
 
 export default function LogIn() {
   const navigate = useNavigate();
@@ -37,6 +38,7 @@ export default function LogIn() {
   };
 
   return (
+      <Layout>
     <ThemeProvider theme={mainTheme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -103,5 +105,6 @@ export default function LogIn() {
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
+      </Layout>
   );
 }
