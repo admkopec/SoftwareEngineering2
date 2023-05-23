@@ -1,18 +1,19 @@
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
-import { useNavigate, useParams } from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
 import delay from '../utils/delay';
 import BasketList from '../components/BasketList';
-import { fetchBasket } from '../services/product.service';
-import { BasketItem } from '../resources/types';
+import {fetchBasket} from '../services/product.service';
+import {BasketItem} from '../resources/types';
 import log from '../utils/logger';
 
 const steps = [
@@ -24,6 +25,7 @@ const steps = [
 ];
 
 const isStepOptional = (step: number) => step === -1;
+const isStepTerminal = (step: number) => step >= 3;
 
 export default function OrderPage() {
   const { productID, quantity } = useParams();
@@ -97,14 +99,78 @@ export default function OrderPage() {
         return (
           <React.Fragment>
             <Typography sx={{ mt: 2, mb: 1 }}>Step {stepNo+1} - Provide address details for delivery</Typography>
-            <></>
+            <Box sx={{m: '0 auto', p: 2 }}>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                      required
+                      fullWidth
+                      id="firstName"
+                      label="First Name"
+                      name="firstName"
+                      autoComplete="given-name"
+                      autoFocus
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                      required
+                      fullWidth
+                      id="lastName"
+                      label="Last Name"
+                      name="lastName"
+                      autoComplete="family-name"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                      required
+                      fullWidth
+                      id="address"
+                      label="Address"
+                      name="address"
+                      autoComplete="street-address"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                      required
+                      fullWidth
+                      name="city"
+                      label="City"
+                      id="city"
+                      autoComplete="city"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                      required
+                      fullWidth
+                      name="postcode"
+                      label="Postal Code"
+                      id="postcode"
+                      autoComplete="postal-code"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                      required
+                      fullWidth
+                      name="country"
+                      label="Country"
+                      id="country"
+                      autoComplete="country"
+                  />
+                </Grid>
+              </Grid>
+            </Box>
           </React.Fragment>
         );
       } case 2: {
         return (
           <React.Fragment>
             <Typography sx={{ mt: 2, mb: 1 }}>Step {stepNo+1} - Choose payment method</Typography>
-            <></>
+            <Typography>Here goes Stripe redirect...</Typography>
           </React.Fragment>
         );
       } case 3: {
@@ -167,7 +233,7 @@ export default function OrderPage() {
               </Button>
             )}
             <Button onClick={handleNext}>
-              {activeStep === steps.length - 1 ? 'Home' : 'Next'}
+              {isStepTerminal(activeStep) ? 'Home' : 'Next'}
             </Button>
           </Box>
         </React.Fragment>
