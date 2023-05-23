@@ -143,7 +143,7 @@ export default function Header(props: HeaderBarProps) {
   }, []);
 
   return (
-    <AppBar position="static" sx={props.sx}>
+    <AppBar position="fixed" sx={props.sx}>
       <Toolbar>
         {/* Logo */}
         <Logo

@@ -23,7 +23,7 @@ function HomePage() {
             justifyContent="center"
             spacing={2}
             width='auto'
-            sx={{ pr: 4, pl: 4, zIndex: 1, minHeight: '80vh' }}
+            sx={{ pt: 8, pr: 4, pl: 4, zIndex: 1 }}
         >
             <Grid item>
                 <Outlet context={[query, setQuery]}/>
