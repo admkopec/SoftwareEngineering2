@@ -4,9 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pw.se2.flowershopbackend.dao.ProductRepository;
@@ -107,43 +105,30 @@ public class ProductService {
         }
     }
 
-    private Specification<Product> nameLike(String name){
-        if (name == null)
-            return (root, query, criteriaBuilder)
-                    -> criteriaBuilder.conjunction();
-        return (root, query, criteriaBuilder)
-                -> criteriaBuilder.like(root.get(Product_.NAME), "%"+name+"%");
-    }
     public Page<Product> getFilteredProducts(String query,
                                              String categories,
                                              Integer minPrice,
                                              Integer maxPrice,
                                              Pageable page) {
-        return productRepository.findAll(
-                where(nameLike(query))
-                        .and(belongsToCategory(categories))
-                        .and(priceMatches(minPrice, maxPrice)),
-                page);
+        if (query == null) {
+            query = "%%";
+        }
+        if (minPrice == null) {
+            minPrice = Integer.MIN_VALUE;
+        }
+        if (maxPrice == null) {
+            maxPrice = Integer.MAX_VALUE;
+        }
+        if (maxPrice < minPrice)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid min/max prices.");
+        return productRepository.findByNameLikeIgnoreCaseAndCategoryInAndPriceBetween(query, getCategoriesFrom(categories), Double.valueOf(minPrice), Double.valueOf(maxPrice), page);
     }
 
-    private Specification<Product> priceMatches(Integer minPrice, Integer maxPrice){
-        // TODO: implement checking maximum price of product in our database
-        if (minPrice == null || maxPrice == null || maxPrice < minPrice)
-            return (root, query, criteriaBuilder)
-                    -> criteriaBuilder.conjunction();
-        return (root, query, criteriaBuilder)
-                -> criteriaBuilder.between(root.get(Product_.PRICE), minPrice, maxPrice);
+    private List<Product.Category> getCategoriesFrom(String categoryString) {
+        if (categoryString == null) {
+            return Arrays.asList(Product.Category.Flower, Product.Category.Bouquet, Product.Category.GroundFlower, Product.Category.Supplement);
+        }
+
+        return Arrays.stream(categoryString.split(",")).toList().stream().map(Product.Category::valueOf).toList();
     }
-
-    private Specification<Product> belongsToCategory(String categories){
-        if (categories == null)
-            return (root, query, criteriaBuilder) -> criteriaBuilder.conjunction();
-
-        List<Product.Category> categoriesList = Arrays.stream(categories.split(",")).toList().stream()
-                .map(Product.Category::valueOf).toList();
-
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.in(root.get(Product_.CATEGORY)).value(categoriesList);
-    }
-
 }
