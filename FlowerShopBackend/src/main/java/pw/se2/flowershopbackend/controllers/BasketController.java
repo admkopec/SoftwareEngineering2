@@ -1,6 +1,7 @@
 package pw.se2.flowershopbackend.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,6 +20,7 @@ import java.util.UUID;
 
 @Tag(name = "BasketItem")
 @RestController
+@SecurityRequirement(name = "Bearer Authentication")
 @RequestMapping(path = "/api/basket")
 public class BasketController {
     private final BasketItemService basketItemService;
