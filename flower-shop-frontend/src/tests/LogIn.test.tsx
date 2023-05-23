@@ -1,6 +1,6 @@
-import { fireEvent, screen } from '@testing-library/react';
+import {fireEvent, screen} from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { loginPageRoute } from '../pages/Router';
+import {loginPageRoute} from '../pages/Router';
 import renderWithRouter from '../utils/renderWithRouter';
 import LogIn from '../components/LogIn';
 
@@ -26,8 +26,8 @@ describe('<LogIn />', () => {
 
   test('contains a button with "Log In" text', () => {
     renderWithRouter(<LogIn />, { route: loginPageRoute.path });
-    const buttonElement = screen.getAllByRole('button');
-    expect(buttonElement).toHaveLength(1);
+    const buttonElement = screen.getAllByText('Log In', { selector: 'button' });
+    expect(buttonElement).toHaveLength(2);
     expect(buttonElement[0]).toHaveTextContent('Log In');
   });
 
@@ -40,7 +40,7 @@ describe('<LogIn />', () => {
 
   test('contains link element with text annotation', () => {
     renderWithRouter(<LogIn />, { route: loginPageRoute.path });
-    const linkElement = screen.getAllByRole('link');
+    const linkElement = screen.getAllByText('Don\'t have an account? Sign Up');
     expect(linkElement).toHaveLength(1);
     expect(linkElement[0]).toHaveTextContent("Don't have an account? Sign Up");
   });

@@ -1,18 +1,18 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-import { Stack, Divider } from '@mui/material';
+import {Divider, Stack} from '@mui/material';
 import * as React from 'react';
-import { alpha, styled } from '@mui/material/styles';
+import {alpha, styled} from '@mui/material/styles';
 import LocalPhone from '@mui/icons-material/LocalPhone';
 import Email from '@mui/icons-material/Email';
 import Facebook from '@mui/icons-material/Facebook';
 import Instagram from '@mui/icons-material/Instagram';
-import { mainTheme as theme } from '../resources/themes';
+import {mainTheme as theme} from '../resources/themes';
 import Copyright from './Copyright';
 
 const FooterBox = styled(Box)(() => ({
-  margin: theme.spacing('4%', 0, 0, 0),
+  margin: theme.spacing(0, 0, 0, 0),
   padding: theme.spacing('2%', 0, '2%', 0),
   width: '100%',
   height: '30%',
