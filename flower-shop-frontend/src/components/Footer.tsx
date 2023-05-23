@@ -10,6 +10,11 @@ import Facebook from '@mui/icons-material/Facebook';
 import Instagram from '@mui/icons-material/Instagram';
 import {mainTheme as theme} from '../resources/themes';
 import Copyright from './Copyright';
+import Avatar from '@mui/material/Avatar';
+import Team1 from '../static/imgs/team-1.png';
+import Team2 from '../static/imgs/team-2.png';
+import Team3 from '../static/imgs/team-3.png';
+
 
 const FooterBox = styled(Box)(() => ({
   margin: theme.spacing(0, 0, 0, 0),
@@ -39,10 +44,17 @@ const FooterGrid = styled(Grid)(() => ({
   fontSize: 13,
   textAlign: 'center',
   width: '30%',
-  justifyContent: 'center'
+  justifyContent: 'center',
+  padding: theme.spacing('2%', 0, '2%', 0)
 }));
+const insideAvatarFunction = (e: MouseEvent) => {
+  e.stopPropagation();
+  console.log('Fired insideAvatarFunction()!');
+}
 
 export default function Footer() {
+
+
   return (
     <FooterBox>
       <FooterGrid container>
@@ -97,7 +109,20 @@ export default function Footer() {
             </OptionsBox>
           </Stack>
         </Grid>
+
       </FooterGrid>
+      <Grid item xs>
+        <Stack
+            direction="row"
+            divider={<Divider orientation="vertical" color="white" flexItem />}
+            spacing={2}
+        >
+          <Avatar src={Team1} onClick={() => sessionStorage.removeItem('backendURL')}/>
+          <Avatar src={Team2} onClick={() => sessionStorage.setItem('backendURL', 'http://flowershop-dev-lb-2087424383.eu-west-1.elb.amazonaws.com')}/>
+          <Avatar src={Team3} onClick={() => sessionStorage.setItem('backendURL', 'https://flower-shop-se2.azurewebsites.net')}/>
+
+        </Stack>
+      </Grid>
       <Copyright />
     </FooterBox>
   );
