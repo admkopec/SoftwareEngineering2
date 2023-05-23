@@ -1,6 +1,6 @@
-import { screen } from '@testing-library/react';
+import {screen} from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { signUpPageRoute } from '../pages/Router';
+import {signUpPageRoute} from '../pages/Router';
 import renderWithRouter from '../utils/renderWithRouter';
 import SignUp from '../components/SignUp';
 
@@ -29,16 +29,16 @@ describe('<SignUp />', () => {
     );
   });
 
-  test('contains a button with "Log In" text', () => {
+  test('contains a button with "Sign Up" text', () => {
     renderWithRouter(<SignUp />, { route: signUpPageRoute.path });
-    const buttonElement = screen.getAllByRole('button');
+    const buttonElement = screen.getAllByText('Sign Up', { selector: 'button'});
     expect(buttonElement).toHaveLength(1);
     expect(buttonElement[0]).toHaveTextContent('Sign Up');
   });
 
   test('contains link element with text annotation', () => {
     renderWithRouter(<SignUp />, { route: signUpPageRoute.path });
-    const linkElement = screen.getAllByRole('link');
+    const linkElement = screen.getAllByText('Already have an account? Log In')
     expect(linkElement).toHaveLength(1);
     expect(linkElement[0]).toHaveTextContent('Already have an account? Log In');
   });
