@@ -2,6 +2,7 @@ package pw.se2.flowershopbackend.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +37,7 @@ public class ProductController {
 
     @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Create new Product")
     public void createProduct(@RequestBody ProductCreationDto productDto) {
         productService.assertEmployee(User.getAuthenticated());
@@ -45,6 +47,7 @@ public class ProductController {
 
     @PutMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Create multiple new Products")
     public void createProducts(@RequestBody List<ProductCreationDto> productDtos) {
         productService.assertEmployee(User.getAuthenticated());
@@ -80,6 +83,7 @@ public class ProductController {
     }
 
     @DeleteMapping(path = "/{productId}")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Delete Product")
     public void deleteProduct(@PathVariable UUID productId) {
         productService.assertEmployee(User.getAuthenticated());
@@ -88,6 +92,7 @@ public class ProductController {
 
     @PutMapping(path = "/{productId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Modify Product")
     public void modifyProduct(@PathVariable UUID productId, @RequestBody ProductCreationDto productCreationDto) {
         productService.assertEmployee(User.getAuthenticated());

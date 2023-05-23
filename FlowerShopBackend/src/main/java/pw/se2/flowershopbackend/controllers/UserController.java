@@ -1,6 +1,7 @@
 package pw.se2.flowershopbackend.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +52,7 @@ public class UserController {
     }
 
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Get information about currently authenticated User")
     public ResponseEntity<UserDto> fetchCurrentUser() {
         User user = User.getAuthenticated();
@@ -58,6 +60,7 @@ public class UserController {
     }
 
     @PostMapping(path = "/newsletter", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Update newsletter preference")
     public void updateNewsletterSubscription(@RequestBody NewsletterSubscriptionDto newsletterSubscriptionDto) {
         User user = User.getAuthenticated();
@@ -65,6 +68,7 @@ public class UserController {
     }
 
     @PostMapping(path = "/profilePicture", consumes = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Update profile picture")
     public void updateProfilePicture(@RequestBody byte[] image) {
         User user = User.getAuthenticated();
@@ -72,6 +76,7 @@ public class UserController {
     }
 
     @GetMapping(path = "/profilePicture", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Get profile picture")
     public ResponseEntity<byte[]> fetchProfilePicture() {
         User user = User.getAuthenticated();
