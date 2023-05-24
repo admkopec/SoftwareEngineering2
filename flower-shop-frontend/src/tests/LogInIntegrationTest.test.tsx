@@ -21,18 +21,18 @@ test('testing login with Team 2', () => {
         })
 });
 
-// Team 3 endpoints do not match Flower Shop documentation
-// test('testing login with Team 3', () => {
-//     sessionStorage.setItem('backendURL', regions.easterIsland);
-//     return fetch(`${getBackendURL()  }/api/users/log_in`, {
-//         method: 'POST',
-//         body: JSON.stringify({username: 'admin@admin.com', password: 'admin'}),
-//         headers: {
-//             'Content-type': 'application/json'
-//         }
-//     })
-//         .then((response) => {
-//             if (response.ok) return response.json();
-//             throw new Error(`ERROR ${response.status}`);
-//         })
-// });
+//Team 3 endpoints do not match Flower Shop documentation
+test('testing login with Team 3', () => {
+    sessionStorage.setItem('backendURL', regions.easterIsland);
+    return fetch(`${getBackendURL()  }/api/v1/auth/authenticate`, {
+        method: 'POST',
+        body: JSON.stringify({email: 'admin@admin.com', password: 'admin'}),
+        headers: {
+            'Content-type': 'application/json'
+        }
+    })
+        .then((response) => {
+            if (response.ok) return response.json();
+            throw new Error(`ERROR ${response.status}`);
+        })
+});
