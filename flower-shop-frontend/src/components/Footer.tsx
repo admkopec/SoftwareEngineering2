@@ -14,7 +14,13 @@ import Copyright from './Copyright';
 import Team1 from '../static/imgs/team-1.png';
 import Team2 from '../static/imgs/team-2.png';
 import Team3 from '../static/imgs/team-3.png';
+import {getBackendURL, isLoggedIn} from "../services/user.service";
 
+export const regions = {
+  ours: '',
+  easterIsland: 'https://flower-shop-se2.azurewebsites.net',
+  alpsMountains: 'http://flowershop-dev-lb-2087424383.eu-west-1.elb.amazonaws.com'
+};
 
 const FooterBox = styled(Box)(() => ({
   margin: theme.spacing(0, 0, 0, 0),
@@ -54,6 +60,18 @@ const insideAvatarFunction = (e: MouseEvent) => {
 
 export default function Footer() {
 
+  const avatarDisabled = {
+    cursor: 'default',
+  };
+
+  const avatarSelectable = {
+    cursor: 'pointer',
+  };
+
+  const avatarSelected = {
+    cursor: 'default',
+    boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
+  };
 
   return (
     <FooterBox>
@@ -117,19 +135,21 @@ export default function Footer() {
             divider={<Divider orientation="vertical" color="white" flexItem />}
             spacing={2}
         >
-          <Avatar sx={{cursor: 'pointer'}} src={Team1} onClick={() => {
+          <Avatar sx={getBackendURL() === regions.ours ? avatarSelected : (isLoggedIn() ? avatarDisabled : avatarSelectable)} src={Team1} onClick={() => {
+            if (isLoggedIn()) { return; }
             sessionStorage.removeItem('backendURL');
             window.location.reload();
           }}/>
-          <Avatar sx={{cursor: 'pointer'}} src={Team2} onClick={() => {
-            sessionStorage.setItem('backendURL', 'http://flowershop-dev-lb-2087424383.eu-west-1.elb.amazonaws.com');
+          <Avatar sx={getBackendURL() === regions.alpsMountains ? avatarSelected : (isLoggedIn() ? avatarDisabled : avatarSelectable)} src={Team2} onClick={() => {
+            if (isLoggedIn()) { return; }
+            sessionStorage.setItem('backendURL', regions.alpsMountains);
             window.location.reload();
           }}/>
-          <Avatar sx={{cursor: 'pointer'}} src={Team3} onClick={() => {
-            sessionStorage.setItem('backendURL', 'https://flower-shop-se2.azurewebsites.net');
+          <Avatar sx={getBackendURL() === regions.easterIsland ? avatarSelected : (isLoggedIn() ? avatarDisabled : avatarSelectable)} src={Team3} onClick={() => {
+            if (isLoggedIn()) { return; }
+            sessionStorage.setItem('backendURL', regions.easterIsland);
             window.location.reload();
           }}/>
-
         </Stack>
       </Grid>
       <Copyright />

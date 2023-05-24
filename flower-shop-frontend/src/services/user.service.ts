@@ -4,8 +4,10 @@ import log from '../utils/logger';
 export const getBackendURL= () => {
     const backendURL = sessionStorage.getItem('backendURL')
     return backendURL || "";
-
 }
+
+export const isLoggedIn = () => sessionStorage.getItem('loggedIn') === 'true'
+
 export const loginWithCredentials = async (credentials: Credentials) =>
   fetch(`${getBackendURL()  }/api/users/log_in`, {
     method: 'POST',
