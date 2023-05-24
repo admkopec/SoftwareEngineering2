@@ -7,7 +7,7 @@ const fetch = require('node-fetch');
 
 // test('testing product getting with Team 2', () => {
 //     sessionStorage.setItem('backendURL', regions.alpsMountains);
-//     return fetch(`${getBackendURL() }/api/products/`).then((response) => {
+//     return fetch(`${getBackendURL() }/api/products/`).then((response: Response) => {
 //         if (response.ok) return response.json();
 //         throw new Error(`ERROR ${response.status}`);
 //     })
@@ -26,7 +26,7 @@ test('testing product getting with Team 3', () => {
             'Content-type': 'application/json'
         }
     })
-        .then((response) => {
+        .then((response: Response) => {
             if (response.ok) return response.json();
             throw new Error(`ERROR ${response.status}`);
         })
@@ -35,7 +35,7 @@ test('testing product getting with Team 3', () => {
             headers: {
                 Authorization: `Bearer ${token.token}`
             }
-        }).then((response) => {
+        }).then((response: Response) => {
         if (response.ok) return response.json();
         throw new Error(`ERROR ${response.status}`);
         })
