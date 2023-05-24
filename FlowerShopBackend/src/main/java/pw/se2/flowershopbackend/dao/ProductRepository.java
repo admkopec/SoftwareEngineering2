@@ -13,4 +13,5 @@ import java.util.UUID;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, UUID> {
     Page<Product> findByNameContainsIgnoreCaseAndCategoryInAndPriceBetween(@Nullable String name, Collection<Product.Category> categories, double priceStart, double priceEnd, Pageable pageable);
+    Page<Product> findByCategoryInAndPriceBetween(Collection<Product.Category> categories, double priceStart, double priceEnd, Pageable pageable);
 }
