@@ -1,8 +1,15 @@
 import {Credentials, JWTToken, User, UserData} from '../resources/types';
 import log from '../utils/logger';
 
+export const getBackendURL= () => {
+    const backendURL = sessionStorage.getItem('backendURL')
+    return backendURL || "";
+}
+
+export const isLoggedIn = () => sessionStorage.getItem('loggedIn') === 'true'
+
 export const loginWithCredentials = async (credentials: Credentials) =>
-  fetch(`/api/users/log_in`, {
+  fetch(`${getBackendURL()  }/api/users/log_in`, {
     method: 'POST',
     body: JSON.stringify(credentials),
     headers: {
@@ -26,7 +33,7 @@ export const loginWithCredentials = async (credentials: Credentials) =>
     });
 
 export const signupWithUser = async (newUser: User) =>
-  fetch(`/api/users`, {
+  fetch(`${getBackendURL()  }/api/users`, {
     method: 'POST',
     body: JSON.stringify(newUser),
     headers: {
@@ -52,7 +59,7 @@ export const signupWithUser = async (newUser: User) =>
     });
 
 export const fetchUser = async () =>
-  fetch(`/api/users`, {
+  fetch(`${getBackendURL()  }/api/users`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${sessionStorage.getItem('jwtToken') ?? ''}`

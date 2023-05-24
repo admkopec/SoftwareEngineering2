@@ -2,14 +2,15 @@ import Container from '@mui/material/Container';
 import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
 import Typography from '@mui/material/Typography';
-import { CircularProgress, Divider, List, ListItem, ListSubheader, Slide } from '@mui/material';
-import React, { ForwardedRef, useEffect, useState } from 'react';
+import {CircularProgress, Divider, List, ListItem, ListSubheader, Slide} from '@mui/material';
+import React, {ForwardedRef, useEffect, useState} from 'react';
 import Grid from '@mui/material/Grid';
-import { mainTheme } from '../resources/themes';
+import {mainTheme} from '../resources/themes';
 import ProductCard from './ProductCard';
-import { Product } from '../resources/types';
+import {Product} from '../resources/types';
 import log from '../utils/logger';
-import { SurfaceSizes } from '../resources/constants';
+import {SurfaceSizes} from '../resources/constants';
+import {fetchProductsFiltered} from "../services/product.service";
 
 interface ProductsPreviewProps {
   tag: string;
@@ -37,16 +38,8 @@ export default function ProductsPreview(props: ProductsPreviewProps) {
 
   const fetchProducts = async () => {
     setIsLoading(true);
-    await fetch(`/api/products`, {
-      method: 'GET',
-      headers: {
-        'Content-type': 'application/json'
-      }
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(`ERROR ${response.status}`);
-      })
+      // @ts-ignore This is due to some eslint issues
+      await fetchProductsFiltered()
       .then((responseJSON: Product[]) => {
         log('Success fetching product.');
         log(JSON.stringify(responseJSON));

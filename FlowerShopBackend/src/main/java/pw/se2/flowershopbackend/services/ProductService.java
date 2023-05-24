@@ -117,6 +117,9 @@ public class ProductService {
         }
         if (maxPrice < minPrice)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid min/max prices.");
+        if (query == null) {
+            return productRepository.findByCategoryInAndPriceBetween(getCategoriesFrom(categories), Double.valueOf(minPrice), Double.valueOf(maxPrice), page);
+        }
         return productRepository.findByNameContainsIgnoreCaseAndCategoryInAndPriceBetween(query, getCategoriesFrom(categories), Double.valueOf(minPrice), Double.valueOf(maxPrice), page);
     }
 
