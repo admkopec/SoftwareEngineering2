@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import Avatar from '@mui/material/Avatar';
-import { Divider, ListItemIcon, SvgIcon, SxProps, Theme } from '@mui/material';
+import {Divider, ListItemIcon, SvgIcon, SxProps, Theme} from '@mui/material';
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import LoginRoundedIcon from '@mui/icons-material/Login';
@@ -16,13 +16,14 @@ import AppRegistrationRoundedIcon from '@mui/icons-material/AppRegistrationRound
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import FeaturedPlayListRoundedIcon from '@mui/icons-material/FeaturedPlayListRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import { useNavigate } from 'react-router-dom';
-import { MenuItemSettings, User } from '../resources/types';
+import {useNavigate} from 'react-router-dom';
+import {MenuItemSettings, UserData} from '../resources/types';
 import SplitButton from './SplitButton';
 import Logo from './Logo';
 import log from '../utils/logger';
-import { mainTheme } from '../resources/themes';
+import {mainTheme} from '../resources/themes';
 import Basket from './Basket';
+import {fetchUser} from '../services/user.service';
 
 interface HeaderBarProps {
   sx?: SxProps<Theme>;
@@ -87,7 +88,6 @@ const profileSettingsUser: MenuItemSettings[] = [
   }
 ];
 
-
 // Profile menu options for different kinds of users
 // const profileSettingsEmployee = ['Profile', 'Orders', 'Logout'];
 // const profileSettingsDeliveryMan = ['Profile', 'Deliveries', 'Logout'];
@@ -96,7 +96,7 @@ export default function Header(props: HeaderBarProps) {
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState<undefined | HTMLElement>();
   const [anchorElUser, setAnchorElUser] = React.useState<undefined | HTMLElement>();
-  const [userData, setUserData] = React.useState<undefined | User>();
+  const [userData, setUserData] = React.useState<undefined | UserData>();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -107,28 +107,20 @@ export default function Header(props: HeaderBarProps) {
   };
 
   const handleCloseNavMenu = () => {
-    setAnchorElNav(undefined);
+    // @ts-ignore This is due to some eslint issues
+    setAnchorElNav();
   };
 
   const handleCloseUserMenu = () => {
-    setAnchorElUser(undefined);
+    // @ts-ignore This is due to some eslint issues
+    setAnchorElUser();
   };
 
   // Fetching user information
   const fetchUserData = async () => {
     log(sessionStorage.getItem('jwtToken'));
-    await fetch(`/api/users`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${sessionStorage.getItem('jwtToken') ?? ''}`,
-        'Content-type': 'application/json; charset=UTF-8'
-      }
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-        throw new Error(`ERROR ${response.status}`);
-      })
-      .then((responseJSON: User) => {
+    await fetchUser()
+      .then((responseJSON: UserData) => {
         log('Success fetching user data.');
         log(JSON.stringify(responseJSON));
         setUserData(responseJSON);
@@ -143,14 +135,15 @@ export default function Header(props: HeaderBarProps) {
 
   React.useEffect(() => {
     if (sessionStorage.getItem('loggedIn') === 'true') {
-      fetchUserData();
+      fetchUserData().then().catch();
     } else {
-      setUserData(undefined);
+      // @ts-ignore This is due to some eslint issues
+      setUserData();
     }
   }, []);
 
   return (
-    <AppBar position="static" sx={props.sx}>
+    <AppBar position="fixed" sx={props.sx}>
       <Toolbar>
         {/* Logo */}
         <Logo
@@ -266,9 +259,7 @@ export default function Header(props: HeaderBarProps) {
                 <Divider />
                 {profileSettingsUser.map((setting) => (
                   <MenuItem key={setting.key} onClick={() => setting.callback(navigate)}>
-                    <ListItemIcon>
-                      {setting.Icon && <SvgIcon component={setting.Icon} fontSize='small'/>}
-                    </ListItemIcon>
+                    <ListItemIcon>{setting.Icon && <SvgIcon component={setting.Icon} fontSize="small" />}</ListItemIcon>
                     <Typography textAlign="center" color={setting.key === 'Logout' ? 'error.light' : 'inherit'}>
                       {setting.key}
                     </Typography>

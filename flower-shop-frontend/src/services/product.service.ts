@@ -1,4 +1,5 @@
 import { OrderProduct } from '../resources/types';
+import {getBackendURL} from "./user.service";
 
 export const fetchProductsFiltered = async (
   searchParam: string | undefined,
@@ -18,19 +19,14 @@ export const fetchProductsFiltered = async (
   if (maxPerPageParam && maxPerPageParam > 0 && maxPerPageParam <= 50)
     productsSearchParams.append('maxPerPage', `${maxPerPageParam}`);
 
-  return fetch(`/api/products/?${productsSearchParams.toString()}`, {
-    method: 'GET',
-    headers: {
-      'Content-type': 'application/json'
-    }
-  }).then((response) => {
+  return fetch(`${getBackendURL() }/api/products/?${productsSearchParams.toString()}`).then((response) => {
     if (response.ok) return response.json();
     throw new Error(`ERROR ${response.status}`);
   });
 };
 
 export const addProductToBasket = async (orderProduct: OrderProduct) =>
-  fetch(`/api/basket`, {
+  fetch(`${getBackendURL()  }/api/basket`, {
     method: 'POST',
     body: JSON.stringify(orderProduct),
     headers: {
@@ -43,10 +39,9 @@ export const addProductToBasket = async (orderProduct: OrderProduct) =>
   });
 
 export const fetchBasket = async () =>
-  fetch(`/api/basket`, {
+  fetch(`${getBackendURL()  }/api/basket`, {
     method: 'GET',
     headers: {
-      'Content-type': 'application/json',
       Authorization: `Bearer ${sessionStorage.getItem('jwtToken') ?? ''}`
     }
   }).then((response) => {

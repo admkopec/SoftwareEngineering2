@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -10,12 +10,16 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
+import {ThemeProvider} from '@mui/material/styles';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CircularProgress from '@mui/material/CircularProgress';
+import {mainTheme} from '../resources/themes';
 import Copyright from './Copyright';
-import { JWTToken, User } from '../resources/types';
+import {User} from '../resources/types';
 import log from '../utils/logger';
+import {signupWithUser} from '../services/user.service';
+import Layout from './Layout';
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -24,41 +28,24 @@ export default function SignUp() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
-    const formEntries = Object.fromEntries((new FormData(event.currentTarget)).entries());
-    const newUserData : User = {
+    const formEntries = Object.fromEntries(new FormData(event.currentTarget).entries());
+    const newUserData: User = {
       name: `${formEntries.firstName.toString()} ${formEntries.lastName.toString()}`,
       email: formEntries.email.toString(),
       password: formEntries.password.toString(),
-      newsletter: formEntries.newsletter === "on"
+      newsletter: formEntries.newsletter === 'on'
     };
     log(JSON.stringify(newUserData));
-    await fetch(`/api/users`, {
-      method: 'POST',
-      body: JSON.stringify(newUserData),
-      headers: {
-        'Content-type': 'application/json'
-      }
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-
-        throw new Error(`ERROR ${response.status}`);
-      })
-      .then((responseJSON: JWTToken) => {
-        log('Success signing up.');
-        sessionStorage.setItem('jwtToken', responseJSON.jwttoken);
-        sessionStorage.setItem('loggedIn', 'false');
-        log(responseJSON.jwttoken);
-        navigate('/signup/success');
-      })
-      .catch((error: Error) => {
-        log(`Error when trying to sign up: ${error.message}`);
-      });
+    await signupWithUser(newUserData).then(() => {
+      navigate('/');
+    });
     setIsLoading(false);
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+      <Layout>
+        <ThemeProvider theme={mainTheme}>
+        <Container component="main" maxWidth="xs">
       <CssBaseline />
       <Box
         sx={{
@@ -157,5 +144,7 @@ export default function SignUp() {
       </Box>
       <Copyright sx={{ mt: 8, mb: 4 }} />
     </Container>
+        </ThemeProvider>
+      </Layout>
   );
 }

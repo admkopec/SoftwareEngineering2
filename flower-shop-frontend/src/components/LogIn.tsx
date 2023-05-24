@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -8,15 +8,15 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { ThemeProvider } from '@mui/material/styles';
+import {ThemeProvider} from '@mui/material/styles';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useNavigate } from 'react-router-dom';
-import { mainTheme } from '../resources/themes';
+import {useNavigate} from 'react-router-dom';
+import {mainTheme} from '../resources/themes';
 import Copyright from './Copyright';
-import { IS_DEV, Roles } from '../resources/constants';
-import { Credentials, JWTToken } from '../resources/types';
-import log from '../utils/logger';
+import {Credentials} from '../resources/types';
+import {fetchUser, loginWithCredentials} from '../services/user.service';
+import Layout from "./Layout";
 
 export default function LogIn() {
   const navigate = useNavigate();
@@ -24,36 +24,21 @@ export default function LogIn() {
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const credentials : Credentials = Object.fromEntries((new FormData(event.currentTarget)).entries()) as unknown as Credentials;
-    if (credentials){
-      await fetch(`/api/users/log_in`, {
-        method: 'POST',
-        body: JSON.stringify(credentials),
-        headers: {
-          'Content-type': 'application/json'
-        }
-      })
-        .then((response) => {
-          if (response.ok) return response.json();
-          throw new Error(`ERROR ${response.status}`);
-        })
-        .then((responseJSON: JWTToken) => {
-          log('Success logging in.');
-          sessionStorage.setItem('jwtToken', responseJSON.jwttoken);
-          sessionStorage.setItem('loggedIn', 'true');
-          sessionStorage.setItem('role', Roles.Employee.toString());
-          log(responseJSON.jwttoken);
-          navigate('/');
-        })
-        .catch((error: Error) => {
-          sessionStorage.clear();
-          log(`Error when trying to log in: ${error.message}`);
-        });
+    const credentials: Credentials = Object.fromEntries(
+      new FormData(event.currentTarget).entries()
+    ) as unknown as Credentials;
+    if (credentials) {
+      await loginWithCredentials(credentials);
+      await fetchUser().then((user) => {
+        sessionStorage.setItem('role', user.role);
+        navigate('/');
+      });
       setIsLoading(false);
     }
   };
 
   return (
+      <Layout>
     <ThemeProvider theme={mainTheme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -120,5 +105,6 @@ export default function LogIn() {
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
+      </Layout>
   );
 }
