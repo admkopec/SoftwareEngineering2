@@ -8,9 +8,9 @@ import LocalPhone from '@mui/icons-material/LocalPhone';
 import Email from '@mui/icons-material/Email';
 import Facebook from '@mui/icons-material/Facebook';
 import Instagram from '@mui/icons-material/Instagram';
+import Avatar from '@mui/material/Avatar';
 import {mainTheme as theme} from '../resources/themes';
 import Copyright from './Copyright';
-import Avatar from '@mui/material/Avatar';
 import Team1 from '../static/imgs/team-1.png';
 import Team2 from '../static/imgs/team-2.png';
 import Team3 from '../static/imgs/team-3.png';
@@ -117,9 +117,18 @@ export default function Footer() {
             divider={<Divider orientation="vertical" color="white" flexItem />}
             spacing={2}
         >
-          <Avatar src={Team1} onClick={() => sessionStorage.removeItem('backendURL')}/>
-          <Avatar src={Team2} onClick={() => sessionStorage.setItem('backendURL', 'http://flowershop-dev-lb-2087424383.eu-west-1.elb.amazonaws.com')}/>
-          <Avatar src={Team3} onClick={() => sessionStorage.setItem('backendURL', 'https://flower-shop-se2.azurewebsites.net')}/>
+          <Avatar sx={{cursor: 'pointer'}} src={Team1} onClick={() => {
+            sessionStorage.removeItem('backendURL');
+            window.location.reload();
+          }}/>
+          <Avatar sx={{cursor: 'pointer'}} src={Team2} onClick={() => {
+            sessionStorage.setItem('backendURL', 'http://flowershop-dev-lb-2087424383.eu-west-1.elb.amazonaws.com');
+            window.location.reload();
+          }}/>
+          <Avatar sx={{cursor: 'pointer'}} src={Team3} onClick={() => {
+            sessionStorage.setItem('backendURL', 'https://flower-shop-se2.azurewebsites.net');
+            window.location.reload();
+          }}/>
 
         </Stack>
       </Grid>
