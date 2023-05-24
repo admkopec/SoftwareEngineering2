@@ -1,15 +1,16 @@
 import * as React from 'react';
-import { useState } from 'react';
+import {useState} from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useNavigate } from 'react-router-dom';
-import { Product } from '../resources/types';
+import {useNavigate} from 'react-router-dom';
+import {Product} from '../resources/types';
 import log from '../utils/logger';
 import delay from '../utils/delay';
+import {getBackendURL} from "../services/user.service";
 
 interface DeleteDialogProps {
   productID: string | undefined;
@@ -30,7 +31,7 @@ export default function DeleteDialog(props: DeleteDialogProps) {
   const handleDelete = async () => {
     if (productID) {
       setDeleteButtonText('Deleting...');
-      await fetch(`/api/products/${productID}`, {
+      await fetch(`${getBackendURL()}/api/products/${productID}`, {
         method: 'DELETE',
         headers: {
           'Content-type': 'application/json',

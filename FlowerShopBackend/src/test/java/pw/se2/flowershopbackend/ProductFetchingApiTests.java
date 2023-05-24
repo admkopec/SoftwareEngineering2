@@ -86,6 +86,8 @@ public class ProductFetchingApiTests {
                 .thenReturn(true);
         Mockito.when(productRepository.findByNameContainsIgnoreCaseAndCategoryInAndPriceBetween(any(), anyCollection(), anyDouble(), anyDouble(), any(Pageable.class)))
                 .thenReturn(mockPage);
+        Mockito.when(productRepository.findByCategoryInAndPriceBetween(anyCollection(), anyDouble(), anyDouble(), any(Pageable.class)))
+                .thenReturn(mockPage);
         Mockito.when(productRepository.findAll())
                 .thenReturn(mockPage.getContent());
     }
