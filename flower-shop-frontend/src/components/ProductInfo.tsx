@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
-import { useNavigate, useParams } from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import Paper from '@mui/material/Paper';
 import CircularProgress from '@mui/material/CircularProgress';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -12,16 +12,17 @@ import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone';
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded';
 import RemoveCircleTwoToneIcon from '@mui/icons-material/RemoveCircleTwoTone';
 import BuildCircleTwoToneIcon from '@mui/icons-material/BuildCircleTwoTone';
-import { Grid } from '@mui/material';
+import {Grid} from '@mui/material';
 import TextField from '@mui/material/TextField';
-import { Validate, ValidationGroup } from 'mui-validate';
+import {Validate, ValidationGroup} from 'mui-validate';
 import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import FloweryImage from './FloweryImage';
-import { Roles } from '../resources/constants';
-import { BasketItem, OrderProduct, Product } from '../resources/types';
+import {Roles} from '../resources/constants';
+import {OrderProduct, Product} from '../resources/types';
 import DeleteDialog from './DeleteDialog';
 import log from '../utils/logger';
-import { addProductToBasket } from '../services/product.service';
+import {addProductToBasket} from '../services/product.service';
+import {getBackendURL} from "../services/user.service";
 
 export default function ProductInfo() {
   const { productID } = useParams();
@@ -85,7 +86,7 @@ export default function ProductInfo() {
     if (productID){
       setIsLoading(true);
       log(productID);
-      await fetch(`/api/products/${productID}`, {
+      await fetch(`${getBackendURL()}/api/products/${productID}`, {
         method: 'GET',
         headers: {
           'Content-type': 'application/json'
