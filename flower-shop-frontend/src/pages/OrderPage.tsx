@@ -19,7 +19,7 @@ import log from '../utils/logger';
 const steps = [
   'Your products',
   'Delivery details',
-  'Delivery method',
+  // 'Delivery method',
   'Payment',
   'Purchase completed',
 ];
@@ -33,6 +33,12 @@ export default function OrderPage() {
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
   const [basketData, setBasketData] = React.useState<BasketItem[]>();
+  const [firstName, setFirstName] = React.useState("");
+  const [lastName, setLastName] = React.useState("");
+  const [address, setAddress] = React.useState("");
+  const [city, setCity] = React.useState("");
+  const [postalCode, setPostalCode] = React.useState("");
+  const [country, setCountry] = React.useState("");
 
   const isStepSkipped = (step: number) => skipped.has(step);
 
@@ -66,8 +72,7 @@ export default function OrderPage() {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleGoHome = async () => {
-    await delay(5000);
+  const handleGoHome = () => {
     navigate('/');
   };
 
@@ -89,7 +94,7 @@ export default function OrderPage() {
       case 0: {
         return (
           <React.Fragment>
-            <Typography sx={{ mt: 2, mb: 1 }}>Step {stepNo+1} - See an overview of your products</Typography>
+            {/* <Typography sx={{ mt: 2, mb: 1 }}>Step {stepNo+1} - See an overview of your products</Typography> */}
             <Box sx={{m: '0 auto', p: 2 }}>
               <BasketList basketItems={basketData} dense={false}/>
             </Box>
@@ -98,7 +103,7 @@ export default function OrderPage() {
       } case 1: {
         return (
           <React.Fragment>
-            <Typography sx={{ mt: 2, mb: 1 }}>Step {stepNo+1} - Provide address details for delivery</Typography>
+            {/* <Typography sx={{ mt: 2, mb: 1 }}>Step {stepNo+1} - Provide address details for delivery</Typography> */}
             <Box sx={{m: '0 auto', p: 2 }}>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
@@ -110,6 +115,7 @@ export default function OrderPage() {
                       name="firstName"
                       autoComplete="given-name"
                       autoFocus
+                      onChange={e => {setFirstName(e.target.value)}}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -120,6 +126,7 @@ export default function OrderPage() {
                       label="Last Name"
                       name="lastName"
                       autoComplete="family-name"
+                      onChange={e => {setLastName(e.target.value)}}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -130,6 +137,7 @@ export default function OrderPage() {
                       label="Address"
                       name="address"
                       autoComplete="street-address"
+                      onChange={e => {setAddress(e.target.value)}}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -140,6 +148,7 @@ export default function OrderPage() {
                       label="City"
                       id="city"
                       autoComplete="city"
+                      onChange={e => {setCity(e.target.value)}}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -150,6 +159,7 @@ export default function OrderPage() {
                       label="Postal Code"
                       id="postcode"
                       autoComplete="postal-code"
+                      onChange={e => {setPostalCode(e.target.value)}}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -160,6 +170,7 @@ export default function OrderPage() {
                       label="Country"
                       id="country"
                       autoComplete="country"
+                      onChange={e => {setCountry(e.target.value)}}
                   />
                 </Grid>
               </Grid>
@@ -169,15 +180,22 @@ export default function OrderPage() {
       } case 2: {
         return (
           <React.Fragment>
-            <Typography sx={{ mt: 2, mb: 1 }}>Step {stepNo+1} - Choose payment method</Typography>
+            {/* <Typography sx={{ mt: 2, mb: 1 }}>Step {stepNo+1} - Choose payment method</Typography> */}
             <Typography>Here goes Stripe redirect...</Typography>
           </React.Fragment>
         );
       } case 3: {
         return (
           <React.Fragment>
-            <Typography sx={{ mt: 2, mb: 1 }}>Step {stepNo+1} - Payment approved. Purchase completed</Typography>
-            <></>
+            {/* <Typography sx={{ mt: 2, mb: 1 }}>Step {stepNo+1} - Payment approved. Purchase completed</Typography> */}
+            <Grid margin={3}>
+              <Typography>First name: {firstName}</Typography>
+              <Typography>Last name: {lastName}</Typography>
+              <Typography>Address: {address}</Typography>
+              <Typography>City: {city}</Typography>
+              <Typography>Postal Code: {postalCode}</Typography>
+              <Typography>Country: {country}</Typography>
+            </Grid>
           </React.Fragment>
         );
       } default: {
@@ -232,9 +250,15 @@ export default function OrderPage() {
                 Skip
               </Button>
             )}
-            <Button onClick={handleNext}>
-              {isStepTerminal(activeStep) ? 'Home' : 'Next'}
-            </Button>
+            {isStepTerminal(activeStep) ?
+                <Button onClick={handleGoHome}>
+                  Home
+                </Button> :
+                <Button onClick={handleNext}>
+                  Next
+                </Button>
+            }
+
           </Box>
         </React.Fragment>
       </Paper>
