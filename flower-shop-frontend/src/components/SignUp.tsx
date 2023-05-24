@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { useState } from 'react';
+import React, {useState} from 'react';
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -11,12 +10,16 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
+import {ThemeProvider} from '@mui/material/styles';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CircularProgress from '@mui/material/CircularProgress';
+import {mainTheme} from '../resources/themes';
 import Copyright from './Copyright';
-import { Credentials, JWTToken } from '../resources/types';
-import { IS_DEV, Roles } from '../resources/constants';
+import {User} from '../resources/types';
+import log from '../utils/logger';
+import {signupWithUser} from '../services/user.service';
+import Layout from './Layout';
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -24,43 +27,25 @@ export default function SignUp() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formEntries = Object.fromEntries(new FormData(event.currentTarget).entries());
     setIsLoading(true);
-    // TODO: implement validation for these forms (removed previous password match ver.)
-    const credentials: Credentials = {
-      name: `${formEntries.firstName} ${formEntries.lastName}`,
+    const formEntries = Object.fromEntries(new FormData(event.currentTarget).entries());
+    const newUserData: User = {
+      name: `${formEntries.firstName.toString()} ${formEntries.lastName.toString()}`,
       email: formEntries.email.toString(),
       password: formEntries.password.toString(),
-      newsletter: formEntries.hasNewsletter === "on",
+      newsletter: formEntries.newsletter === 'on'
     };
-    IS_DEV && console.log(JSON.stringify(credentials));
-    await fetch(`/api/users`, {
-      method: 'POST',
-      body: JSON.stringify(credentials),
-      headers: {
-        'Content-type': 'application/json'
-      }
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-
-        throw new Error(`ERROR ${response.status}`);
-      })
-      .then((responseJSON: JWTToken) => {
-        IS_DEV && console.log('Success signing up.');
-        sessionStorage.setItem('jwtToken', responseJSON.jwttoken);
-        sessionStorage.setItem('loggedIn', 'false');
-        IS_DEV && console.log(responseJSON.jwttoken);
-        navigate('/signup/success');
-      })
-      .catch((e) => {
-        IS_DEV && console.log(`Error when trying to sign up: ${e}`);
-      });
+    log(JSON.stringify(newUserData));
+    await signupWithUser(newUserData).then(() => {
+      navigate('/');
+    });
     setIsLoading(false);
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+      <Layout>
+        <ThemeProvider theme={mainTheme}>
+        <Container component="main" maxWidth="xs">
       <CssBaseline />
       <Box
         sx={{
@@ -134,7 +119,7 @@ export default function SignUp() {
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
-                control={<Checkbox name="hasNewsletter" color="primary" />}
+                control={<Checkbox role="newsletter" id="newsletter" name="newsletter" color="primary" />}
                 label="I would like to partake in the Newsletter programme, that is receive discount information, updates and suggestions via email."
               />
             </Grid>
@@ -159,5 +144,7 @@ export default function SignUp() {
       </Box>
       <Copyright sx={{ mt: 8, mb: 4 }} />
     </Container>
+        </ThemeProvider>
+      </Layout>
   );
 }

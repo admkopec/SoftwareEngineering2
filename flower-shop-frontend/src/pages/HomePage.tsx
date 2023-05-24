@@ -1,40 +1,35 @@
-import * as React from 'react';
-import Container from '@mui/material/Container';
-import { Grid } from '@mui/material';
-import { Outlet } from 'react-router-dom';
-import { useEffect } from 'react';
+import React, {useEffect} from 'react';
+import {Grid} from '@mui/material';
+import {Outlet} from "react-router-dom";
 import SearchBar from '../components/SearchBar';
-import Footer from '../components/Footer';
-import Header from '../components/Header';
+import Layout from "../components/Layout";
 
 function HomePage() {
-  // NOTE: Function meant to check the validity of jwt token and set variables in sessionStorage
-  const checkStatus = () => {};
+  const [query, setQuery] = React.useState<string | undefined>();
 
-  useEffect(() => {}, []);
+  // NOTE: Function meant to check the validity of jwt token and set variables in sessionStorage
+  useEffect(()=>{
+
+  }, []);
 
   return (
-    <Container sx={{ width: 'auto', m: 0, p: 0, maxWidth: '100%', overflow: 'hidden' }} maxWidth={false} disableGutters>
-      <Header />
-      <Grid
-        container
-        display="flex"
-        direction="column"
-        alignItems="center"
-        justifyContent="center"
-        spacing={2}
-        width="auto"
-        sx={{ pr: 4, pl: 4, zIndex: 1, minHeight: '80vh' }}
-      >
-        <Grid item>
-          <SearchBar />
+    <Layout>
+        <SearchBar setQuery={setQuery}/>
+        <Grid
+            container
+            display ="flex"
+            direction="column"
+            alignItems="center"
+            justifyContent="center"
+            spacing={2}
+            width='auto'
+            sx={{ pt: 4, pr: 4, pl: 4, zIndex: 1 }}
+        >
+            <Grid item>
+                <Outlet context={[query, setQuery]}/>
+            </Grid>
         </Grid>
-        <Grid item>
-          <Outlet />
-        </Grid>
-      </Grid>
-      <Footer />
-    </Container>
+    </Layout>
   );
 }
 

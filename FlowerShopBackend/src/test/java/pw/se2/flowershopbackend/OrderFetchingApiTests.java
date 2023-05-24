@@ -10,6 +10,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,11 +32,10 @@ import pw.se2.flowershopbackend.models.Product;
 import pw.se2.flowershopbackend.models.User;
 import pw.se2.flowershopbackend.services.*;
 
-import java.util.LinkedHashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -68,8 +71,8 @@ public class OrderFetchingApiTests {
         }
 
         @Bean
-        public OrderService orderService(UserService userService, AlgorithmService algorithmService) {
-            return new OrderService(orderRepository, userService, algorithmService);
+        public OrderService orderService(UserService userService, AlgorithmService algorithmService, OrderProductService orderProductService) {
+            return new OrderService(orderRepository, userService, algorithmService, orderProductService);
         }
 
         @Bean
@@ -96,6 +99,7 @@ public class OrderFetchingApiTests {
     private final User employee = new User();
     private final User deliveryMan = new User();
     private final Order order = new Order();
+    private final Page<Order> mockPage = new PageImpl<>(List.of(order));;
 
     @BeforeEach
     public void setUp() {
@@ -135,6 +139,11 @@ public class OrderFetchingApiTests {
 
         Mockito.when(orderRepository.findById(order.getId()))
                 .thenReturn(Optional.of(order));
+
+        Mockito.when(orderRepository.findByClient(user, PageRequest.of(0, 30)))
+                .thenReturn(mockPage);
+        Mockito.when(orderRepository.findByDeliveryMan(deliveryMan, PageRequest.of(0, 30)))
+                .thenReturn(new PageImpl<>(List.of()));
     }
 
     @Test
@@ -167,9 +176,8 @@ public class OrderFetchingApiTests {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$", hasSize(0)));
-        LinkedHashSet<Order> orders = new LinkedHashSet<>();
-        orders.add(order);
-        deliveryMan.setOrdersToDeliver(orders);
+        Mockito.when(orderRepository.findByDeliveryMan(deliveryMan, PageRequest.of(0, 30)))
+                .thenReturn(mockPage);
         mvc.perform(get("/api/orders")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())

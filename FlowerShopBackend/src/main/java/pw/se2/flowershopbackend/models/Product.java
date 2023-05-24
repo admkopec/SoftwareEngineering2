@@ -1,6 +1,8 @@
 package pw.se2.flowershopbackend.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.data.jpa.domain.Specification;
+
 import javax.persistence.*;
 import java.util.UUID;
 

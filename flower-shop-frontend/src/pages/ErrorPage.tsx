@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { isRouteErrorResponse, useRouteError } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';

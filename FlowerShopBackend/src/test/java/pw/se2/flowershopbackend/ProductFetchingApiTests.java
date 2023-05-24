@@ -3,6 +3,7 @@ package pw.se2.flowershopbackend;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,6 +11,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -25,6 +29,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -55,8 +60,10 @@ public class ProductFetchingApiTests {
     @MockBean
     private AuthenticationManager authenticationManager;
 
-    Product product1 = new Product(UUID.randomUUID());
-    Product product2 = new Product(UUID.randomUUID());
+    private final Product product1 = new Product(UUID.randomUUID());
+    private final Product product2 = new Product(UUID.randomUUID());
+    private final Page<Product> mockPage = new PageImpl<>(Arrays.asList(product1, product2));;
+
     @BeforeEach
     public void setUp() {
         product1.setName("Daisy");
@@ -77,8 +84,12 @@ public class ProductFetchingApiTests {
                 .thenReturn(true);
         Mockito.when(productRepository.existsById(product2.getId()))
                 .thenReturn(true);
+        Mockito.when(productRepository.findByNameContainsIgnoreCaseAndCategoryInAndPriceBetween(any(), anyCollection(), anyDouble(), anyDouble(), any(Pageable.class)))
+                .thenReturn(mockPage);
+        Mockito.when(productRepository.findByCategoryInAndPriceBetween(anyCollection(), anyDouble(), anyDouble(), any(Pageable.class)))
+                .thenReturn(mockPage);
         Mockito.when(productRepository.findAll())
-                .thenReturn(Arrays.asList(product1, product2));
+                .thenReturn(mockPage.getContent());
     }
 
     @Test

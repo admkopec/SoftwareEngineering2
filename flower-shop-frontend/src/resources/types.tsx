@@ -1,13 +1,20 @@
 import { SvgIconComponent } from '@mui/icons-material';
 import { NavigateFunction } from 'react-router-dom';
-import { Category, Roles } from './constants';
+import { Category } from './constants';
 
 // Will be used later in profile pages
-export interface Credentials {
+export interface UserData {
   name: string;
   email: string;
   password: string;
-  newsletter?: boolean;
+  role: string;
+}
+
+
+
+export interface Credentials {
+  username: string;
+  password: string;
 }
 
 interface Address {
@@ -17,6 +24,11 @@ interface Address {
   postalCode: string;
   city: string;
   country: string;
+}
+
+export interface OrderProduct {
+  productID: string;
+  quantity: number;
 }
 
 export interface OrderCreation {
@@ -32,18 +44,11 @@ export interface Order {
   items: OrderProduct[];
 }
 
-// To use in future order processing
-export interface OrderProduct {
-  productID: string;
-  quantity: number;
-}
-
 export interface User {
-  id: string;
   name: string;
   email: string;
-  role: string;
-  address?: Address;
+  password: string;
+  newsletter: boolean;
 }
 
 export interface JWTToken {
@@ -60,8 +65,13 @@ export interface Product {
   category: Category;
 }
 
+export interface BasketItem {
+  product: Product;
+  quantity: number;
+}
+
 export interface MenuItemSettings {
   key: string;
-  icon?: SvgIconComponent;
+  Icon?: SvgIconComponent;
   callback: (navigate: NavigateFunction) => void;
 }

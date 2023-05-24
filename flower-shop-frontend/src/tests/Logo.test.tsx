@@ -1,8 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Logo from '../components/Logo';
-import { renderWithRouter } from '../utils/renderWithRouter';
-import ProductsPreview from '../components/ProductsPreview';
+import renderWithRouter from '../utils/renderWithRouter';
 import { homePageRoute } from '../pages/Router';
 
 describe('<Logo />', () => {

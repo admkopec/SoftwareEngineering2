@@ -1,18 +1,12 @@
-import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import HomePage from './HomePage';
 import LogIn from '../components/LogIn';
 import SignUp from '../components/SignUp';
-import SignUpSuccess from '../components/SignUpSuccess';
 import ErrorPage from './ErrorPage';
 import ProductsPreview from '../components/ProductsPreview';
+import ProductsSearch from '../components/ProductsSearch';
 import ProductInfo from '../components/ProductInfo';
-
-export const signUpSuccessPageRoute = {
-  path: '/signup/success',
-  element: <SignUpSuccess />,
-  errorElement: <ErrorPage />
-};
+import OrderPage from './OrderPage';
 
 export const signUpPageRoute = {
   path: '/signup',
@@ -27,20 +21,26 @@ export const loginPageRoute = {
 };
 
 export const productInfoSubPageRoute = {
-  path: '/products/:name',
+  path: '/products/:productID',
   element: <ProductInfo />,
   errorElement: <ErrorPage />
 };
 
 export const productsSubPageRoute = {
   path: '/products',
-  element: <></>,
+  element: <ProductsSearch />,
   errorElement: <ErrorPage />
 };
 
 export const productsPreviewSubPageRoute = {
   path: '/',
   element: <ProductsPreview tag="Flowers" />,
+  errorElement: <ErrorPage />
+};
+
+export const orderPageRoute = {
+  path: '/order',
+  element: <OrderPage />,
   errorElement: <ErrorPage />
 };
 
@@ -55,7 +55,7 @@ export const homePageRoute = {
   ]
 };
 
-export const routes = [homePageRoute, loginPageRoute, signUpPageRoute, signUpSuccessPageRoute];
+export const routes = [homePageRoute, orderPageRoute, loginPageRoute, signUpPageRoute];
 
 const router = createBrowserRouter(routes);
 

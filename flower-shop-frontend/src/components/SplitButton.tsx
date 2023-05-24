@@ -9,8 +9,10 @@ import Popper from '@mui/material/Popper';
 import MenuList from '@mui/material/MenuList';
 import { useNavigate } from 'react-router-dom';
 import MenuItem from '@mui/material/MenuItem';
-import { SxProps, Theme } from '@mui/material';
+import { SvgIcon, SxProps, Theme } from '@mui/material';
 import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+import { SvgIconComponent } from '@mui/icons-material';
 import { MenuItemSettings } from '../resources/types';
 
 interface ButtonOptionsProps {
@@ -23,10 +25,6 @@ export default function SplitButton(props: ButtonOptionsProps) {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef<HTMLDivElement>(null);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
-
-  const handleClick = () => {
-    console.info(`You clicked ${props.options[selectedIndex].key}`);
-  };
 
   const handleMenuItemClick = (event: React.MouseEvent<HTMLLIElement, MouseEvent>, index: number) => {
     setSelectedIndex(index);
@@ -47,14 +45,14 @@ export default function SplitButton(props: ButtonOptionsProps) {
   return (
     <Container sx={props.sx}>
       <ButtonGroup variant="contained" ref={anchorRef} aria-label="split button">
-        <Button onClick={() => props.options[selectedIndex].callback(navigate)} title="action auth button">
+        <Button onClick={() => props.options[selectedIndex].callback(navigate)} title={props.options[selectedIndex].key}>
           {props.options[selectedIndex].key}
         </Button>
         <Button
           size="small"
           aria-controls={open ? 'split-button-menu' : undefined}
           aria-expanded={open ? 'true' : undefined}
-          title="split button"
+          title="Split button"
           aria-haspopup="menu"
           onClick={handleToggle}
         >
@@ -63,7 +61,8 @@ export default function SplitButton(props: ButtonOptionsProps) {
       </ButtonGroup>
       <Popper
         sx={{
-          zIndex: 1000
+          zIndex: 1000,
+          width: anchorRef?.current?.clientWidth
         }}
         open={open}
         anchorEl={anchorRef.current}
@@ -75,7 +74,7 @@ export default function SplitButton(props: ButtonOptionsProps) {
           <Grow
             {...TransitionProps}
             style={{
-              transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom'
+              transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom',
             }}
           >
             <Paper>
@@ -86,9 +85,12 @@ export default function SplitButton(props: ButtonOptionsProps) {
                       key={option.key}
                       selected={index === selectedIndex}
                       onClick={(event) => handleMenuItemClick(event, index)}
+                      sx={{display: 'flex', flexFlow: 'row-nowrap', justifyContent: 'space-between',
+                        alignItems: 'center'}}
                     >
-                      {option.key}
-                      {option.icon && <option.icon />}
+                      <Typography fontSize={14}>{option.key}{' '}
+                      </Typography>
+                      {option.Icon && <SvgIcon component={option.Icon} />}
                     </MenuItem>
                   ))}
                 </MenuList>

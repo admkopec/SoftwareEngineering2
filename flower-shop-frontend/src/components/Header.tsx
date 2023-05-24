@@ -7,9 +7,8 @@ import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
-import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import Avatar from '@mui/material/Avatar';
-import { Divider, ListItemIcon, SxProps, Theme } from '@mui/material';
+import {Divider, ListItemIcon, SvgIcon, SxProps, Theme} from '@mui/material';
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import LoginRoundedIcon from '@mui/icons-material/Login';
@@ -17,11 +16,14 @@ import AppRegistrationRoundedIcon from '@mui/icons-material/AppRegistrationRound
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import FeaturedPlayListRoundedIcon from '@mui/icons-material/FeaturedPlayListRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import { useNavigate } from 'react-router-dom';
-import { IS_DEV } from '../resources/constants';
-import { MenuItemSettings, User } from '../resources/types';
+import {useNavigate} from 'react-router-dom';
+import {MenuItemSettings, UserData} from '../resources/types';
 import SplitButton from './SplitButton';
 import Logo from './Logo';
+import log from '../utils/logger';
+import {mainTheme} from '../resources/themes';
+import Basket from './Basket';
+import {fetchUser} from '../services/user.service';
 
 interface HeaderBarProps {
   sx?: SxProps<Theme>;
@@ -37,7 +39,7 @@ const pagesLinks: MenuItemSettings[] = [
   {
     key: 'Products',
     callback: (navigate) => {
-      navigate('/');
+      navigate('/products');
     }
   },
   {
@@ -51,14 +53,14 @@ const pagesLinks: MenuItemSettings[] = [
 export const authButtons: MenuItemSettings[] = [
   {
     key: 'Log In',
-    icon: LoginRoundedIcon,
+    Icon: LoginRoundedIcon,
     callback: (navigate) => {
       navigate('/login');
     }
   },
   {
     key: 'Sign Up',
-    icon: AppRegistrationRoundedIcon,
+    Icon: AppRegistrationRoundedIcon,
     callback: (navigate) => {
       navigate('/signup');
     }
@@ -68,31 +70,34 @@ export const authButtons: MenuItemSettings[] = [
 const profileSettingsUser: MenuItemSettings[] = [
   {
     key: 'Profile',
-    icon: AccountCircleRoundedIcon,
+    Icon: AccountCircleRoundedIcon,
     callback: () => {}
   },
   {
     key: 'My Orders',
-    icon: FeaturedPlayListRoundedIcon,
+    Icon: FeaturedPlayListRoundedIcon,
     callback: () => {}
   },
   {
     key: 'Logout',
-    icon: LogoutRoundedIcon,
+    Icon: LogoutRoundedIcon,
     callback: () => {
       sessionStorage.clear();
       window.location.reload();
     }
   }
 ];
-const profileSettingsEmployee = ['Profile', 'Orders', 'Logout'];
-const profileSettingsDeliveryMan = ['Profile', 'Deliveries', 'Logout'];
+
+// Profile menu options for different kinds of users
+// const profileSettingsEmployee = ['Profile', 'Orders', 'Logout'];
+// const profileSettingsDeliveryMan = ['Profile', 'Deliveries', 'Logout'];
 
 export default function Header(props: HeaderBarProps) {
   const navigate = useNavigate();
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-  const [userData, setUserData] = React.useState<null | User>(null);
+  const [anchorElNav, setAnchorElNav] = React.useState<undefined | HTMLElement>();
+  const [anchorElUser, setAnchorElUser] = React.useState<undefined | HTMLElement>();
+  const [userData, setUserData] = React.useState<undefined | UserData>();
+
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -101,51 +106,44 @@ export default function Header(props: HeaderBarProps) {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleOpenBasket = (event: React.MouseEvent<HTMLElement>) => {};
-
   const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
+    // @ts-ignore This is due to some eslint issues
+    setAnchorElNav();
   };
 
   const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
+    // @ts-ignore This is due to some eslint issues
+    setAnchorElUser();
   };
 
   // Fetching user information
   const fetchUserData = async () => {
-    IS_DEV && console.log(sessionStorage.getItem('jwtToken'));
-    await fetch(`/api/users`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('jwtToken') ?? ''}`,
-        'Content-type': 'application/json; charset=UTF-8'
-      }
-    })
-      .then((response) => {
-        if (response.ok) return response.json();
-
-        throw new Error(`ERROR ${response.status}`);
-      })
-      .then((responseJSON: User) => {
-        IS_DEV && console.log('Success fetching user data.');
-        IS_DEV && console.log(responseJSON);
+    log(sessionStorage.getItem('jwtToken'));
+    await fetchUser()
+      .then((responseJSON: UserData) => {
+        log('Success fetching user data.');
+        log(JSON.stringify(responseJSON));
         setUserData(responseJSON);
+        return true;
       })
-      .catch((e) => {
-        IS_DEV && console.log(`Error when trying to fetch user data: ${e}`);
+      .catch((error: Error) => {
+        sessionStorage.clear();
+        log(`Error when trying to fetch user data: ${error.message}`);
+        return false;
       });
   };
 
   React.useEffect(() => {
     if (sessionStorage.getItem('loggedIn') === 'true') {
-      fetchUserData().finally();
+      fetchUserData().then().catch();
     } else {
-      setUserData(null);
+      // @ts-ignore This is due to some eslint issues
+      setUserData();
     }
   }, []);
 
   return (
-    <AppBar position="static" sx={props.sx}>
+    <AppBar position="fixed" sx={props.sx}>
       <Toolbar>
         {/* Logo */}
         <Logo
@@ -227,17 +225,11 @@ export default function Header(props: HeaderBarProps) {
         </Box>
 
         {/* Basket button */}
-        <Box sx={{ flexGrow: 0 }}>
-          <Tooltip title="Show items in your basket" sx={{ p: 0 }}>
-            <IconButton onClick={handleOpenBasket} sx={{ p: 0 }}>
-              <ShoppingBagIcon fontSize="large" sx={{ color: 'white' }} />
-            </IconButton>
-          </Tooltip>
-        </Box>
+        <Basket />
 
         <Box sx={{ display: 'block', flexGrow: 0 }}>
-          {userData == null ? (
-            <SplitButton options={authButtons} sx={{ flexGrow: 0, color: 'primary.dark' }} />
+          {userData === undefined ? (
+            <SplitButton options={authButtons} sx={{ flexGrow: 0, color: mainTheme.palette?.primary?.main }} />
           ) : (
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
@@ -267,11 +259,7 @@ export default function Header(props: HeaderBarProps) {
                 <Divider />
                 {profileSettingsUser.map((setting) => (
                   <MenuItem key={setting.key} onClick={() => setting.callback(navigate)}>
-                    {setting.icon && (
-                      <ListItemIcon>
-                        <setting.icon />
-                      </ListItemIcon>
-                    )}
+                    <ListItemIcon>{setting.Icon && <SvgIcon component={setting.Icon} fontSize="small" />}</ListItemIcon>
                     <Typography textAlign="center" color={setting.key === 'Logout' ? 'error.light' : 'inherit'}>
                       {setting.key}
                     </Typography>
