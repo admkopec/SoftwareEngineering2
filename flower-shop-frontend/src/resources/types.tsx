@@ -39,9 +39,11 @@ export interface OrderCreation {
 }
 
 export interface Order {
-  id: string;
+  orderId: string;
   deliveryAddress: Address;
+  dateCreated: string;
   items: OrderProduct[];
+  clientId: string;
 }
 
 export interface User {
