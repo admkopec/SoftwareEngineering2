@@ -27,7 +27,7 @@ export const loginWithCredentials = async (credentials: Credentials) =>
       log(responseJSON.jwttoken);
     })
     .catch((error: Error) => {
-      sessionStorage.clear();
+      //sessionStorage.clear();
       log(`Error when trying to log in: ${error.message}`);
       throw error;
     });
