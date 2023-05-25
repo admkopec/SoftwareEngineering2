@@ -2,12 +2,12 @@ import {OrderProduct} from '../resources/types';
 import {getBackendURL} from "./user.service";
 
 export const fetchProductsFiltered = async (
-  searchParam: string | undefined,
-  categoryParam: string | undefined,
-  minPrice: number | undefined,
-  maxPrice: number | undefined,
-  pageParam: number | undefined,
-  maxPerPageParam: number | undefined
+  searchParam?: string | undefined,
+  categoryParam?: string | undefined,
+  minPrice?: number | undefined,
+  maxPrice?: number | undefined,
+  pageParam?: number | undefined,
+  maxPerPageParam?: number | undefined
 ) => {
   const productsSearchParams: URLSearchParams = new URLSearchParams();
 
@@ -19,14 +19,14 @@ export const fetchProductsFiltered = async (
   if (maxPerPageParam && maxPerPageParam > 0 && maxPerPageParam <= 50)
     productsSearchParams.append('maxPerPage', `${maxPerPageParam}`);
 
-  return fetch(`${getBackendURL() }/api/products/?${productsSearchParams.toString()}`).then((response) => {
+  return fetch(`${getBackendURL()}/api/products/?${productsSearchParams.toString()}`).then((response) => {
     if (response.ok) return response.json();
     throw new Error(`ERROR ${response.status}`);
   });
 };
 
 export const addProductToBasket = async (orderProduct: OrderProduct) =>
-  fetch(`${getBackendURL()  }/api/basket`, {
+  fetch(`${getBackendURL()}/api/basket`, {
     method: 'POST',
     body: JSON.stringify(orderProduct),
     headers: {
@@ -39,7 +39,7 @@ export const addProductToBasket = async (orderProduct: OrderProduct) =>
   });
 
 export const removeProductFromBasket = async (productId: string) =>
-    fetch(`${getBackendURL()  }/api/basket/${productId}`, {
+    fetch(`${getBackendURL()}/api/basket/${productId}`, {
         method: 'DELETE',
         headers: {
             Authorization: `Bearer ${sessionStorage.getItem('jwtToken') ?? ''}`
@@ -50,7 +50,7 @@ export const removeProductFromBasket = async (productId: string) =>
     });
 
 export const fetchBasket = async () =>
-  fetch(`${getBackendURL()  }/api/basket`, {
+  fetch(`${getBackendURL()}/api/basket`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${sessionStorage.getItem('jwtToken') ?? ''}`
@@ -74,7 +74,7 @@ export const modifyProductQuantityInBasket = async (orderProduct: OrderProduct) 
     });
 
 export const clearBasket = async () =>
-    fetch(`${getBackendURL()  }/api/basket`, {
+    fetch(`${getBackendURL()}/api/basket`, {
         method: 'DELETE',
         headers: {
             'Content-type': 'application/json',

@@ -14,6 +14,13 @@ export enum Category {
   Supplement
 }
 
+export enum OrderStatus {
+  Pending,
+  Accepted,
+  Declined,
+  Delivered
+}
+
 export enum Roles {
   Client = 'client',
   Employee = 'employee',

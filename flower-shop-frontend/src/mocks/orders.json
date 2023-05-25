@@ -1,0 +1,18 @@
+{
+  "orderId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "deliveryAddress": {
+    "street": "string",
+    "buildingNo": "string",
+    "houseNo": "string",
+    "postalCode": "string",
+    "city": "string",
+    "country": "Canada"
+  },
+  "dateCreated": "2023-05-25T09:04:48.285Z",
+  "items": [
+    {
+      "productID": "65def883-55f3-4906-b532-07071b19f991",
+      "quantity": 0
+    }
+  ]
+}

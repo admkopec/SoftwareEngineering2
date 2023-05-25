@@ -76,7 +76,9 @@ const profileSettingsUser: MenuItemSettings[] = [
   {
     key: 'My Orders',
     Icon: FeaturedPlayListRoundedIcon,
-    callback: () => {}
+    callback: (navigate) => {
+      navigate('/orders');
+    }
   },
   {
     key: 'Logout',
