@@ -29,7 +29,9 @@ export default function LogIn() {
     ) as unknown as Credentials;
     if (credentials) {
       setIsLoading(true);
-      await loginWithCredentials(credentials);
+      await loginWithCredentials(credentials).catch(() => {
+        setIsLoading(false);
+      });
       await fetchUser().then((user) => {
         sessionStorage.setItem('role', user.role);
         navigate('/');

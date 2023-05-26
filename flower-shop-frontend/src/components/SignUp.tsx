@@ -38,6 +38,8 @@ export default function SignUp() {
     log(JSON.stringify(newUserData));
     await signupWithUser(newUserData).then(() => {
       navigate('/');
+    }).catch(() => {
+      setIsLoading(false);
     });
     setIsLoading(false);
   };
