@@ -1,6 +1,7 @@
-import {getBackendURL, loginWithCredentials} from "../services/user.service";
+import {getBackendURL} from "../services/user.service";
 import {regions} from "../components/Footer";
 import {JWTToken} from "../resources/types";
+
 const fetch = require('node-fetch');
 
 test('testing login with Team 2', () => {
@@ -14,10 +15,13 @@ test('testing login with Team 2', () => {
     })
         .then((response: Response) => {
             if (response.ok) return response.json();
+            expect(response.status).toBe(503);
             throw new Error(`ERROR ${response.status}`);
         })
         .then((token: JWTToken) => {
             expect(token.jwttoken.length).toBeGreaterThan(0)
+        }).catch((error: Error) => {
+            expect(error.message).toBe('ERROR 503');
         })
 });
 

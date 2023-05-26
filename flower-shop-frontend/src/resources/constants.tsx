@@ -15,7 +15,7 @@ export enum Category {
 }
 
 export enum Roles {
-  Client,
-  Employee,
-  DeliveryMan
+  Client = 'client',
+  Employee = 'employee',
+  DeliveryMan = 'deliveryman'
 }

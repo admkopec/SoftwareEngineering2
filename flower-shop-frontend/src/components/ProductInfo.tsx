@@ -17,12 +17,11 @@ import TextField from '@mui/material/TextField';
 import {Validate, ValidationGroup} from 'mui-validate';
 import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import FloweryImage from './FloweryImage';
-import {Roles} from '../resources/constants';
 import {OrderProduct, Product} from '../resources/types';
 import DeleteDialog from './DeleteDialog';
 import log from '../utils/logger';
 import {addProductToBasket} from '../services/product.service';
-import {getBackendURL} from "../services/user.service";
+import {getBackendURL, isEmployee} from "../services/user.service";
 
 export default function ProductInfo() {
   const { productID } = useParams();
@@ -46,12 +45,6 @@ export default function ProductInfo() {
       {productData?.name}
     </Typography>
   ];
-
-  const checkEmployee = () => {
-    if (sessionStorage.getItem('role') === Roles.Employee.toString()) {
-      setIsAdmin(true);
-    } else setIsAdmin(false);
-  };
 
   const handleAddToBasket = () => {
     if (productData && chosenQuantity){
@@ -110,7 +103,7 @@ export default function ProductInfo() {
 
   useEffect(() => {
     fetchProduct();
-    if (sessionStorage.getItem('loggedIn')) checkEmployee();
+    if (sessionStorage.getItem('loggedIn')) setIsAdmin(isEmployee());
   }, []);
 
   return (
@@ -154,6 +147,7 @@ export default function ProductInfo() {
             </Grid>
           </Grid>
           <Grid item xs={12}>
+            { !isAdmin && (
             <Box sx={{ display: 'flex', flexFlow: 'row wrap', justifyContent: 'center', alignItems: 'center' }}>
               <ValidationGroup>
                 <Validate
@@ -208,6 +202,7 @@ export default function ProductInfo() {
                 Add to basket
               </LoadingButton>
             </Box>
+                )}
           </Grid>
           <Grid item xs={12}>
             {isAdmin && (

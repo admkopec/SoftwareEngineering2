@@ -18,7 +18,7 @@ import BasketList from './BasketList';
 
 export default function Basket(){
   const [basketOpen, setBasketOpen] = React.useState<boolean>(false);
-  const [basketData, setBasketData] = React.useState<BasketItem[] | undefined>();
+  const [basketData, setBasketData] = React.useState<BasketItem[]>([]);
   const navigate = useNavigate();
   const anchorRef = React.useRef<HTMLDivElement>(null);
 
@@ -33,18 +33,22 @@ export default function Basket(){
     setBasketOpen(false);
   };
 
+  const handleBasketFetch = () => {
+      fetchBasket()
+          .then((responseJSON: BasketItem[]) => {
+              log('Success fetching basket.');
+              log(JSON.stringify(responseJSON));
+              setBasketData(responseJSON);
+              return responseJSON;
+          })
+          .catch((error: Error) => {
+              log(`Error when trying to fetch product: ${error.message}`);
+          });
+  }
+
   useEffect(() => {
     if (basketOpen){
-      fetchBasket()
-        .then((responseJSON: BasketItem[]) => {
-          log('Success fetching basket.');
-          log(JSON.stringify(responseJSON));
-          setBasketData(responseJSON);
-          return responseJSON;
-        })
-        .catch((error: Error) => {
-          log(`Error when trying to fetch product: ${error.message}`);
-        });
+        handleBasketFetch();
     }
   }, [basketOpen]);
 
@@ -78,10 +82,9 @@ export default function Basket(){
           >
             <Paper>
               <ClickAwayListener onClickAway={handleBasketClose}>
-                {basketData === undefined ?
-                  <Typography sx={{p: '2%'}}>Your basket is empty!</Typography> :
+                {basketData.length > 0 ?
                   <Box sx={{m: '0 auto', p: 1 }}>
-                    <BasketList dense={true} basketItems={basketData}/>
+                    <BasketList dense={true} basketItems={basketData} refetch={handleBasketFetch}/>
                     <Button
                       type="button"
                       variant="text"
@@ -91,7 +94,8 @@ export default function Basket(){
                     >
                       Proceed to checkout
                     </Button>
-                  </Box>}
+                  </Box>
+                : <Typography sx={{p: '2%'}}>Your basket is empty!</Typography>}
               </ClickAwayListener>
             </Paper>
           </Grow>
