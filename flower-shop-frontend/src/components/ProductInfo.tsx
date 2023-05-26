@@ -48,7 +48,7 @@ export default function ProductInfo() {
   ];
 
   const checkEmployee = () => {
-    if (sessionStorage.getItem('role') === Roles.Employee.toString()) {
+    if (sessionStorage.getItem('role') === Roles.Employee.toString().toLowerCase()) {
       setIsAdmin(true);
     } else setIsAdmin(false);
   };

@@ -10,7 +10,6 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import delay from '../utils/delay';
 import BasketList from '../components/BasketList';
 import {fetchBasket} from '../services/product.service';
 import {BasketItem} from '../resources/types';
@@ -96,7 +95,7 @@ export default function OrderPage() {
           <React.Fragment>
             {/* <Typography sx={{ mt: 2, mb: 1 }}>Step {stepNo+1} - See an overview of your products</Typography> */}
             <Box sx={{m: '0 auto', p: 2 }}>
-              <BasketList basketItems={basketData} dense={false}/>
+              <BasketList editable={true} basketItems={basketData} dense={false}/>
             </Box>
           </React.Fragment>
         );
@@ -104,7 +103,7 @@ export default function OrderPage() {
         return (
           <React.Fragment>
             {/* <Typography sx={{ mt: 2, mb: 1 }}>Step {stepNo+1} - Provide address details for delivery</Typography> */}
-            <Box sx={{m: '0 auto', p: 2 }}>
+            <Box sx={{m: '2 auto', p: 2 }}>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                   <TextField
@@ -195,6 +194,7 @@ export default function OrderPage() {
               <Typography>City: {city}</Typography>
               <Typography>Postal Code: {postalCode}</Typography>
               <Typography>Country: {country}</Typography>
+              <BasketList editable={false} basketItems={basketData} dense={true}/>
             </Grid>
           </React.Fragment>
         );
