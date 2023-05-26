@@ -14,6 +14,7 @@ import BasketList from '../components/BasketList';
 import {fetchBasket} from '../services/product.service';
 import {BasketItem} from '../resources/types';
 import log from '../utils/logger';
+import {placeOrder} from "../services/order.service";
 
 const steps = [
   'Your products',
@@ -71,7 +72,16 @@ export default function OrderPage() {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleGoHome = () => {
+  const handleGoHome = async () => {
+    await placeOrder({
+      deliveryAddress: {
+        street: address,
+        postalCode,
+        city,
+        country
+      },
+      items: basketData?.map(e => ({productID: e.product.productID, quantity: e.quantity})) ?? []
+    })
     navigate('/');
   };
 
