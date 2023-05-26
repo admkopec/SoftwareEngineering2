@@ -1,17 +1,17 @@
-import React, { useEffect, useRef } from 'react';
+import React, {useEffect} from 'react';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Typography from '@mui/material/Typography';
-import { CircularProgress, FormControl, FormLabel, Slider, SxProps, Theme } from '@mui/material';
+import {CircularProgress, FormControl, FormLabel, Slider} from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { useOutletContext } from "react-router-dom";
-import { Credentials, Product } from '../resources/types';
+import {useOutletContext} from "react-router-dom";
+import {Product} from '../resources/types';
 import ProductCard from './ProductCard';
 import log from '../utils/logger';
-import { fetchProductsFiltered } from '../services/product.service';
-import { Category, SurfaceSizes } from '../resources/constants';
+import {fetchProductsFiltered} from '../services/product.service';
+import {Category, SurfaceSizes} from '../resources/constants';
 
 function valuetext(value: number) {
   return `${value}$`;
@@ -23,8 +23,8 @@ export default function ProductsSearch(){
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [query] = useOutletContext<[(string | undefined)]>();
   const [categories, setCategories] = React.useState<string | undefined>();
-  const [page, setPage] = React.useState<number>(-1);
-  const [maxPerPage, setMaxPerPage] = React.useState<number>(-1);
+  const [page, setPage] = React.useState<number>(0);
+  const [maxPerPage, setMaxPerPage] = React.useState<number>(30);
   const [checked, setChecked] = React.useState<boolean[]>(
     Array.from({length: Object.keys(Category).length}).fill(false) as boolean[]
   );
@@ -118,7 +118,7 @@ export default function ProductsSearch(){
         log(`Error when trying to fetch products: ${error.message}`);
       });
     setIsLoading(false);
-  }, [query, categories, valueSlider]);
+  }, [query, categories, valueSlider, page]);
 
   return(
     <Grid container>
@@ -177,11 +177,25 @@ export default function ProductsSearch(){
       <Grid item xs={12} container flexDirection={'row'} flexWrap={'nowrap'} alignItems={'center'}
             justifyContent='center'>
         <LoadingButton
+            loading={isLoading}
+            loadingIndicator={<CircularProgress color="primary" size={20} />}
+            type="button"
+            variant="contained"
+            sx={{ m: 2 }}
+            onClick={() => setPage(page-1)}
+            disabled={page <= 0}
+        >
+          Previous page
+        </LoadingButton>
+
+        <LoadingButton
           loading={isLoading}
           loadingIndicator={<CircularProgress color="primary" size={20} />}
           type="button"
           variant="contained"
           sx={{ m: 2 }}
+          onClick={() => setPage(page+1)}
+          disabled={(productsData?.length ?? 0) < maxPerPage}
         >
           Next page
         </LoadingButton>
