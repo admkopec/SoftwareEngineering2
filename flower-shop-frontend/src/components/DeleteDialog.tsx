@@ -7,7 +7,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import {useNavigate} from 'react-router-dom';
-import {Product} from '../resources/types';
 import log from '../utils/logger';
 import delay from '../utils/delay';
 import {getBackendURL} from "../services/user.service";
@@ -38,20 +37,17 @@ export default function DeleteDialog(props: DeleteDialogProps) {
           'Authorization': `Bearer ${sessionStorage.getItem('jwtToken') ?? ''}`
         }
       })
-        .then((response) => {
-          if (response.ok) return response.json();
-          throw new Error(`ERROR ${response.status}`);
-        })
-        .then(async (responseJSON: Product) => {
+        .then(async (response) => {
+          if (!response.ok) throw new Error(`ERROR ${response.status}`);
           setDeleteButtonText('Deleted!');
           await delay(1000);
           setDeleteButtonText('Delete');
           log('Success deleting product.');
-          log(JSON.stringify(responseJSON));
           setOpen(false);
           navigate(-1);
         })
         .catch((error: Error) => {
+          setDeleteButtonText('Delete');
           log(`Error when trying to delete product: ${error.message}`);
         });
     }
