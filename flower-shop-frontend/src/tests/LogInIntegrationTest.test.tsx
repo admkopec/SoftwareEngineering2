@@ -20,7 +20,7 @@ test('testing login with Team 2', () => {
         })
         .then((token: JWTToken) => {
             expect(token.jwttoken.length).toBeGreaterThan(0)
-        }).catch((error) => {
+        }).catch((error: Error) => {
             expect(error.message).toBe('ERROR 503');
         })
 });
