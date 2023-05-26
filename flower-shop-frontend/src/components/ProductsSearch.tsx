@@ -20,6 +20,8 @@ function valuetext(value: number) {
 const minDistance = 4;
 
 export default function ProductsSearch(){
+  const [isLoadingNext, setIsLoadingNext] = React.useState<boolean>(false);
+  const [isLoadingPrev, setIsLoadingPrev] = React.useState<boolean>(false);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [query] = useOutletContext<[(string | undefined)]>();
   const [categories, setCategories] = React.useState<string | undefined>();
@@ -72,7 +74,7 @@ export default function ProductsSearch(){
   );
 
   const renderItems = (itemsList: Product[] | undefined, isLoadingIndicator: boolean, Container: typeof ProductCard) => {
-    if (!itemsList) {
+    if (!itemsList || itemsList.length === 0) {
       if (isLoadingIndicator) {
         // Return Loading Indicator
         return <CircularProgress />;
@@ -112,12 +114,17 @@ export default function ProductsSearch(){
         log('Success fetching products.');
         log(JSON.stringify(responseObject));
         setProductsData(responseObject);
+        setIsLoading(false);
+        setIsLoadingPrev(false);
+        setIsLoadingNext(false);
         return responseObject;
       })
       .catch((error: Error) => {
         log(`Error when trying to fetch products: ${error.message}`);
+        setIsLoading(false);
+        setIsLoadingPrev(false);
+        setIsLoadingNext(false);
       });
-    setIsLoading(false);
   }, [query, categories, valueSlider, page]);
 
   return(
@@ -177,24 +184,30 @@ export default function ProductsSearch(){
       <Grid item xs={12} container flexDirection={'row'} flexWrap={'nowrap'} alignItems={'center'}
             justifyContent='center'>
         <LoadingButton
-            loading={isLoading}
+            loading={isLoadingPrev}
             loadingIndicator={<CircularProgress color="primary" size={20} />}
             type="button"
             variant="contained"
             sx={{ m: 2 }}
-            onClick={() => setPage(page-1)}
+            onClick={() => {
+              setIsLoadingPrev(true);
+              setPage(page-1);
+            }}
             disabled={page <= 0}
         >
           Previous page
         </LoadingButton>
 
         <LoadingButton
-          loading={isLoading}
+          loading={isLoadingNext}
           loadingIndicator={<CircularProgress color="primary" size={20} />}
           type="button"
           variant="contained"
           sx={{ m: 2 }}
-          onClick={() => setPage(page+1)}
+          onClick={() => {
+            setIsLoadingNext(true);
+            setPage(page+1);
+          }}
           disabled={(productsData?.length ?? 0) < maxPerPage}
         >
           Next page
