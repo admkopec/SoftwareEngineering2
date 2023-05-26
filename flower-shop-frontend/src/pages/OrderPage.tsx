@@ -72,6 +72,19 @@ export default function OrderPage() {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
+  const handleBasketFetch = () => {
+    fetchBasket()
+        .then((responseJSON: BasketItem[]) => {
+          log('Success fetching basket.');
+          log(JSON.stringify(responseJSON));
+          setBasketData(responseJSON);
+          return responseJSON;
+        })
+        .catch((error: Error) => {
+          log(`Error when trying to fetch product: ${error.message}`);
+        });
+  }
+
   const handleGoHome = async () => {
     await placeOrder({
       deliveryAddress: {
@@ -86,16 +99,7 @@ export default function OrderPage() {
   };
 
   useEffect(() => {
-      fetchBasket()
-        .then((responseJSON: BasketItem[]) => {
-          log('Success fetching basket.');
-          log(JSON.stringify(responseJSON));
-          setBasketData(responseJSON);
-          return responseJSON;
-        })
-        .catch((error: Error) => {
-          log(`Error when trying to fetch product: ${error.message}`);
-        });
+    handleBasketFetch();
   }, []);
 
   const handleSteps = (stepNo: number) => {
@@ -105,7 +109,7 @@ export default function OrderPage() {
           <React.Fragment>
             {/* <Typography sx={{ mt: 2, mb: 1 }}>Step {stepNo+1} - See an overview of your products</Typography> */}
             <Box sx={{m: '0 auto', p: 2 }}>
-              <BasketList editable={true} basketItems={basketData} dense={false}/>
+              <BasketList editable={true} basketItems={basketData} dense={false} refetch={handleBasketFetch}/>
             </Box>
           </React.Fragment>
         );
@@ -204,7 +208,7 @@ export default function OrderPage() {
               <Typography>City: {city}</Typography>
               <Typography>Postal Code: {postalCode}</Typography>
               <Typography>Country: {country}</Typography>
-              <BasketList editable={false} basketItems={basketData} dense={true}/>
+              <BasketList editable={false} basketItems={basketData} dense={true} refetch={handleBasketFetch}/>
             </Grid>
           </React.Fragment>
         );

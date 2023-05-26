@@ -1,5 +1,6 @@
 import {Credentials, JWTToken, User, UserData} from '../resources/types';
 import log from '../utils/logger';
+import {Roles} from "../resources/constants";
 
 export const getBackendURL= () => {
     const backendURL = sessionStorage.getItem('backendURL')
@@ -7,6 +8,7 @@ export const getBackendURL= () => {
 }
 
 export const isLoggedIn = () => sessionStorage.getItem('loggedIn') === 'true'
+export const isEmployee = () => sessionStorage.getItem('role') === Roles.Employee.toString().toLowerCase()
 
 export const loginWithCredentials = async (credentials: Credentials) =>
   fetch(`${getBackendURL()  }/api/users/log_in`, {

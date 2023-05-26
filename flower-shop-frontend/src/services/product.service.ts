@@ -1,4 +1,4 @@
-import { OrderProduct } from '../resources/types';
+import {OrderProduct} from '../resources/types';
 import {getBackendURL} from "./user.service";
 
 export const fetchProductsFiltered = async (
@@ -38,6 +38,17 @@ export const addProductToBasket = async (orderProduct: OrderProduct) =>
     throw new Error(`ERROR ${response.status}`);
   });
 
+export const removeProductFromBasket = async (productId: string) =>
+    fetch(`${getBackendURL()  }/api/basket/${productId}`, {
+        method: 'DELETE',
+        headers: {
+            Authorization: `Bearer ${sessionStorage.getItem('jwtToken') ?? ''}`
+        }
+    }).then((response) => {
+        if (response.ok) return;
+        throw new Error(`ERROR ${response.status}`);
+    });
+
 export const fetchBasket = async () =>
   fetch(`${getBackendURL()  }/api/basket`, {
     method: 'GET',
@@ -48,3 +59,16 @@ export const fetchBasket = async () =>
     if (response.ok) return response.json();
     throw new Error(`ERROR ${response.status}`);
   });
+
+export const modifyProductQuantityInBasket = async (orderProduct: OrderProduct) =>
+    fetch(`${getBackendURL()  }/api/basket/${orderProduct.productID}`, {
+        method: 'PUT',
+        body: JSON.stringify(orderProduct),
+        headers: {
+            'Content-type': 'application/json',
+            Authorization: `Bearer ${sessionStorage.getItem('jwtToken') ?? ''}`
+        }
+    }).then((response) => {
+        if (response.ok) return;
+        throw new Error(`ERROR ${response.status}`);
+    });

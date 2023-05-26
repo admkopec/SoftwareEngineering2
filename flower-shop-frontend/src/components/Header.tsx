@@ -23,7 +23,7 @@ import Logo from './Logo';
 import log from '../utils/logger';
 import {mainTheme} from '../resources/themes';
 import Basket from './Basket';
-import {fetchUser} from '../services/user.service';
+import {fetchUser, isEmployee, isLoggedIn} from '../services/user.service';
 
 interface HeaderBarProps {
   sx?: SxProps<Theme>;
@@ -224,8 +224,11 @@ export default function Header(props: HeaderBarProps) {
           ))}
         </Box>
 
-        {/* Basket button */}
-        <Basket />
+        {isLoggedIn() && !isEmployee() ?
+          /* Basket button */
+            <Basket />
+        : <></>}
+
 
         <Box sx={{ display: 'block', flexGrow: 0 }}>
           {userData === undefined ? (
