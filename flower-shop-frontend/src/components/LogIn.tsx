@@ -28,6 +28,7 @@ export default function LogIn() {
       new FormData(event.currentTarget).entries()
     ) as unknown as Credentials;
     if (credentials) {
+      setIsLoading(true);
       await loginWithCredentials(credentials);
       await fetchUser().then((user) => {
         sessionStorage.setItem('role', user.role);
