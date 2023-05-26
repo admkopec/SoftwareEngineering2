@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.*;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -43,6 +44,9 @@ public class Product {
     @Lob
     @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] image;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Set<BasketItem> basketItemSet;
 
     public Product(UUID productId) {
         this.id = productId;
