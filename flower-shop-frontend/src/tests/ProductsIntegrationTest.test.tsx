@@ -1,22 +1,30 @@
 import {regions} from "../components/Footer";
 import {getBackendURL} from "../services/user.service";
 import {Product} from "../resources/types";
+import {fetchProductsFiltered} from "../services/product.service";
 
-const fetch = require('node-fetch');
+test('testing product getting with Our Backend', () => {
+    sessionStorage.setItem('backendURL', 'https://pw-flowershop.azurewebsites.net');
+    // @ts-ignore Arguments
+    return fetchProductsFiltered()
+        .then((products: Product[]) => {
+            expect(products.length).toBeGreaterThanOrEqual(0)
+        })
+});
 
-// When there are no products, 404 is returned instead of an empty array, so the test is not passing
-
+// Team 2 is sometimes sleeping so accept the test if we get 503
+// When there are no products, 404 is returned instead of an empty array, so this has to be handled in catch
 test('testing product getting with Team 2', () => {
     sessionStorage.setItem('backendURL', regions.alpsMountains);
-    return fetch(`${getBackendURL() }/api/products/`).then((response: Response) => {
-        if (response.ok) return response.json();
-        throw new Error(`ERROR ${response.status}`);
-    })
+    /* eslint-disable jest/no-conditional-expect */
+    // @ts-ignore Arguments
+    return fetchProductsFiltered()
         .then((products: Product[]) => {
             expect(products.length).toBeGreaterThanOrEqual(0)
         }).catch((error: Error) => {
             expect(error.message).toMatch(/ERROR (503)|(404)/);
         })
+    /* eslint-enable jest/no-conditional-expect */
 });
 
 interface Team3Token {
@@ -25,7 +33,7 @@ interface Team3Token {
 
 test('testing product getting with Team 3', () => {
     sessionStorage.setItem('backendURL', regions.easterIsland);
-    return fetch(`${getBackendURL()  }/api/v1/auth/authenticate`, {
+    return fetch(`${getBackendURL()}/api/v1/auth/authenticate`, {
         method: 'POST',
         body: JSON.stringify({email: 'admin@admin.com', password: 'admin'}),
         headers: {
@@ -36,16 +44,11 @@ test('testing product getting with Team 3', () => {
             if (response.ok) return response.json();
             throw new Error(`ERROR ${response.status}`);
         })
-        .then((token: Team3Token) => fetch(`${getBackendURL() }/api/products/`, {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${token.token}`
-            }
-        }).then((response: Response) => {
-        if (response.ok) return response.json();
-        throw new Error(`ERROR ${response.status}`);
+        .then((token: Team3Token) => {
+            sessionStorage.setItem('jwtToken', token.token);
+            // @ts-ignore Arguments
+            return fetchProductsFiltered().then((products: Product[]) => {
+                    expect(products.length).toBeGreaterThanOrEqual(0)
+                })
         })
-        .then((products: Product[]) => {
-            expect(products.length).toBeGreaterThanOrEqual(0)
-        }))
 });

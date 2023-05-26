@@ -11,7 +11,7 @@ export const isLoggedIn = () => sessionStorage.getItem('loggedIn') === 'true'
 export const isEmployee = () => sessionStorage.getItem('role') === Roles.Employee.toString().toLowerCase()
 
 export const loginWithCredentials = async (credentials: Credentials) =>
-  fetch(`${getBackendURL()  }/api/users/log_in`, {
+  fetch(`${getBackendURL()}/api/users/log_in`, {
     method: 'POST',
     body: JSON.stringify(credentials),
     headers: {
