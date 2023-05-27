@@ -36,11 +36,7 @@ export default function SignUp() {
       newsletter: formEntries.newsletter === 'on'
     };
     log(JSON.stringify(newUserData));
-    await signupWithUser(newUserData).then(() => {
-      navigate('/');
-    }).catch(() => {
-      setIsLoading(false);
-    });
+    await signupWithUser(newUserData).then(() => navigate('/')).catch(() => setIsLoading(false));
     setIsLoading(false);
   };
 

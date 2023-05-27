@@ -45,6 +45,7 @@ export default function DeleteDialog(props: DeleteDialogProps) {
           log('Success deleting product.');
           setOpen(false);
           navigate(-1);
+          return response;
         })
         .catch((error: Error) => {
           setDeleteButtonText('Delete');

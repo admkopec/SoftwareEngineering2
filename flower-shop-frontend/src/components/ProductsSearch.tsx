@@ -26,7 +26,7 @@ export default function ProductsSearch(){
   const [query] = useOutletContext<[(string | undefined)]>();
   const [categories, setCategories] = React.useState<string | undefined>();
   const [page, setPage] = React.useState<number>(0);
-  const [maxPerPage, setMaxPerPage] = React.useState<number>(30);
+  const [maxPerPage] = React.useState<number>(30);
   const [checked, setChecked] = React.useState<boolean[]>(
     Array.from({length: Object.keys(Category).length}).fill(false) as boolean[]
   );
@@ -125,7 +125,7 @@ export default function ProductsSearch(){
         setIsLoadingPrev(false);
         setIsLoadingNext(false);
       });
-  }, [query, categories, valueSlider, page]);
+  }, [query, categories, valueSlider, page, maxPerPage]);
 
   return(
     <Grid container>
