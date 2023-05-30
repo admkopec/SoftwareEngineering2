@@ -1,4 +1,4 @@
-import {regions} from "../components/Footer";
+import {regions} from "../resources/constants";
 import {getBackendURL} from "../services/user.service";
 import {Product} from "../resources/types";
 import {fetchProductsFiltered} from "../services/product.service";
