@@ -77,3 +77,15 @@ export const modifyProductQuantityInBasket = async (orderProduct: OrderProduct) 
         if (response.ok) return;
         throw new Error(`ERROR ${response.status}`);
     });
+
+export const clearBasket = async () =>
+    fetch(`${getBackendURL()  }/api/basket`, {
+        method: 'DELETE',
+        headers: {
+            'Content-type': 'application/json',
+            Authorization: `Bearer ${sessionStorage.getItem('jwtToken') ?? ''}`
+        }
+    }).then((response) => {
+        if (response.ok) return;
+        throw new Error(`ERROR ${response.status}`);
+    });

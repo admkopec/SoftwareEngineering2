@@ -28,7 +28,10 @@ export default function LogIn() {
       new FormData(event.currentTarget).entries()
     ) as unknown as Credentials;
     if (credentials) {
-      await loginWithCredentials(credentials);
+      setIsLoading(true);
+      await loginWithCredentials(credentials).catch(() => {
+        setIsLoading(false);
+      });
       await fetchUser().then((user) => {
         sessionStorage.setItem('role', user.role);
         navigate('/');

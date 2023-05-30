@@ -11,7 +11,7 @@ import Paper from '@mui/material/Paper';
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import BasketList from '../components/BasketList';
-import {fetchBasket} from '../services/product.service';
+import {clearBasket, fetchBasket} from '../services/product.service';
 import {BasketItem} from '../resources/types';
 import log from '../utils/logger';
 import {placeOrder} from "../services/order.service";
@@ -94,7 +94,7 @@ export default function OrderPage() {
         country
       },
       items: basketData?.map(e => ({productID: e.product.productID, quantity: e.quantity})) ?? []
-    })
+    }).then(() => clearBasket());
     navigate('/');
   };
 

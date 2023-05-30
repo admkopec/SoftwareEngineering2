@@ -142,7 +142,10 @@ export default function ProductInfo() {
               </Grid>
               <Grid item xs={4} flexGrow={0}>
                 <Typography variant="caption">Price</Typography>
-                <Typography variant="body1">{productData?.price}$ / flower</Typography>
+                <Typography variant="body1">{productData?.price.toLocaleString('en-US', {
+                  style: 'currency',
+                  currency: 'USD',
+                })} / flower</Typography>
               </Grid>
             </Grid>
           </Grid>
