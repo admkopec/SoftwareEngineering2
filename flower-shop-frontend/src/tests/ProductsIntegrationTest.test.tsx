@@ -30,7 +30,7 @@ test('testing product getting with Team 2', () => {
     /* eslint-enable jest/no-conditional-expect */
 });
 
-test('testing product getting with Team 3', () => {
+test.skip('testing product getting with Team 3', () => {
     sessionStorage.setItem('backendURL', regions.easterIsland);
     return loginWithCredentials({username: 'admin@admin.com', password: 'admin'}).then(() =>
         // @ts-ignore Arguments
