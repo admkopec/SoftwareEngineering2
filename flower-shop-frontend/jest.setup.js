@@ -6,7 +6,6 @@ require('@testing-library/jest-dom');
 
 // Create MSW server
 const server = require('./src/mocks/server.js');
-const {regions} = require("./src/resources/constants");
 
 // Establish API mocking before all tests.
 beforeAll(() => server.listen({onUnhandledRequest: 'bypass'}));
