@@ -1,6 +1,6 @@
 import {regions} from "../resources/constants";
-import {getBackendURL} from "../services/user.service";
 import {Product} from "../resources/types";
+import {loginWithCredentials} from "../services/user.service";
 import {fetchProductsFiltered} from "../services/product.service";
 import {sleepingBackendWrapper} from "./Helpers.integration";
 
@@ -30,28 +30,12 @@ test('testing product getting with Team 2', () => {
     /* eslint-enable jest/no-conditional-expect */
 });
 
-interface Team3Token {
-    token: string;
-}
-
 test('testing product getting with Team 3', () => {
     sessionStorage.setItem('backendURL', regions.easterIsland);
-    return fetch(`${getBackendURL()}/api/v1/auth/authenticate`, {
-        method: 'POST',
-        body: JSON.stringify({email: 'admin@admin.com', password: 'admin'}),
-        headers: {
-            'Content-type': 'application/json'
-        }
-    })
-        .then((response: Response) => {
-            if (response.ok) return response.json();
-            throw new Error(`ERROR ${response.status}`);
+    return loginWithCredentials({username: 'admin@admin.com', password: 'admin'}).then(() =>
+        // @ts-ignore Arguments
+        fetchProductsFiltered().then((products: Product[]) => {
+            expect(products.length).toBeGreaterThanOrEqual(0)
         })
-        .then((token: Team3Token) => {
-            sessionStorage.setItem('jwtToken', token.token);
-            // @ts-ignore Arguments
-            return fetchProductsFiltered().then((products: Product[]) => {
-                    expect(products.length).toBeGreaterThanOrEqual(0)
-                })
-        })
+    )
 });
