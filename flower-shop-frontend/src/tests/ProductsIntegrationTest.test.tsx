@@ -2,6 +2,7 @@ import {regions} from "../resources/constants";
 import {getBackendURL} from "../services/user.service";
 import {Product} from "../resources/types";
 import {fetchProductsFiltered} from "../services/product.service";
+import {sleepingBackendWrapper} from "./Helpers.integration.test";
 
 test('testing product getting with Our Backend', () => {
     sessionStorage.setItem('backendURL', 'https://pw-flowershop.azurewebsites.net');
@@ -17,13 +18,15 @@ test('testing product getting with Our Backend', () => {
 test('testing product getting with Team 2', () => {
     sessionStorage.setItem('backendURL', regions.alpsMountains);
     /* eslint-disable jest/no-conditional-expect */
-    // @ts-ignore Arguments
-    return fetchProductsFiltered()
-        .then((products: Product[]) => {
-            expect(products.length).toBeGreaterThanOrEqual(0)
-        }).catch((error: Error) => {
-            expect(error.message).toMatch(/ERROR (503)|(404)/);
+    return sleepingBackendWrapper(() =>
+        // @ts-ignore Arguments
+        fetchProductsFiltered()
+            .then((products: Product[]) => {
+                expect(products.length).toBeGreaterThanOrEqual(0)
+            }).catch((error: Error) => {
+            expect(error.message).toBe('ERROR 404');
         })
+    );
     /* eslint-enable jest/no-conditional-expect */
 });
 

@@ -1,5 +1,6 @@
 import {getBackendURL, loginWithCredentials} from "../services/user.service";
 import {regions} from "../resources/constants";
+import {sleepingBackendWrapper} from "./Helpers.integration.test";
 
 test('testing login with Our Backend', () => {
     sessionStorage.setItem('backendURL', 'https://pw-flowershop.azurewebsites.net');
@@ -13,15 +14,13 @@ test('testing login with Our Backend', () => {
 // Team 2 is sometimes sleeping so accept the test if we get 503
 test('testing login with Team 2', () => {
     sessionStorage.setItem('backendURL', regions.alpsMountains);
-    /* eslint-disable jest/no-conditional-expect */
-    return loginWithCredentials({username: 'admin@flowershop.com ', password: 'password'})
-        .then(() => {
-            expect(sessionStorage.getItem('loggedIn')).toBe('true');
-            expect(sessionStorage.getItem('jwtToken')?.length).toBeGreaterThan(0);
-        }).catch((error: Error) => {
-            expect(error.message).toBe('ERROR 503');
-        })
-    /* eslint-enable jest/no-conditional-expect */
+    return sleepingBackendWrapper(() =>
+        loginWithCredentials({username: 'admin@flowershop.com ', password: 'password'})
+            .then(() => {
+                expect(sessionStorage.getItem('loggedIn')).toBe('true');
+                expect(sessionStorage.getItem('jwtToken')?.length).toBeGreaterThan(0);
+            })
+    );
 });
 
 interface Team3Token {
