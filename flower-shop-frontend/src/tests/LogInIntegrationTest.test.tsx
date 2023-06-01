@@ -1,6 +1,6 @@
 import {getBackendURL, loginWithCredentials} from "../services/user.service";
 import {regions} from "../resources/constants";
-import {sleepingBackendWrapper} from "./Helpers.integration.test";
+import {sleepingBackendWrapper} from "./Helpers.integration";
 
 test('testing login with Our Backend', () => {
     sessionStorage.setItem('backendURL', 'https://pw-flowershop.azurewebsites.net');

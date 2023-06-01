@@ -2,7 +2,7 @@ import {regions} from "../resources/constants";
 import {getBackendURL} from "../services/user.service";
 import {Product} from "../resources/types";
 import {fetchProductsFiltered} from "../services/product.service";
-import {sleepingBackendWrapper} from "./Helpers.integration.test";
+import {sleepingBackendWrapper} from "./Helpers.integration";
 
 test('testing product getting with Our Backend', () => {
     sessionStorage.setItem('backendURL', 'https://pw-flowershop.azurewebsites.net');
