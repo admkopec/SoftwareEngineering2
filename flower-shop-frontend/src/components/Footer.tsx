@@ -15,12 +15,7 @@ import Team1 from '../static/imgs/team-1.png';
 import Team2 from '../static/imgs/team-2.png';
 import Team3 from '../static/imgs/team-3.png';
 import {getBackendURL, isLoggedIn} from "../services/user.service";
-
-export const regions = {
-  ours: '',
-  easterIsland: 'https://flower-shop-se2.azurewebsites.net',
-  alpsMountains: 'http://flowershop-dev-lb-2087424383.eu-west-1.elb.amazonaws.com'
-};
+import {regions} from "../resources/constants";
 
 const FooterBox = styled(Box)(() => ({
   margin: theme.spacing(0, 0, 0, 0),

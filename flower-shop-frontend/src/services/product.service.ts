@@ -1,5 +1,5 @@
 import {OrderProduct} from '../resources/types';
-import {getBackendURL} from "./user.service";
+import {getBackendURL, isLoggedIn} from "./user.service";
 
 export const fetchProductsFiltered = async (
   searchParam?: string | undefined,
@@ -19,7 +19,12 @@ export const fetchProductsFiltered = async (
   if (maxPerPageParam && maxPerPageParam > 0 && maxPerPageParam <= 50)
     productsSearchParams.append('maxPerPage', `${maxPerPageParam}`);
 
-  return fetch(`${getBackendURL()}/api/products/?${productsSearchParams.toString()}`).then((response) => {
+  return fetch(`${getBackendURL() }/api/products/?${productsSearchParams.toString()}`, {
+      method: 'GET',
+      headers: isLoggedIn() ? {
+          Authorization: `Bearer ${sessionStorage.getItem('jwtToken') ?? ''}`
+      } : {}
+  }).then((response) => {
     if (response.ok) return response.json();
     throw new Error(`ERROR ${response.status}`);
   });
