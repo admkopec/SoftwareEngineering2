@@ -28,7 +28,7 @@ const isStepOptional = (step: number) => step === -1;
 const isStepTerminal = (step: number) => step >= 3;
 
 export default function OrderPage() {
-  const { productID, quantity } = useLocation().state as OrderProduct;
+  const orderProduct = useLocation().state as (OrderProduct | null);
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
@@ -73,7 +73,8 @@ export default function OrderPage() {
   };
 
   const handleBasketFetch = () => {
-    if (productID && quantity) {
+    if (orderProduct) {
+      const { productID, quantity } = orderProduct;
       fetchProduct(productID).then((product: Product) => {
         setBasketData([{product, quantity}]);
       }).catch((error: Error) => {
@@ -117,7 +118,7 @@ export default function OrderPage() {
           <React.Fragment>
             {/* <Typography sx={{ mt: 2, mb: 1 }}>Step {stepNo+1} - See an overview of your products</Typography> */}
             <Box sx={{m: '0 auto', p: 2 }}>
-              <BasketList editable={true} basketItems={basketData} dense={false} refetch={handleBasketFetch}/>
+              <BasketList editable={!(orderProduct)} basketItems={basketData} dense={false} refetch={handleBasketFetch}/>
             </Box>
           </React.Fragment>
         );
