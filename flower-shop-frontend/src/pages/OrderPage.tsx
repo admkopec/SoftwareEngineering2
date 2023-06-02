@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
-import {useNavigate, useParams} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
@@ -12,7 +12,7 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import BasketList from '../components/BasketList';
 import {clearBasket, fetchBasket, fetchProduct} from '../services/product.service';
-import {BasketItem, Product} from '../resources/types';
+import {BasketItem, OrderProduct, Product} from '../resources/types';
 import log from '../utils/logger';
 import {placeOrder} from "../services/order.service";
 
@@ -28,7 +28,7 @@ const isStepOptional = (step: number) => step === -1;
 const isStepTerminal = (step: number) => step >= 3;
 
 export default function OrderPage() {
-  const { productID, quantity } = useParams();
+  const { productID, quantity } = useLocation().state as OrderProduct;
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
@@ -75,7 +75,7 @@ export default function OrderPage() {
   const handleBasketFetch = () => {
     if (productID && quantity) {
       fetchProduct(productID).then((product: Product) => {
-        setBasketData([{product, quantity: Number.parseInt(quantity, 10)}]);
+        setBasketData([{product, quantity}]);
       }).catch((error: Error) => {
         log(`Error when trying to fetch product: ${error.message}`);
       });
