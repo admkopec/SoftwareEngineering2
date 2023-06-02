@@ -31,7 +31,7 @@ export const fetchProductsFiltered = async (
 };
 
 export const fetchProduct = async (productID: string) =>
-    fetch(`${getBackendURL() }/api/products/${productID}`, {
+    fetch(`${getBackendURL()}/api/products/${productID}`, {
         method: 'GET',
         headers: isLoggedIn() ? {
             Authorization: `Bearer ${sessionStorage.getItem('jwtToken') ?? ''}`
