@@ -11,8 +11,8 @@ import Paper from '@mui/material/Paper';
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import BasketList from '../components/BasketList';
-import {clearBasket, fetchBasket} from '../services/product.service';
-import {BasketItem} from '../resources/types';
+import {clearBasket, fetchBasket, fetchProduct} from '../services/product.service';
+import {BasketItem, Product} from '../resources/types';
 import log from '../utils/logger';
 import {placeOrder} from "../services/order.service";
 
@@ -73,16 +73,24 @@ export default function OrderPage() {
   };
 
   const handleBasketFetch = () => {
-    fetchBasket()
-        .then((responseJSON: BasketItem[]) => {
-          log('Success fetching basket.');
-          log(JSON.stringify(responseJSON));
-          setBasketData(responseJSON);
-          return responseJSON;
-        })
-        .catch((error: Error) => {
-          log(`Error when trying to fetch product: ${error.message}`);
-        });
+    if (productID && quantity) {
+      fetchProduct(productID).then((product: Product) => {
+        setBasketData([{product, quantity: Number.parseInt(quantity, 10)}]);
+      }).catch((error: Error) => {
+        log(`Error when trying to fetch product: ${error.message}`);
+      });
+    } else {
+      fetchBasket()
+          .then((responseJSON: BasketItem[]) => {
+            log('Success fetching basket.');
+            log(JSON.stringify(responseJSON));
+            setBasketData(responseJSON);
+            return responseJSON;
+          })
+          .catch((error: Error) => {
+            log(`Error when trying to fetch product: ${error.message}`);
+          });
+    }
   }
 
   const handleGoHome = async () => {

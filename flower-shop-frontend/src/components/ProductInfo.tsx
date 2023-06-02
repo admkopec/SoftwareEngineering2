@@ -20,8 +20,8 @@ import FloweryImage from './FloweryImage';
 import {OrderProduct, Product} from '../resources/types';
 import DeleteDialog from './DeleteDialog';
 import log from '../utils/logger';
-import {addProductToBasket} from '../services/product.service';
-import {getBackendURL, isEmployee} from "../services/user.service";
+import {addProductToBasket, fetchProduct} from '../services/product.service';
+import {isEmployee} from "../services/user.service";
 
 export default function ProductInfo() {
   const { productID } = useParams();
@@ -67,28 +67,19 @@ export default function ProductInfo() {
   }
 
   const handleBuyNow = () : OrderProduct | undefined => {
-    if (productData?.productID && chosenQuantity)
+    if (productData?.productID)
       return {
         productID: productData?.productID,
-        quantity: chosenQuantity
+        quantity: (chosenQuantity ?? 0) <= 0 ? 1 : chosenQuantity
       } as OrderProduct;
     return undefined;
   }
   
-  const fetchProduct = async () => {
+  const handleProductFetch = async () => {
     if (productID){
       setIsLoading(true);
       log(productID);
-      await fetch(`${getBackendURL()}/api/products/${productID}`, {
-        method: 'GET',
-        headers: {
-          'Content-type': 'application/json'
-        }
-      })
-        .then((response) => {
-          if (response.ok) return response.json();
-          throw new Error(`ERROR ${response.status}`);
-        })
+      await fetchProduct(productID)
         .then((responseJSON: Product) => {
           log('Success fetching product.');
           log(JSON.stringify(responseJSON));
@@ -102,7 +93,7 @@ export default function ProductInfo() {
   };
 
   useEffect(() => {
-    fetchProduct();
+    handleProductFetch();
     if (sessionStorage.getItem('loggedIn')) setIsAdmin(isEmployee());
   }, []);
 

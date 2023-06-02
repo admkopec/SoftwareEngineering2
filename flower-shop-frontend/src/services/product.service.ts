@@ -25,6 +25,17 @@ export const fetchProductsFiltered = async (
   });
 };
 
+export const fetchProduct = async (productID: string) =>
+    fetch(`${getBackendURL() }/api/products/${productID}`, {
+        method: 'GET',
+        headers: isLoggedIn() ? {
+            Authorization: `Bearer ${sessionStorage.getItem('jwtToken') ?? ''}`
+        } : {}
+    }).then((response) => {
+        if (response.ok) return response.json();
+        throw new Error(`ERROR ${response.status}`);
+    });
+
 export const addProductToBasket = async (orderProduct: OrderProduct) =>
   fetch(`${getBackendURL()}/api/basket`, {
     method: 'POST',
