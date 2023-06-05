@@ -15,7 +15,13 @@ export enum Category {
 }
 
 export enum Roles {
-  Client,
-  Employee,
-  DeliveryMan
+  Client = 'client',
+  Employee = 'employee',
+  DeliveryMan = 'deliveryman'
 }
+
+export const regions = {
+  ours: '',
+  easterIsland: 'https://flower-shop-se2.azurewebsites.net',
+  alpsMountains: 'https://flowershop-dev.store'
+};

@@ -10,11 +10,11 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import delay from '../utils/delay';
 import BasketList from '../components/BasketList';
-import {fetchBasket} from '../services/product.service';
+import {clearBasket, fetchBasket} from '../services/product.service';
 import {BasketItem} from '../resources/types';
 import log from '../utils/logger';
+import {placeOrder} from "../services/order.service";
 
 const steps = [
   'Your products',
@@ -72,12 +72,8 @@ export default function OrderPage() {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleGoHome = () => {
-    navigate('/');
-  };
-
-  useEffect(() => {
-      fetchBasket()
+  const handleBasketFetch = () => {
+    fetchBasket()
         .then((responseJSON: BasketItem[]) => {
           log('Success fetching basket.');
           log(JSON.stringify(responseJSON));
@@ -87,6 +83,23 @@ export default function OrderPage() {
         .catch((error: Error) => {
           log(`Error when trying to fetch product: ${error.message}`);
         });
+  }
+
+  const handleGoHome = async () => {
+    await placeOrder({
+      deliveryAddress: {
+        street: address,
+        postalCode,
+        city,
+        country
+      },
+      items: basketData?.map(e => ({productID: e.product.productID, quantity: e.quantity})) ?? []
+    }).then(() => clearBasket());
+    navigate('/');
+  };
+
+  useEffect(() => {
+    handleBasketFetch();
   }, []);
 
   const handleSteps = (stepNo: number) => {
@@ -96,7 +109,7 @@ export default function OrderPage() {
           <React.Fragment>
             {/* <Typography sx={{ mt: 2, mb: 1 }}>Step {stepNo+1} - See an overview of your products</Typography> */}
             <Box sx={{m: '0 auto', p: 2 }}>
-              <BasketList basketItems={basketData} dense={false}/>
+              <BasketList editable={true} basketItems={basketData} dense={false} refetch={handleBasketFetch}/>
             </Box>
           </React.Fragment>
         );
@@ -104,7 +117,7 @@ export default function OrderPage() {
         return (
           <React.Fragment>
             {/* <Typography sx={{ mt: 2, mb: 1 }}>Step {stepNo+1} - Provide address details for delivery</Typography> */}
-            <Box sx={{m: '0 auto', p: 2 }}>
+            <Box sx={{m: '2 auto', p: 2 }}>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                   <TextField
@@ -195,6 +208,7 @@ export default function OrderPage() {
               <Typography>City: {city}</Typography>
               <Typography>Postal Code: {postalCode}</Typography>
               <Typography>Country: {country}</Typography>
+              <BasketList editable={false} basketItems={basketData} dense={true} refetch={handleBasketFetch}/>
             </Grid>
           </React.Fragment>
         );

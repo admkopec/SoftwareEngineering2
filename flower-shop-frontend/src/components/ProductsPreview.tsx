@@ -18,7 +18,7 @@ interface ProductsPreviewProps {
 
 interface ProductsContainerProps {
   productIndex: number;
-  product: Product;
+  product: Product[];
   direction: 'left' | 'right' | 'up' | 'down' | undefined;
 }
 
@@ -32,6 +32,7 @@ export default function ProductsPreview(props: ProductsPreviewProps) {
   const [currentItemIndex, setCurrentItemIndex] = React.useState<number>(1);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [productsArray, setProductsArray] = React.useState<Product[]>([]);
+  const [productsPerPage, setProductsPerPage] = React.useState<number>(3);
   const currentProductRef = React.useRef<HTMLLIElement>(null);
   const [lastChange, setLastChange] = useState<Changes>(Changes.None);
   const [listHeight, setListHeight] = useState<number | undefined>();
@@ -74,7 +75,7 @@ export default function ProductsPreview(props: ProductsPreviewProps) {
 
   const ProductsContainer = React.forwardRef((containerProps: ProductsContainerProps, ref: ForwardedRef<HTMLLIElement>) => (
     <ListItem
-      sx={{ position: 'absolute', margin: '0 auto', alignSelf: 'center', width: 'fit-content' }}
+      sx={{ position: 'absolute', margin: '0 auto', alignSelf: 'center', width: '80vw' }}
       key={containerProps.productIndex}
       ref={ref}
     >
@@ -85,10 +86,13 @@ export default function ProductsPreview(props: ProductsPreviewProps) {
         easing={{ enter: mainTheme.transitions.easing.easeOut, exit: mainTheme.transitions.easing.easeIn }}
         timeout={{ enter: 800, exit: 600 }}
       >
-        <Grid container spacing={2}>
-          <Grid item>
-            <ProductCard product={containerProps.product} size={SurfaceSizes.TileLarge} sx={{m: 2}}/>
-          </Grid>
+        <Grid container spacing={2} justifyContent="center" alignItems="center">
+          {containerProps.product.map(product =>
+              <Grid item xs={containerProps.product.length === 3 ? 4 : (containerProps.product.length === 2 ? 6 : 12)} key={product.productID}>
+                <ProductCard product={product} size={SurfaceSizes.TileLarge} sx={{m: 2}}/>
+              </Grid>
+          )
+          }
         </Grid>
       </Slide>
     </ListItem>
@@ -102,6 +106,18 @@ export default function ProductsPreview(props: ProductsPreviewProps) {
 
   useEffect(() => {
     fetchProducts();
+    function updateSize() {
+      if (window.innerWidth >= 1300) {
+        setProductsPerPage(3);
+      } else if (window.innerWidth >= 800) {
+        setProductsPerPage(2);
+      } else {
+        setProductsPerPage(1);
+      }
+    }
+    window.addEventListener('resize', updateSize);
+    updateSize();
+    return () => window.removeEventListener('resize', updateSize);
   }, []);
 
   const renderItems = () => {
@@ -117,11 +133,15 @@ export default function ProductsPreview(props: ProductsPreviewProps) {
         </Typography>
       );
     }
+    const splitProductsArray = [];
+    for (let i=0; i<productsArray.length; i+=productsPerPage) {
+      splitProductsArray.push(productsArray.slice(i,i+productsPerPage));
+    }
     return (
       <>
-        {productsArray.map((product: Product, productIndex: number) => (
+        {splitProductsArray.map((product: Product[], productIndex: number) => (
           <ProductsContainer
-            key={product.productID}
+            key={productIndex}
             ref={currentItemIndex === productIndex + 1 ? currentProductRef : undefined}
             direction={parseChangeToString(lastChange)}
             productIndex={productIndex + 1}
@@ -152,7 +172,7 @@ export default function ProductsPreview(props: ProductsPreviewProps) {
       <List
         sx={{
           height: listHeight || 200,
-          width: '100%',
+          width: '80vw',
           display: 'flex',
           flexFlow: 'row wrap',
           justifyContent: 'center',
@@ -163,7 +183,7 @@ export default function ProductsPreview(props: ProductsPreviewProps) {
         {renderItems()}
       </List>
       <Pagination
-        count={productsArray.length}
+        count={productsArray.length/productsPerPage}
         sx={{ p: 2 }}
         renderItem={(item) => <PaginationItem {...item} />}
         onChange={(_, indexNumber: number) => {
