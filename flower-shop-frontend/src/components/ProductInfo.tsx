@@ -165,6 +165,7 @@ export default function ProductInfo() {
                       type="number"
                       variant="outlined"
                       size="small"
+                      helperText={' '}
                       aria-valuemax={productData?.quantity}
                       onChange={(event) => setChosenQuantity(Number.parseInt(event.target.value, 10))}
                       sx={{ width: '120px', maxWidth: '180px', minWidth: '60px', m: 2 }}

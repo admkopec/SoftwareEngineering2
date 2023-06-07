@@ -15,10 +15,19 @@ export enum Category {
 }
 
 export enum OrderStatus {
+  Any,
   Pending,
   Accepted,
   Declined,
   Delivered
+}
+
+export enum OrdersCategory {
+  All,
+  Pending,
+  ToDeliver,
+  Resolved,
+  Past
 }
 
 export enum Roles {

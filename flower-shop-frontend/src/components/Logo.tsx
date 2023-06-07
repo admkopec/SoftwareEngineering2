@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import LocalFloristIcon from '@mui/icons-material/LocalFlorist';
 import { SxProps, Theme } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import FlowerIcon from '../static/imgs/icons8-flower-96.png';
 
 interface LogoProps {
   sx?: SxProps<Theme>;
@@ -10,7 +10,7 @@ interface LogoProps {
 export default function Logo(props: LogoProps) {
   return (
     <Box sx={props.sx}>
-      <LocalFloristIcon titleAccess="flower-icon" sx={{ mr: 1 }} />
+      <img src={FlowerIcon} alt={'Flower icon'} height={32} width={32} style={{ margin: '0 10px' }} />
       <Typography
         variant="h6"
         noWrap

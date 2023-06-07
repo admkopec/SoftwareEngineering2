@@ -3,5 +3,11 @@
     "parser": "typescript",
     "trailingComma": "none",
     "singleQuote": true,
-    "printWidth": 120
+    "printWidth": 120,
+    "overrides": [{
+        "files": "*.html",
+        "options":{
+            "parser": "html"
+        }
+    }]
 }

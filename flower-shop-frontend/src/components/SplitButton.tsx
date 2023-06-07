@@ -12,12 +12,11 @@ import MenuItem from '@mui/material/MenuItem';
 import { SvgIcon, SxProps, Theme } from '@mui/material';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import { SvgIconComponent } from '@mui/icons-material';
 import { MenuItemSettings } from '../resources/types';
 
 interface ButtonOptionsProps {
   options: MenuItemSettings[];
-  sx: SxProps<Theme>;
+  sx?: SxProps<Theme>;
 }
 
 export default function SplitButton(props: ButtonOptionsProps) {
