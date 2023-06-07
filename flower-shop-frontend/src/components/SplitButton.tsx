@@ -45,7 +45,10 @@ export default function SplitButton(props: ButtonOptionsProps) {
   return (
     <Container sx={props.sx}>
       <ButtonGroup variant="contained" ref={anchorRef} aria-label="split button">
-        <Button onClick={() => props.options[selectedIndex].callback(navigate)} title={props.options[selectedIndex].key}>
+        <Button
+          onClick={() => props.options[selectedIndex].callback(navigate)}
+          title={props.options[selectedIndex].key}
+        >
           {props.options[selectedIndex].key}
         </Button>
         <Button
@@ -74,7 +77,7 @@ export default function SplitButton(props: ButtonOptionsProps) {
           <Grow
             {...TransitionProps}
             style={{
-              transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom',
+              transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom'
             }}
           >
             <Paper>
@@ -85,11 +88,14 @@ export default function SplitButton(props: ButtonOptionsProps) {
                       key={option.key}
                       selected={index === selectedIndex}
                       onClick={(event) => handleMenuItemClick(event, index)}
-                      sx={{display: 'flex', flexFlow: 'row-nowrap', justifyContent: 'space-between',
-                        alignItems: 'center'}}
+                      sx={{
+                        display: 'flex',
+                        flexFlow: 'row-nowrap',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                      }}
                     >
-                      <Typography fontSize={14}>{option.key}{' '}
-                      </Typography>
+                      <Typography fontSize={14}>{option.key} </Typography>
                       {option.Icon && <SvgIcon component={option.Icon} />}
                     </MenuItem>
                   ))}
