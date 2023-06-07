@@ -68,6 +68,7 @@ export default function Basket() {
           minHeight: '200px'
         }}
         open={basketOpen}
+        placement={'top-end'}
         anchorEl={anchorRef.current}
         role={undefined}
         transition
@@ -77,13 +78,13 @@ export default function Basket() {
           <Grow
             {...TransitionProps}
             style={{
-              transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom'
+              transformOrigin: 'right top'
             }}
           >
             <Paper sx={{ textAlign: 'center', p: 2 }}>
               <ClickAwayListener onClickAway={handleBasketClose}>
                 {basketData.length > 0 ? (
-                  <Box sx={{ m: '0 auto', p: 1 }}>
+                  <Box sx={{ mx: 4, p: 1 }}>
                     <BasketList dense={true} basketItems={basketData} refetch={handleBasketFetch} />
                     <Button type="button" variant="text" size="small" onClick={() => navigate('/order')} sx={{ mt: 2 }}>
                       Proceed to checkout

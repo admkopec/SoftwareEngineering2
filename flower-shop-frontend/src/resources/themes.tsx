@@ -63,6 +63,21 @@ export const mainTheme = createTheme({
     },
     contrastThreshold: 4.5,
     tonalOffset: 0.2
+  },
+  typography: {
+    fontFamily: [
+      'Raleway',
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"'
+    ].join(',')
   }
 });
 
@@ -72,6 +87,5 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0;
     background: white;
     width: 100%;
-    font-family: Open-Sans, Helvetica, Sans-Serif, sans-serif;
   }
 `;

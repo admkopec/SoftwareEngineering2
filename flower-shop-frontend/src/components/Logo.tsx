@@ -18,11 +18,10 @@ export default function Logo(props: LogoProps) {
         href="/"
         sx={{
           mr: 2,
-          fontFamily: 'Amatic SC, cursive',
+          fontFamily: 'Marcellus, serif',
           color: 'inherit',
           textDecoration: 'none',
-          fontSize: 34,
-          letterSpacing: '.2rem'
+          fontSize: 34
         }}
       >
         Flower Shop

@@ -18,17 +18,31 @@ import FeaturedPlayListRoundedIcon from '@mui/icons-material/FeaturedPlayListRou
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import { useNavigate } from 'react-router-dom';
 import Container from '@mui/material/Container';
+import { green, red } from '@mui/material/colors';
 import { MenuItemSettings, UserData } from '../resources/types';
 import SplitButton from './SplitButton';
 import Logo from './Logo';
 import log from '../utils/logger';
-import { mainTheme } from '../resources/themes';
 import Basket from './Basket';
 import { fetchUser, isEmployee, isLoggedIn } from '../services/user.service';
 
 interface HeaderBarProps {
   sx?: SxProps<Theme>;
 }
+
+const handleAvatarColor = () => {
+  switch (sessionStorage.getItem('role')) {
+    case 'deliveryman': {
+      return green[400];
+    }
+    case 'employee': {
+      return red[400];
+    }
+    default: {
+      return 'white';
+    }
+  }
+};
 
 const pagesLinks: MenuItemSettings[] = [
   {
@@ -239,7 +253,7 @@ export default function Header(props: HeaderBarProps) {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt={userData.name} src="#" />
+                  <Avatar alt={userData.name} src="#" sx={{ border: `4px solid ${handleAvatarColor()}` }} />
                 </IconButton>
               </Tooltip>
               <Menu
