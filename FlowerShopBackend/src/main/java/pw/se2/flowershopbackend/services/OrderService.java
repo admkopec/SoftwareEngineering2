@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pw.se2.flowershopbackend.dao.OrderRepository;
 import pw.se2.flowershopbackend.models.Order;
+import pw.se2.flowershopbackend.models.Product;
 import pw.se2.flowershopbackend.models.User;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class OrderService {
@@ -29,14 +29,52 @@ public class OrderService {
         this.orderProductService = orderProductService;
     }
 
-    public Page<Order> getOrdersFor(User user, Pageable paging) {
-        if (user.getRole() == User.Roles.Client) {
-            return orderRepository.findByClient(user, paging);
-        } else if (user.getRole() == User.Roles.DeliveryMan) {
-            return orderRepository.findByDeliveryMan(user, paging);
-        } else {
-            log.error("User not authorized to perform this action.");
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to perform this action.");
+    public Page<Order> getOrdersFor(User user, Pageable paging, String statusesString) {
+        boolean fetchAll = false;
+        boolean hasPending = false;
+        List<Order.Status> statusList = getStatusesFrom(statusesString);
+        if (statusesString == null)
+            fetchAll = true;
+        else if (statusesString.contains("pending"))
+            hasPending = true;
+        switch(user.getRole()){
+            case Client -> {
+                if (fetchAll || hasPending)
+                    return orderRepository.findByClientAndStatusInOrStatusIsNull(user, paging, statusList);
+                else
+                    return orderRepository.findByClientAndStatusIn(user, paging, statusList);
+            } case DeliveryMan -> {
+                if (fetchAll || hasPending)
+                    return orderRepository.findByDeliveryManAndStatusInOrStatusIsNull(user, paging, statusList);
+                else
+                    return orderRepository.findByDeliveryManAndStatusIn(user, paging, statusList);
+            } case Employee-> {
+                if (fetchAll || hasPending)
+                    return orderRepository.findAllByStatusInOrStatusIsNull(paging, statusList);
+                else
+                    return orderRepository.findAllByStatusIn(paging, statusList);
+            } default -> {
+                log.error("User not authorized to perform this action.");
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to perform this action.");
+            }
+        }
+    }
+
+    private List<Order.Status> getStatusesFrom(String statusesString) {
+//        If null, return null
+        if (statusesString == null) {
+            return Arrays.asList(Order.Status.Accepted, Order.Status.Delivered, Order.Status.Declined, null);
+        }
+//        Else, map the strings to Order.Status elements and remove "pending" var
+        List<String> statusStringList = new ArrayList<>(Arrays.stream(statusesString.split(",")).toList());
+        int pendingIndex = statusStringList.indexOf("pending");
+        if (pendingIndex == -1)
+            return statusStringList.stream().map(Order.Status::valueOf).toList();
+        else {
+            if (statusStringList.remove(pendingIndex).equals("pending")) {
+                return statusStringList.stream().map(Order.Status::valueOf).toList();
+            } else
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Server was not able to process the query parameter.");
         }
     }
 
