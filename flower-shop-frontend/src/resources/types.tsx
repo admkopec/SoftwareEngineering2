@@ -16,15 +16,13 @@ export interface Credentials {
 }
 
 export interface AddressCreation {
-  firstName: string;
-  lastName: string;
   street: string;
   buildingNo: string;
   houseNo: string;
   postalCode: string;
   city: string;
   country: string;
-  saveAddress: string;
+  saveAddress?: string;
 }
 
 export interface OrderProduct {
@@ -44,7 +42,7 @@ export interface Order {
   deliveryAddress: AddressCreation;
   dateCreated: string;
   items: OrderProduct[];
-  clientId: string;
+  status: string;
 }
 
 export interface User {

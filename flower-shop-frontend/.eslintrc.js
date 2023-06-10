@@ -154,7 +154,8 @@ module.exports = {
                 "@typescript-eslint/no-unused-vars": "warn",
                 "no-promise-executor-return": "warn",
                 "import/order": "warn",
-                "no-param-reassign": "off"
+                "no-param-reassign": "off",
+                "unicorn/no-null": "warn"
             },
         },
     ],

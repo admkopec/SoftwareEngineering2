@@ -1,34 +1,19 @@
-import React, {useEffect} from 'react';
-import {Grid} from '@mui/material';
-import {Outlet} from "react-router-dom";
+import React, { useEffect } from 'react';
+import { Outlet } from 'react-router-dom';
 import SearchBar from '../components/SearchBar';
-import Layout from "../components/Layout";
+import Layout from '../components/Layout';
 
 function HomePage() {
   const [query, setQuery] = React.useState<string | undefined>();
 
   // NOTE: Function meant to check the validity of jwt token and set variables in sessionStorage
-  useEffect(()=>{
-
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <Layout>
-        <SearchBar setQuery={setQuery}/>
-        <Grid
-            container
-            display ="flex"
-            direction="column"
-            alignItems="center"
-            justifyContent="center"
-            spacing={2}
-            width='auto'
-            sx={{ pt: 4, pr: 4, pl: 4, zIndex: 1 }}
-        >
-            <Grid item>
-                <Outlet context={[query, setQuery]}/>
-            </Grid>
-        </Grid>
+      <SearchBar setQuery={setQuery} />
+
+      <Outlet context={[query, setQuery]} />
     </Layout>
   );
 }

@@ -27,7 +27,7 @@ export enum OrdersCategory {
   Pending,
   ToDeliver,
   Resolved,
-  Past
+  Delivered
 }
 
 export enum Roles {
@@ -37,7 +37,7 @@ export enum Roles {
 }
 
 export const regions = {
-  ours: '',
+  ours: 'https://pw-flowershop.azurewebsites.net',
   easterIsland: 'https://flower-shop-se2.azurewebsites.net',
   alpsMountains: 'https://flowershop-dev.store'
 };

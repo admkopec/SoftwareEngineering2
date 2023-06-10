@@ -24,14 +24,14 @@ import SplitButton from './SplitButton';
 import Logo from './Logo';
 import log from '../utils/logger';
 import Basket from './Basket';
-import { fetchUser, isEmployee, isLoggedIn } from '../services/user.service';
+import { fetchUser, isEmployeeOrDeliveryMan, isLoggedIn } from '../services/user.service';
 
 interface HeaderBarProps {
   sx?: SxProps<Theme>;
 }
 
 const handleAvatarColor = () => {
-  switch (sessionStorage.getItem('role')) {
+  switch (sessionStorage.getItem('role') as string) {
     case 'deliveryman': {
       return green[400];
     }
@@ -244,7 +244,7 @@ export default function Header(props: HeaderBarProps) {
           ))}
         </Box>
 
-        <Box sx={{ mx: 3 }}>{isLoggedIn() && !isEmployee() && <Basket />}</Box>
+        <Box sx={{ mx: 3 }}>{isLoggedIn() && !isEmployeeOrDeliveryMan() && <Basket />}</Box>
 
         <Box sx={{ display: 'block', flexGrow: 0 }}>
           {userData === undefined ? (
