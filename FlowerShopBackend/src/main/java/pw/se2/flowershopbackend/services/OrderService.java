@@ -32,11 +32,11 @@ public class OrderService {
     public Page<Order> getOrdersFor(User user, Pageable paging, String statusesString) {
         boolean fetchAll = false;
         boolean hasPending = false;
-        List<Order.Status> statusList = getStatusesFrom(statusesString);
         if (statusesString == null)
             fetchAll = true;
         else if (statusesString.contains("pending"))
             hasPending = true;
+        List<Order.Status> statusList = getStatusesFrom(statusesString);
         switch(user.getRole()){
             case Client -> {
                 if (fetchAll || hasPending)
@@ -66,12 +66,14 @@ public class OrderService {
             return Arrays.asList(Order.Status.Accepted, Order.Status.Delivered, Order.Status.Declined, null);
         }
 //        Else, map the strings to Order.Status elements and remove "pending" var
-        List<String> statusStringList = new ArrayList<>(Arrays.stream(statusesString.split(",")).toList());
-        int pendingIndex = statusStringList.indexOf("pending");
+        List<String> statusStringList = new ArrayList<>(Arrays.stream(statusesString.split(","))
+                .map((statusString) -> statusString.substring(0, 1).toUpperCase() + statusString.substring(1))
+                .toList());
+        int pendingIndex = statusStringList.indexOf("Pending");
         if (pendingIndex == -1)
             return statusStringList.stream().map(Order.Status::valueOf).toList();
         else {
-            if (statusStringList.remove(pendingIndex).equals("pending")) {
+            if (statusStringList.remove(pendingIndex).equals("Pending")) {
                 return statusStringList.stream().map(Order.Status::valueOf).toList();
             } else
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Server was not able to process the query parameter.");
