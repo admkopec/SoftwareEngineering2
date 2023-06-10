@@ -21,7 +21,8 @@ import { OrderProduct, Product } from '../resources/types';
 import DeleteDialog from './DeleteDialog';
 import log from '../utils/logger';
 import { addProductToBasket, fetchProduct } from '../services/product.service';
-import { isEmployee } from '../services/user.service';
+import { isEmployeeOrDeliveryMan } from '../services/user.service';
+import UpdateItemDialog from './UpdateItemDialog';
 
 export default function ProductInfo() {
   const { productID } = useParams();
@@ -91,7 +92,7 @@ export default function ProductInfo() {
 
   useEffect(() => {
     handleProductFetch();
-    if (sessionStorage.getItem('loggedIn')) setIsAdmin(isEmployee());
+    if (sessionStorage.getItem('loggedIn')) setIsAdmin(isEmployeeOrDeliveryMan());
   }, []);
 
   return (
@@ -231,9 +232,9 @@ export default function ProductInfo() {
                 </Box>
               </>
             )}
-            <DeleteDialog
+            <UpdateItemDialog
               productID={productData?.productID}
-              productName={productData?.name}
+              action={'deleteProduct'}
               open={isDeleting}
               setOpen={(isOpen) => setIsDeleting(isOpen)}
             />

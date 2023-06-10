@@ -155,40 +155,6 @@ export default function OrderPage() {
               id="address-form"
             >
               <Grid container spacing={2} alignItems={'start'}>
-                <Grid item xs={12} sm={6}>
-                  <Validate
-                    name="internal first-name"
-                    required={[true, 'This is a required field']}
-                    reference={linkedRef}
-                  >
-                    <TextField
-                      fullWidth
-                      id="firstName"
-                      label="First Name"
-                      name="firstName"
-                      defaultValue={addressData?.firstName}
-                      autoComplete="given-name"
-                      autoFocus
-                    />
-                  </Validate>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Validate
-                    name="internal last-name"
-                    required={[true, 'This is a required field']}
-                    reference={linkedRef}
-                    initialValidation="silent"
-                  >
-                    <TextField
-                      fullWidth
-                      id="lastName"
-                      label="Last Name"
-                      defaultValue={addressData?.lastName}
-                      name="lastName"
-                      autoComplete="family-name"
-                    />
-                  </Validate>
-                </Grid>
                 <Grid item xs={12}>
                   <Validate
                     name="internal street"
@@ -324,8 +290,8 @@ export default function OrderPage() {
               Payment approved - purchase completed!
             </Typography>
             <Grid margin={3}>
-              <Typography>First name: {addressData?.firstName}</Typography>
-              <Typography>Last name: {addressData?.lastName}</Typography>
+              <Typography>First name: </Typography>
+              <Typography>Last name: </Typography>
               <Typography>
                 Address: {addressData?.street} {addressData?.buildingNo} / {addressData?.houseNo}
               </Typography>

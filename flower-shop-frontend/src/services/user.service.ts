@@ -7,9 +7,12 @@ export const getBackendURL = () => {
   return backendURL || '';
 };
 
-export const isLoggedIn = () => sessionStorage.getItem('loggedIn') === 'true';
-export const isEmployee = () =>
+export const isLoggedIn = (): boolean => sessionStorage.getItem('loggedIn') === 'true';
+export const isEmployeeOrDeliveryMan = (): boolean =>
   sessionStorage.getItem('role') === Roles.Employee || sessionStorage.getItem('role') === Roles.DeliveryMan;
+export const isEmployee = (): boolean => sessionStorage.getItem('role') === Roles.Employee;
+export const isClient = (): boolean => sessionStorage.getItem('role') === Roles.Client;
+export const isDeliveryMan = (): boolean => sessionStorage.getItem('role') === Roles.DeliveryMan;
 
 export const loginWithCredentials = async (credentials: Credentials) =>
   fetch(`${getBackendURL()}/api/users/log_in`, {
