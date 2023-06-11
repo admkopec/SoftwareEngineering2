@@ -48,7 +48,7 @@ public class OrderService {
                     return orderRepository.findByDeliveryManAndStatusInOrStatusIsNull(user, paging, statusList);
                 else
                     return orderRepository.findByDeliveryManAndStatusIn(user, paging, statusList);
-            } case Employee-> {
+            } case Employee -> {
                 if (fetchAll || hasPending)
                     return orderRepository.findAllByStatusInOrStatusIsNull(paging, statusList);
                 else
@@ -85,7 +85,7 @@ public class OrderService {
         if (optionalOrder.isPresent()) {
             Order order = optionalOrder.get();
             // Verify the user is authorized to fetch this order
-            if (order.getClient().getId() == user.getId() || (order.getDeliveryMan() != null && order.getDeliveryMan().getId() == user.getId()) || user.getRole() == User.Roles.Employee) {
+            if (order.getClient().getId().equals(user.getId()) || (order.getDeliveryMan() != null && (order.getDeliveryMan().getId().equals(user.getId()))) || (user.getRole().equals(User.Roles.Employee))) {
                 return order;
             } else {
                 log.error("User not authorized to perform this action.");

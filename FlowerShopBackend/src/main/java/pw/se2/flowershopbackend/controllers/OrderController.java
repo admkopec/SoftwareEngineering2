@@ -14,15 +14,16 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import pw.se2.flowershopbackend.models.BasketItem;
 import pw.se2.flowershopbackend.models.Order;
 import pw.se2.flowershopbackend.models.User;
 import pw.se2.flowershopbackend.services.OrderService;
 import pw.se2.flowershopbackend.services.ProductService;
-import pw.se2.flowershopbackend.web.OrderDto;
-import pw.se2.flowershopbackend.web.OrderStatusChangeDto;
+import pw.se2.flowershopbackend.web.*;
+
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
-import pw.se2.flowershopbackend.web.OrderCreationDto;
 
 @Tag(name = "Orders")
 @RestController
@@ -105,5 +106,16 @@ public class OrderController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to perform this action.");
         }
         orderService.validateAndSave(order);
+    }
+
+    @GetMapping(path = "/{orderId}/items", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "(UTILITY ENDPOINT) Fetch items from a specific Order")
+    public ResponseEntity<List<BasketDto>> fetchOrderItems(@PathVariable UUID orderId) {
+        User user = User.getAuthenticated();
+        Order order = orderService.getOrderByIdAuth(orderId, user);
+        List<BasketItem> basketItemList = order.getOrderProducts().stream()
+                .map((orderProduct) -> new BasketItemCreationDto(orderProduct.getProduct().getId(), Math.toIntExact(orderProduct.getQuantity()))
+                .convertToModel(productService)).toList();
+        return ResponseEntity.status(HttpStatus.OK).body(basketItemList.stream().map(BasketDto::valueFrom).toList());
     }
 }
