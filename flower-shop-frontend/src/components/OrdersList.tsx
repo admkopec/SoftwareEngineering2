@@ -27,6 +27,9 @@ import log from '../utils/logger';
 import { isClient, isDeliveryMan, isEmployee, isEmployeeOrDeliveryMan } from '../services/user.service';
 import UpdateItemDialog, { AvailableActions } from './UpdateItemDialog';
 import LoadingButton from '@mui/lab/LoadingButton';
+import BasketList from './BasketList';
+import OrderInfo from './OrderInfo';
+import { blue } from '@mui/material/colors';
 
 interface OrderListProps {
   statusList?: string | undefined;
@@ -133,7 +136,12 @@ export default function OrdersList(props: OrderListProps) {
             key={index + 1}
             sx={{ width: '100%', m: '0 auto', display: 'flex', flexFlow: 'row nowrap', justifyContent: 'center' }}
           >
-            <Accordion onChange={handleChange(index + 1)} sx={{ width: '90%', display: 'block' }}>
+            <Accordion
+              expanded={expanded === index + 1}
+              onChange={handleChange(index + 1)}
+              sx={{ width: '90%', display: 'block', backgroundColor: expanded === index + 1 ? blue[100] : 'white' }}
+              TransitionProps={{ unmountOnExit: true }}
+            >
               <StyledAccordionSummary>
                 <Box
                   component={'div'}
@@ -166,13 +174,7 @@ export default function OrdersList(props: OrderListProps) {
                 </Box>
               </StyledAccordionSummary>
               <AccordionDetails>
-                {isEmployeeOrDeliveryMan() && <Typography>Full order ID: {order.orderId}</Typography>}
-                <Typography>Date created: {order.dateCreated}</Typography>
-                <Typography>
-                  Delivery address: {order.deliveryAddress.street}
-                  {order.deliveryAddress.buildingNo}/{order.deliveryAddress.houseNo},{order.deliveryAddress.postalCode}{' '}
-                  {order.deliveryAddress.city}, {order.deliveryAddress.country}
-                </Typography>
+                <OrderInfo order={order} />
               </AccordionDetails>
               <AccordionActions>
                 {order.status === null && isEmployee() && (
