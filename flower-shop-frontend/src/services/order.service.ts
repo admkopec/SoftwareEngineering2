@@ -52,3 +52,15 @@ export const updateOrderStatus = async (newStatus: OrderStatus, orderID: string)
     if (response.ok) return;
     throw new Error(`ERROR ${response.status}`);
   });
+
+export const fetchOrderItems = async (orderID: string) =>
+  fetch(`${getBackendURL()}/api/orders/${orderID}/items`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${sessionStorage.getItem('jwtToken') ?? ''}`,
+      'Content-type': 'application/json'
+    }
+  }).then((response) => {
+    if (response.ok) return response.json();
+    throw new Error(`ERROR ${response.status}`);
+  });
