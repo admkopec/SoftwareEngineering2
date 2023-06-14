@@ -27,7 +27,6 @@ import pw.se2.flowershopbackend.models.User;
 import pw.se2.flowershopbackend.services.*;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -59,7 +58,7 @@ public class OrderStatusChangingApiTests {
 
         @Bean
         public AlgorithmService algorithmService() {
-            return new AlgorithmService();
+            return new AlgorithmService(userRepository, orderRepository);
         }
 
         @Bean
