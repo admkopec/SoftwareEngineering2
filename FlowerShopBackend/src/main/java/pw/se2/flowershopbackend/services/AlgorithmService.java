@@ -21,6 +21,9 @@ public class AlgorithmService {
 
     public void assignDeliveryManFor(Order order) {
         List<User> deliveryMen  = userRepository.findByRole(User.Roles.DeliveryMan);
+        if (deliveryMen.isEmpty()){
+            return;
+        }
         User deliveryManWithMinOrders = Collections.min(deliveryMen, new OrdersCountsComparator());
         order.setDeliveryMan(deliveryManWithMinOrders);
         orderRepository.save(order);
