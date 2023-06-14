@@ -54,7 +54,6 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "deliveryMan", orphanRemoval = true)
     private Set<Order> ordersToDeliver = new LinkedHashSet<>();
-
     public User() {
         this.id = UUID.randomUUID();
     }
