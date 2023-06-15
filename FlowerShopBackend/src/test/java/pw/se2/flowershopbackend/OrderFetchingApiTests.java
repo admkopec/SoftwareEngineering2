@@ -34,6 +34,8 @@ import pw.se2.flowershopbackend.services.*;
 import java.util.*;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -131,7 +133,6 @@ public class OrderFetchingApiTests {
         orderProducts.add(orderProduct);
         order.setOrderProducts(orderProducts);
 
-        List<Order.Status> statuses = Arrays.asList(Order.Status.Accepted, Order.Status.Delivered, Order.Status.Declined, null);
         LinkedHashSet<Order> orders = new LinkedHashSet<>();
         orders.add(order);
         user.setOrders(orders);
@@ -139,14 +140,16 @@ public class OrderFetchingApiTests {
         Mockito.when(orderRepository.findById(order.getId()))
                 .thenReturn(Optional.of(order));
         // TODO: Due to the changes in repository, the matcher and mock functions need to be aligned for tests to pass
-        Mockito.when(orderRepository.findByClient(user, PageRequest.of(0, 30)))
+        Mockito.when(orderRepository.findByClient(eq(user), any(PageRequest.class)))
                 .thenReturn(mockPage);
-        Mockito.when(orderRepository.findByClientAndStatusInOrStatusIsNull(user, PageRequest.of(0, 30), statuses))
+        Mockito.when(orderRepository.findByClientAndStatusInOrStatusIsNull(eq(user), any(PageRequest.class), any(List.class)))
                 .thenReturn(mockPage);
-        Mockito.when(orderRepository.findByDeliveryMan(deliveryMan, PageRequest.of(0, 30)))
+        Mockito.when(orderRepository.findByDeliveryMan(eq(deliveryMan), any(PageRequest.class)))
                 .thenReturn(new PageImpl<>(List.of()));
-        Mockito.when(orderRepository.findByDeliveryManAndStatusInOrStatusIsNull(deliveryMan, PageRequest.of(0, 30), statuses))
+        Mockito.when(orderRepository.findByDeliveryManAndStatusInOrStatusIsNull(eq(deliveryMan), any(PageRequest.class), any(List.class)))
                 .thenReturn(new PageImpl<>(List.of()));
+        Mockito.when(orderRepository.findAllByStatusInOrStatusIsNull(any(PageRequest.class), any(List.class)))
+                .thenReturn(mockPage);
     }
 
     @Test
@@ -167,7 +170,8 @@ public class OrderFetchingApiTests {
         ));
         mvc.perform(get("/api/orders")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isForbidden());
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test
@@ -179,7 +183,7 @@ public class OrderFetchingApiTests {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$", hasSize(0)));
-        Mockito.when(orderRepository.findByDeliveryMan(deliveryMan, PageRequest.of(0, 30)))
+        Mockito.when(orderRepository.findByDeliveryManAndStatusInOrStatusIsNull(eq(deliveryMan), any(PageRequest.class), any(List.class)))
                 .thenReturn(mockPage);
         mvc.perform(get("/api/orders")
                         .accept(MediaType.APPLICATION_JSON))
