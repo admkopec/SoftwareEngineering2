@@ -131,16 +131,21 @@ public class OrderFetchingApiTests {
         orderProducts.add(orderProduct);
         order.setOrderProducts(orderProducts);
 
+        List<Order.Status> statuses = Arrays.asList(Order.Status.Accepted, Order.Status.Delivered, Order.Status.Declined, null);
         LinkedHashSet<Order> orders = new LinkedHashSet<>();
         orders.add(order);
         user.setOrders(orders);
 
         Mockito.when(orderRepository.findById(order.getId()))
                 .thenReturn(Optional.of(order));
-
+        // TODO: Due to the changes in repository, the matcher and mock functions need to be aligned for tests to pass
         Mockito.when(orderRepository.findByClient(user, PageRequest.of(0, 30)))
                 .thenReturn(mockPage);
+        Mockito.when(orderRepository.findByClientAndStatusInOrStatusIsNull(user, PageRequest.of(0, 30), statuses))
+                .thenReturn(mockPage);
         Mockito.when(orderRepository.findByDeliveryMan(deliveryMan, PageRequest.of(0, 30)))
+                .thenReturn(new PageImpl<>(List.of()));
+        Mockito.when(orderRepository.findByDeliveryManAndStatusInOrStatusIsNull(deliveryMan, PageRequest.of(0, 30), statuses))
                 .thenReturn(new PageImpl<>(List.of()));
     }
 
