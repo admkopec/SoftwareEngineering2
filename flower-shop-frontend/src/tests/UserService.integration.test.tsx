@@ -12,7 +12,7 @@ describe("Log in action", () => {
             })
     });
 
-    test('testing login with Team 2', () => {
+    test.skip('testing login with Team 2', () => {
         sessionStorage.setItem('backendURL', regions.alpsMountains);
         return sleepingBackendWrapper(() =>
             loginWithCredentials({username: 'admin@flowershop.com', password: 'password'})

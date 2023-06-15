@@ -15,7 +15,7 @@ test('testing product getting with Our Backend', () => {
 
 // Team 2 is sometimes sleeping so accept the test if we get 503
 // When there are no products, 404 is returned instead of an empty array, so this has to be handled in catch
-test('testing product getting with Team 2', () => {
+test.skip('testing product getting with Team 2', () => {
     sessionStorage.setItem('backendURL', regions.alpsMountains);
     /* eslint-disable jest/no-conditional-expect */
     return sleepingBackendWrapper(() =>
