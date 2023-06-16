@@ -23,7 +23,7 @@ describe("Log in action", () => {
         );
     });
 
-// Team 3 endpoints do not yet match Flower Shop documentation
+    // Team 3 returns 401 for some reason
     test.skip('testing login with Team 3', () => {
         sessionStorage.setItem('backendURL', regions.easterIsland);
         return loginWithCredentials({username: 'admin@admin.com', password: 'admin'}).then(() => {
@@ -56,7 +56,7 @@ describe("User Info fetching", () => {
         );
     });
 
-// Team 3 endpoints do not yet match Flower Shop documentation
+    // Team 3 returns 401 for some reason
     test.skip('testing user into fetching with Team 3', () => {
         const email = 'admin@admin.com';
         sessionStorage.setItem('backendURL', regions.easterIsland);
@@ -91,7 +91,7 @@ describe("Sign up action", () => {
         );
     });
 
-// Team 3 endpoints do not yet match Flower Shop documentation
+    // Team 3 doesn't allow our origin for this request
     test.skip('testing signing up with Team 3', () => {
         const email = `${(Math.random() + 1).toString(36).slice(8)}@pw.edu.pl`;
         sessionStorage.setItem('backendURL', regions.easterIsland);

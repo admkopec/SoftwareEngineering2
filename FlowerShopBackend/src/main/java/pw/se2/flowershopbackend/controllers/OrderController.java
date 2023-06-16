@@ -8,21 +8,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import pw.se2.flowershopbackend.models.BasketItem;
 import pw.se2.flowershopbackend.models.Order;
 import pw.se2.flowershopbackend.models.User;
-import pw.se2.flowershopbackend.services.OrderProductService;
 import pw.se2.flowershopbackend.services.OrderService;
 import pw.se2.flowershopbackend.services.ProductService;
-import pw.se2.flowershopbackend.web.OrderDto;
-import pw.se2.flowershopbackend.web.OrderStatusChangeDto;
+import pw.se2.flowershopbackend.web.*;
+
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
-import pw.se2.flowershopbackend.web.OrderCreationDto;
 
 @Tag(name = "Orders")
 @RestController
@@ -42,13 +43,17 @@ public class OrderController {
 
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Fetch Orders", description = "Orders will be returned in descending order by date created.")
-    public ResponseEntity<Collection<OrderDto>> fetchOrders(@Parameter(name = "Page number", description = "The number of the page to be displayed")
-                                                            @RequestParam(defaultValue = "0") int page,
-                                                            @Parameter(name = "Maximum number of elements on page", description = "The number of elements per page that will not be exceeded")
-                                                            @RequestParam(defaultValue = "30") int maxPerPage) {
+    public ResponseEntity<Collection<OrderDto>> fetchOrders(
+            @Parameter(name = "Order type", description = "A comma separated string containing valid order statuses: " +
+                    "pending, accepted, declined, delivered. If not specified, fetch all orders according to user type.")
+            @RequestParam(required = false) String statuses,
+            @Parameter(name = "Page number", description = "The number of the page to be displayed")
+            @RequestParam(defaultValue = "0") int page,
+            @Parameter(name = "Maximum number of elements on page", description = "The number of elements per page that will not be exceeded")
+            @RequestParam(defaultValue = "30") int maxPerPage) {
         User user = User.getAuthenticated();
-        Pageable paging = PageRequest.of(page, maxPerPage);
-        Collection<Order> orders = orderService.getOrdersFor(user, paging).getContent();
+        Pageable paging = PageRequest.of(page, maxPerPage, Sort.by("dateCreated").descending());
+        Collection<Order> orders = orderService.getOrdersFor(user, paging, statuses).getContent();
         return ResponseEntity.status(HttpStatus.OK).body(orders.stream().map(OrderDto::valueFrom).toList());
     }
 
@@ -101,5 +106,16 @@ public class OrderController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to perform this action.");
         }
         orderService.validateAndSave(order);
+    }
+
+    @GetMapping(path = "/{orderId}/items", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "(UTILITY ENDPOINT) Fetch items from a specific Order")
+    public ResponseEntity<List<BasketDto>> fetchOrderItems(@PathVariable UUID orderId) {
+        User user = User.getAuthenticated();
+        Order order = orderService.getOrderByIdAuth(orderId, user);
+        List<BasketItem> basketItemList = order.getOrderProducts().stream()
+                .map((orderProduct) -> new BasketItemCreationDto(orderProduct.getProduct().getId(), Math.toIntExact(orderProduct.getQuantity()))
+                .convertToModel(productService)).toList();
+        return ResponseEntity.status(HttpStatus.OK).body(basketItemList.stream().map(BasketDto::valueFrom).toList());
     }
 }

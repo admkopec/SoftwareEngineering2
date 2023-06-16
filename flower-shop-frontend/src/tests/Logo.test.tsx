@@ -13,7 +13,7 @@ describe('<Logo />', () => {
 
   test('Logo renders an icon', () => {
     renderWithRouter(<Logo />, { route: homePageRoute.path });
-    const linkElement = screen.getByTitle('flower-icon');
+    const linkElement = screen.getByRole('img');
     expect(linkElement).toBeInTheDocument();
   });
 });

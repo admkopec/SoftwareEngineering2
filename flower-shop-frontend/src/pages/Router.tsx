@@ -7,6 +7,7 @@ import ProductsPreview from '../components/ProductsPreview';
 import ProductsSearch from '../components/ProductsSearch';
 import ProductInfo from '../components/ProductInfo';
 import OrderPage from './OrderPage';
+import ClientOrders from '../components/ClientOrders';
 
 export const signUpPageRoute = {
   path: '/signup',
@@ -44,6 +45,12 @@ export const orderPageRoute = {
   errorElement: <ErrorPage />
 };
 
+export const ordersSubPageRoute = {
+  path: '/orders',
+  element: <ClientOrders />,
+  errorElement: <ErrorPage />
+};
+
 export const homePageRoute = {
   path: '/',
   element: <HomePage />,
@@ -51,7 +58,8 @@ export const homePageRoute = {
   children: [
     productsPreviewSubPageRoute, // 0
     productsSubPageRoute, // 1
-    productInfoSubPageRoute // 2
+    productInfoSubPageRoute, // 2
+    ordersSubPageRoute // 3
   ]
 };
 

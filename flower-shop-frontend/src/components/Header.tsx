@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import Avatar from '@mui/material/Avatar';
-import {Divider, ListItemIcon, SvgIcon, SxProps, Theme} from '@mui/material';
+import { Divider, ListItemIcon, SvgIcon, SxProps, Theme, useTheme } from '@mui/material';
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import LoginRoundedIcon from '@mui/icons-material/Login';
@@ -16,18 +16,33 @@ import AppRegistrationRoundedIcon from '@mui/icons-material/AppRegistrationRound
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import FeaturedPlayListRoundedIcon from '@mui/icons-material/FeaturedPlayListRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import {useNavigate} from 'react-router-dom';
-import {MenuItemSettings, UserData} from '../resources/types';
+import { useNavigate } from 'react-router-dom';
+import Container from '@mui/material/Container';
+import { green, red } from '@mui/material/colors';
+import { MenuItemSettings, UserData } from '../resources/types';
 import SplitButton from './SplitButton';
 import Logo from './Logo';
 import log from '../utils/logger';
-import {mainTheme} from '../resources/themes';
 import Basket from './Basket';
-import {fetchUser, isEmployee, isLoggedIn} from '../services/user.service';
+import { fetchUser, isEmployeeOrDeliveryMan, isLoggedIn } from '../services/user.service';
 
 interface HeaderBarProps {
   sx?: SxProps<Theme>;
 }
+
+const handleAvatarColor = () => {
+  switch (sessionStorage.getItem('role') as string) {
+    case 'deliveryman': {
+      return green[400];
+    }
+    case 'employee': {
+      return red[400];
+    }
+    default: {
+      return 'white';
+    }
+  }
+};
 
 const pagesLinks: MenuItemSettings[] = [
   {
@@ -76,7 +91,9 @@ const profileSettingsUser: MenuItemSettings[] = [
   {
     key: 'My Orders',
     Icon: FeaturedPlayListRoundedIcon,
-    callback: () => {}
+    callback: (navigate) => {
+      navigate('/orders');
+    }
   },
   {
     key: 'Logout',
@@ -94,6 +111,7 @@ const profileSettingsUser: MenuItemSettings[] = [
 
 export default function Header(props: HeaderBarProps) {
   const navigate = useNavigate();
+  const theme = useTheme();
   const [anchorElNav, setAnchorElNav] = React.useState<undefined | HTMLElement>();
   const [anchorElUser, setAnchorElUser] = React.useState<undefined | HTMLElement>();
   const [userData, setUserData] = React.useState<undefined | UserData>();
@@ -158,16 +176,18 @@ export default function Header(props: HeaderBarProps) {
 
         {/* Shop name, pages to navigate to. Only shows when page width decreases. */}
         <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-          <IconButton
-            size="large"
-            aria-label="account of current user"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            onClick={handleOpenNavMenu}
-            color="inherit"
-          >
-            <MenuIcon />
-          </IconButton>
+          <Tooltip title="Show pages">
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
+            >
+              <MenuIcon />
+            </IconButton>
+          </Tooltip>
           <Menu
             id="menu-appbar"
             anchorEl={anchorElNav}
@@ -200,7 +220,7 @@ export default function Header(props: HeaderBarProps) {
 
         <Logo
           sx={{
-            flexGrow: 1,
+            flexGrow: 3,
             display: { xs: 'flex', md: 'none' },
             flexFlow: 'row nowrap',
             alignItems: 'center',
@@ -224,20 +244,16 @@ export default function Header(props: HeaderBarProps) {
           ))}
         </Box>
 
-        {isLoggedIn() && !isEmployee() ?
-          /* Basket button */
-            <Basket />
-        : <></>}
-
+        <Box sx={{ mx: 3 }}>{isLoggedIn() && !isEmployeeOrDeliveryMan() && <Basket />}</Box>
 
         <Box sx={{ display: 'block', flexGrow: 0 }}>
           {userData === undefined ? (
-            <SplitButton options={authButtons} sx={{ flexGrow: 0, color: mainTheme.palette?.primary?.main }} />
+            <SplitButton options={authButtons} />
           ) : (
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="User" src="#" />
+                  <Avatar alt={userData.name} src="#" sx={{ border: `4px solid ${handleAvatarColor()}` }} />
                 </IconButton>
               </Tooltip>
               <Menu
@@ -256,9 +272,19 @@ export default function Header(props: HeaderBarProps) {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                <MenuItem onClick={handleCloseNavMenu}>
-                  <Avatar sx={{ height: 30, width: 30, mr: 1 }} /> Welcome, {userData?.name}
-                </MenuItem>
+                <Container
+                  sx={{
+                    m: 'auto',
+                    py: 1,
+                    display: 'flex',
+                    flexFlow: 'column nowrap',
+                    justifyItems: 'center',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Avatar sx={{ height: 40, width: 40, mr: 1 }} />
+                  <Typography sx={{ py: 1 }}>Welcome, {userData?.name}</Typography>
+                </Container>
                 <Divider />
                 {profileSettingsUser.map((setting) => (
                   <MenuItem key={setting.key} onClick={() => setting.callback(navigate)}>

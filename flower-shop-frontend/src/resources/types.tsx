@@ -10,20 +10,19 @@ export interface UserData {
   role: string;
 }
 
-
-
 export interface Credentials {
   username: string;
   password: string;
 }
 
-interface Address {
+export interface AddressCreation {
   street: string;
-  buildingNo?: string;
-  houseNo?: string;
+  buildingNo: string;
+  houseNo: string;
   postalCode: string;
   city: string;
   country: string;
+  saveAddress?: string;
 }
 
 export interface OrderProduct {
@@ -34,14 +33,16 @@ export interface OrderProduct {
 export interface OrderCreation {
   id?: string;
   clientID?: string;
-  deliveryAddress: Address;
+  deliveryAddress: AddressCreation;
   items: OrderProduct[];
 }
 
 export interface Order {
-  id: string;
-  deliveryAddress: Address;
+  orderId: string;
+  deliveryAddress: AddressCreation;
+  dateCreated: string;
   items: OrderProduct[];
+  status: string;
 }
 
 export interface User {

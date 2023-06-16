@@ -1,14 +1,18 @@
-import {Credentials, JWTToken, User, UserData} from '../resources/types';
+import { Credentials, JWTToken, User, UserData } from '../resources/types';
 import log from '../utils/logger';
-import {Roles} from "../resources/constants";
+import { Roles } from '../resources/constants';
 
-export const getBackendURL= () => {
-    const backendURL = sessionStorage.getItem('backendURL')
-    return backendURL || "";
-}
+export const getBackendURL = () => {
+  const backendURL = sessionStorage.getItem('backendURL');
+  return backendURL || '';
+};
 
-export const isLoggedIn = () => sessionStorage.getItem('loggedIn') === 'true'
-export const isEmployee = () => sessionStorage.getItem('role') === Roles.Employee.toString().toLowerCase()
+export const isLoggedIn = (): boolean => sessionStorage.getItem('loggedIn') === 'true';
+export const isEmployeeOrDeliveryMan = (): boolean =>
+  sessionStorage.getItem('role') === Roles.Employee || sessionStorage.getItem('role') === Roles.DeliveryMan;
+export const isEmployee = (): boolean => sessionStorage.getItem('role') === Roles.Employee;
+export const isClient = (): boolean => sessionStorage.getItem('role') === Roles.Client;
+export const isDeliveryMan = (): boolean => sessionStorage.getItem('role') === Roles.DeliveryMan;
 
 export const loginWithCredentials = async (credentials: Credentials) =>
   fetch(`${getBackendURL()}/api/users/log_in`, {
@@ -52,9 +56,9 @@ export const loginWithCredentials = async (credentials: Credentials) =>
 //     })
 
 export const signupWithUser = async (newUser: User) =>
-  fetch(`${getBackendURL()  }/api/users`, {
+  fetch(`${getBackendURL()}/api/users`, {
     method: 'POST',
-    body: JSON.stringify({...newUser, role: 'client'}),
+    body: JSON.stringify({ ...newUser, role: 'client' }),
     headers: {
       'Content-type': 'application/json'
     }
@@ -78,7 +82,7 @@ export const signupWithUser = async (newUser: User) =>
     });
 
 export const fetchUser = async () =>
-  fetch(`${getBackendURL()  }/api/users`, {
+  fetch(`${getBackendURL()}/api/users`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${sessionStorage.getItem('jwtToken') ?? ''}`

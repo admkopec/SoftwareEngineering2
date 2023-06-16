@@ -61,6 +61,7 @@ export default function Footer() {
 
   const avatarSelectable = {
     cursor: 'pointer',
+    filter: 'grayscale(1)'
   };
 
   const avatarSelected = {
@@ -122,7 +123,6 @@ export default function Footer() {
             </OptionsBox>
           </Stack>
         </Grid>
-
       </FooterGrid>
       <Grid item xs>
         <Stack

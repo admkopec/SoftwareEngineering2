@@ -14,6 +14,22 @@ export enum Category {
   Supplement
 }
 
+export enum OrderStatus {
+  Any,
+  Pending,
+  Accepted,
+  Declined,
+  Delivered
+}
+
+export enum OrdersCategory {
+  All,
+  Pending,
+  ToDeliver,
+  Resolved,
+  Delivered
+}
+
 export enum Roles {
   Client = 'client',
   Employee = 'employee',
@@ -21,7 +37,7 @@ export enum Roles {
 }
 
 export const regions = {
-  ours: '',
+  ours: 'https://pw-flowershop.azurewebsites.net',
   easterIsland: 'https://flower-shop-se2.azurewebsites.net',
   alpsMountains: 'https://flowershop-dev.store'
 };

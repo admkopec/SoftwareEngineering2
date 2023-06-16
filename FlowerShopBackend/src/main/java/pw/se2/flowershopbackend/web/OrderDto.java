@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-public record OrderDto(UUID orderId, AddressDto deliveryAddress, Date dateCreated, List<OrderProductDto> items) {
+public record OrderDto(UUID orderId, AddressDto deliveryAddress, Date dateCreated, List<OrderProductDto> items, Order.Status status) {
     public static OrderDto valueFrom(Order order) {
         AddressDto address;
         try {
@@ -19,6 +19,6 @@ public record OrderDto(UUID orderId, AddressDto deliveryAddress, Date dateCreate
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Corrupted data in database.");
         }
         List<OrderProductDto> items = order.getOrderProducts().stream().map(OrderProductDto::valueFrom).toList();
-        return new OrderDto(order.getId(), address, order.getDateCreated(), items);
+        return new OrderDto(order.getId(), address, order.getDateCreated(), items, order.getStatus());
     }
 }

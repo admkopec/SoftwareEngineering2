@@ -1,5 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 import { createTheme } from '@mui/material/styles';
+import { blue } from '@mui/material/colors';
 
 declare module '@mui/material/styles' {
   interface Theme {
@@ -56,12 +57,27 @@ export const mainTheme = createTheme({
     },
     secondary: {
       // light: will be calculated from palette.primary.main,
-      main: '#87a6ff',
+      main: blue[500],
       // dark: will be calculated from palette.secondary.main,
       contrastText: '#ffcc00'
     },
     contrastThreshold: 4.5,
     tonalOffset: 0.2
+  },
+  typography: {
+    fontFamily: [
+      'Raleway',
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"'
+    ].join(',')
   }
 });
 
@@ -71,6 +87,5 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0;
     background: white;
     width: 100%;
-    font-family: Open-Sans, Helvetica, Sans-Serif, sans-serif;
   }
 `;

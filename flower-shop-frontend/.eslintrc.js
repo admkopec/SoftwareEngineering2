@@ -5,7 +5,7 @@ module.exports = {
         node: true,
         jest: true,
     },
-    ignorePatterns: ["./src/static/*"],
+    ignorePatterns: ["./src/static/*", './public/*'],
     parser: "@babel/eslint-parser",
     parserOptions: {
         ecmaVersion: "latest",
@@ -27,7 +27,7 @@ module.exports = {
         "jest",
         "promise",
         "unicorn",
-        "react-hooks"
+        "react-hooks",
     ],
     extends: [
         "eslint:recommended",
@@ -153,7 +153,9 @@ module.exports = {
                 "@typescript-eslint/no-misused-promises": "warn",
                 "@typescript-eslint/no-unused-vars": "warn",
                 "no-promise-executor-return": "warn",
-                "import/order": "warn"
+                "import/order": "warn",
+                "no-param-reassign": "off",
+                "unicorn/no-null": "warn"
             },
         },
     ],
