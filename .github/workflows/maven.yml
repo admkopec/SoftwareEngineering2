@@ -21,7 +21,7 @@ jobs:
 
     steps:
     - name: ☁️ Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: 🔧 Set up JDK 17
       uses: actions/setup-java@v3
       with:
@@ -48,7 +48,7 @@ jobs:
     
     steps:
     - name: ☁️ Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: 🔍 Check style
       uses: nikitasavinov/checkstyle-action@master
       with:
